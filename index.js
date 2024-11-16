@@ -1016,7 +1016,7 @@ Ex : agi@NumberGift@username@message
                                         sendMainMessage(ur, ` ✅ ᵀᴴᴱ ᴹᴱᔆᔆᴬᴳᴱ ᴴᴬᔆ ᴮᴱᴱᴺ ᔆᵁᶜᶜᴱᔆᔆᶠᵁᴸᴸʸ ᔆᴱᴺᵀ ᵀᴼ ᴬᴸᴸ ᴿᴼᴼᴹᔆ`);
 
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1039,7 +1039,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1060,7 +1060,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1082,7 +1082,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1104,7 +1104,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1126,7 +1126,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1148,7 +1148,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1170,7 +1170,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1192,7 +1192,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1214,7 +1214,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1236,7 +1236,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1258,7 +1258,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1280,7 +1280,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1302,7 +1302,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1324,7 +1324,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1346,7 +1346,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1368,7 +1368,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1390,7 +1390,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1412,7 +1412,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1434,7 +1434,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1456,7 +1456,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1478,7 +1478,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1500,7 +1500,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1522,7 +1522,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1544,7 +1544,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1565,7 +1565,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1586,7 +1586,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
@@ -1607,7 +1607,7 @@ Ex : agi@NumberGift@username@message
                                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                                         console.log(`Sending message to room: ${ur}`);
                                         sendMainImageMessage(ur, imageUrl);
-                                        sendMainMessage(ur, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
                                     }
                                 }
                                 else {
