@@ -1,0 +1,18 @@
+[
+  {
+    "username": "user1",
+    "verified": true
+  },
+  {
+    "username": "user2",
+    "verified": false
+  },
+  {
+    "username": "23",
+    "verified": true
+  },
+  {
+    "username": "🪷ᵛ͢ᵎᵖ",
+    "verified": true
+  }
+]

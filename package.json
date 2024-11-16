@@ -1,0 +1,19 @@
+{
+  "name": "json",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "canvas": "^2.11.2",
+    "fs": "^0.0.1-security",
+    "sharp": "^0.33.5",
+    "ws": "^8.18.0"
+  }
+}
