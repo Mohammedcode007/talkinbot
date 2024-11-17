@@ -742,10 +742,12 @@ Ex : agi@NumberGift@username@message
 ㉕ ❄️ 𝑭𝒓𝒐𝒛𝒆𝒏
 ㉖ 🌊 𝑴𝒐𝒂𝒏𝒂
 ㉗ 🚗 𝑪𝒂𝒓
+28 🐈 Tom
+29 🐈 Mike
+30 🐈 Boo
+31 🐈 Shalby
 
 Ex : agi@NumberGift@username@message
-
-
         
         `);
 
@@ -1594,9 +1596,93 @@ Ex : agi@NumberGift@username@message
                                 }
                             }
 
-                        } else if (id === 28) {
+                        } else if (id === 128) {
                             imageType5 = 'Fuck';
                             if (imageType5 === 'Fuck') {
+                                const imageUrl = getRandomImage(imageType5);
+                                if (imageUrl) {
+                                    const data = fs.readFileSync('rooms.json', 'utf8');
+                                    const rooms = JSON.parse(data);
+
+                                    console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
+
+                                    for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
+                                        console.log(`Sending message to room: ${ur}`);
+                                        sendMainImageMessage(ur, imageUrl);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                    }
+                                }
+                                else {
+                                    console.error('No images found for the specified type.');
+                                }
+                            }
+
+                        }else if (id === 28) {
+                            imageType5 = 'Tom';
+                            if (imageType5 === 'Tom') {
+                                const imageUrl = getRandomImage(imageType5);
+                                if (imageUrl) {
+                                    const data = fs.readFileSync('rooms.json', 'utf8');
+                                    const rooms = JSON.parse(data);
+
+                                    console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
+
+                                    for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
+                                        console.log(`Sending message to room: ${ur}`);
+                                        sendMainImageMessage(ur, imageUrl);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                    }
+                                }
+                                else {
+                                    console.error('No images found for the specified type.');
+                                }
+                            }
+
+                        }else if (id === 29) {
+                            imageType5 = 'Mike';
+                            if (imageType5 === 'Mike') {
+                                const imageUrl = getRandomImage(imageType5);
+                                if (imageUrl) {
+                                    const data = fs.readFileSync('rooms.json', 'utf8');
+                                    const rooms = JSON.parse(data);
+
+                                    console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
+
+                                    for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
+                                        console.log(`Sending message to room: ${ur}`);
+                                        sendMainImageMessage(ur, imageUrl);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                    }
+                                }
+                                else {
+                                    console.error('No images found for the specified type.');
+                                }
+                            }
+
+                        }else if (id === 30) {
+                            imageType5 = 'Boo';
+                            if (imageType5 === 'Boo') {
+                                const imageUrl = getRandomImage(imageType5);
+                                if (imageUrl) {
+                                    const data = fs.readFileSync('rooms.json', 'utf8');
+                                    const rooms = JSON.parse(data);
+
+                                    console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
+
+                                    for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
+                                        console.log(`Sending message to room: ${ur}`);
+                                        sendMainImageMessage(ur, imageUrl);
+                                        sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                    }
+                                }
+                                else {
+                                    console.error('No images found for the specified type.');
+                                }
+                            }
+
+                        }else if (id === 31) {
+                            imageType5 = 'Shalby';
+                            if (imageType5 === 'Shalby') {
                                 const imageUrl = getRandomImage(imageType5);
                                 if (imageUrl) {
                                     const data = fs.readFileSync('rooms.json', 'utf8');
@@ -1811,7 +1897,7 @@ function processMessage(message) {
 
 
 // Handle WebSocket connection and message events
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 8080  });
 
 wss.on('connection', (ws) => {
     console.log('New connection established');
