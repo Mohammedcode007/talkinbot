@@ -509,6 +509,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     let isGameActive = false; // حالة اللعبة لتحديد ما إذا كانت هناك لعبة جارية أم لا
     let userChoiceTimeout; // مؤقت لرسالة تحفيزية
     let canChoosePath = false; // لمنع اللاعب من اختيار الطريق قبل كلمة "ابدأ"
+    let puzzleTimeout;
 
     // دالة لإيقاف اللعبة بعد 30 ثانية
     function stopGameAfterChoiceTimeout(parsedData) {
@@ -554,6 +555,23 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
             socket.send(JSON.stringify(reminderMessage));
         }, 10000); // كل 10 ثوانٍ
+    }
+
+    function resetGameData() {
+        gameData = {
+            lastUserWhoSentTreasure: null,   // يمكنك مسح هذا إذا أردت
+            lastPuzzle: null,
+            currentPlayer: null,
+            isGameActive: false,
+            selectedPath: null,  // تصفير الطريق المختار
+            playerProgress: {
+                correctAnswersCount: 0,  // تصفير عدد الإجابات الصحيحة
+                totalPoints: 0           // تصفير النقاط
+            },
+            correctAnswersCount: 0  // تصفير الإجابات الصحيحة
+        };
+
+        saveGameData(gameData);  // حفظ البيانات المحدثة
     }
 
     socket.onopen = () => {
@@ -619,256 +637,316 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
     };
 
+
     socket.onmessage = async (event) => {
         const parsedData = JSON.parse(event.data);
-        // console.log('Received message:88', parsedData);
         const usersblockes = readBlockedUsers();
 
+        // إرسال لغز عشوائي بعد اختيار الطريق
+        function sendRandomPuzzle(parsedData, pathNumber) {
+            const puzzles = loadPuzzles();  // تحميل الألغاز من الملف
 
+            const pathPuzzles = puzzles[pathNumber];  // اختيار الألغاز الخاصة بالطريق
+            const randomIndex = Math.floor(Math.random() * pathPuzzles.length);  // اختيار لغز عشوائي
+            const puzzle = pathPuzzles[randomIndex];  // اللغز العشوائي
 
-        socket.onmessage = async (event) => {
-            const parsedData = JSON.parse(event.data);
-            // إرسال لغز عشوائي بعد اختيار الطريق
-            function sendRandomPuzzle(parsedData, pathNumber) {
-                const puzzles = loadPuzzles();  // تحميل الألغاز من الملف
-                const pathPuzzles = puzzles[pathNumber];  // اختيار الألغاز الخاصة بالطريق
-                const randomIndex = Math.floor(Math.random() * pathPuzzles.length);  // اختيار لغز عشوائي
-                const puzzle = pathPuzzles[randomIndex];  // اللغز العشوائي
+            // إرسال السؤال إلى اللاعب
+            const puzzleMessage = {
+                handler: 'room_message',
+                id: 'TclBVHgBzPGTMRTNpgWV',
+                type: 'text',
+                room: parsedData.room,
+                url: '',
+                length: '',
+                body: `🔍 اللغز: ${puzzle.question} \nأجب عليه!`
+            };
 
-                // إرسال السؤال إلى اللاعب
-                const puzzleMessage = {
-                    handler: 'room_message',
-                    id: 'TclBVHgBzPGTMRTNpgWV',
-                    type: 'text',
-                    room: parsedData.room,
-                    url: '',
-                    length: '',
-                    body: `🔍 اللغز: ${puzzle.question} \nأجب عليه!`
-                };
+            socket.send(JSON.stringify(puzzleMessage));
 
-                socket.send(JSON.stringify(puzzleMessage));
+            return puzzle;  // العودة باللغز لإجراء التحقق من الإجابة لاحقًا
+        }
 
-                return puzzle;  // العودة باللغز لإجراء التحقق من الإجابة لاحقًا
-            }
+        if (parsedData.handler === 'room_event') {
+            if (parsedData.from) {
+                const senderUsername = parsedData.from.trim();
+                console.log(`Received message from: ${senderUsername}`);
+                let gameData = readGameData();
 
+                // إذا كانت الرسالة هي "كنز"
+                if (parsedData.body === 'كنز') {
+                    console.log(`Received the word "كنز" from: ${senderUsername}`);
 
-            if (parsedData.handler === 'room_event') {
-                // التأكد من أن parsedData.from ليس فارغًا
-                if (parsedData.from) {
-                    const senderUsername = parsedData.from.trim(); // تطبيع اسم المستخدم
-
-                    console.log(`Received message from: ${senderUsername}`); // طباعة اسم المستخدم المنظف
-
-                    let gameData = readGameData(); // قراءة بيانات اللعبة من الملف
-
-                    // إذا كانت الرسالة هي "كنز"
-                    if (parsedData.body === 'كنز') {
-                        console.log(`Received the word "كنز" from: ${senderUsername}`); // طباعة اسم الشخص الذي أرسل كلمة "كنز"
-
-                        // التحقق إذا كانت هناك لعبة جارية بالفعل
-                        if (isGameActive) {
-                            // إذا كانت هناك لعبة جارية، إرسال رسالة تفيد بذلك
-                            const gameActiveMessage = {
-                                handler: 'room_message',
-                                id: 'TclBVHgBzPGTMRTNpgWV',
-                                type: 'text',
-                                room: parsedData.room, // الغرفة التي أرسل منها المستخدم الرسالة
-                                url: '',
-                                length: '',
-                                body: `❌ هناك لعبة جارية بالفعل! لا يمكن بدء لعبة جديدة.`
-                            };
-
-                            socket.send(JSON.stringify(gameActiveMessage));
-                        } else {
-                            // تخزين اسم المستخدم الذي أرسل كلمة "كنز"
-                            gameData.lastUserWhoSentTreasure = senderUsername;
-
-                            // حفظ البيانات في ملف JSON
-                            saveGameData(gameData);
-
-                            // إرسال رسالة ترحيب للبدء في اللعبة
-                            const welcomeMessage = {
-                                handler: 'room_message',
-                                id: 'TclBVHgBzPGTMRTNpgWV',
-                                type: 'text',
-                                room: parsedData.room, // الغرفة التي أرسل منها المستخدم الرسالة
-                                url: '',
-                                length: '',
-                                body: `🏝️ مرحباً بك في لعبة البحث عن الكنز! هل أنت مستعد للبحث عن الكنز؟ أرسل "ابدأ" لبدء اللعبة!`
-                            };
-
-                            // إرسال رسالة الترحيب
-                            socket.send(JSON.stringify(welcomeMessage));
-
-                            // تغيير حالة اللعبة إلى "جارية"
-                            isGameActive = true;
-                            canChoosePath = false; // منع الاختيار قبل "ابدأ"
-                        }
-                    }
-
-                    // إذا كانت الرسالة هي "ابدأ"
-                    if (parsedData.body === 'ابدأ') {
-                        console.log(`Received the word "ابدأ" from: ${senderUsername}`); // طباعة اسم الشخص الذي أرسل كلمة "ابدأ"
-
-                        // التحقق إذا كان المستخدم الذي أرسل "ابدأ" هو نفس الشخص الذي أرسل "كنز"
-                        if (gameData.lastUserWhoSentTreasure === null) {
-                            // إذا لم يتم إرسال "كنز" أولاً، إرسال رسالة خطأ
-                            const errorMessage = {
-                                handler: 'room_message',
-                                id: 'TclBVHgBzPGTMRTNpgWV',
-                                type: 'text',
-                                room: parsedData.room,
-                                url: '',
-                                length: '',
-                                body: `❌ يجب أن ترسل كلمة "كنز" أولاً! لا يمكنك بدء اللعبة.`
-                            };
-
-                            socket.send(JSON.stringify(errorMessage));
-                        } else if (senderUsername === gameData.lastUserWhoSentTreasure) {
-                            // إذا كان نفس المستخدم الذي أرسل "ابدأ" هو نفسه الذي أرسل "كنز"، إرسال رسالة لاختيار الطريق
-                            const pathChoiceMessage = {
-                                handler: 'room_message',
-                                id: 'TclBVHgBzPGTMRTNpgWV',
-                                type: 'text',
-                                room: parsedData.room,
-                                url: '',
-                                length: '',
-                                body: `🔹 اختر طريقك:
-                        1. الغابة المظلمة 🌲  
-                        2. الجبال الصخرية ⛰️  
-                        3. النهر الهائج 🌊`
-                            };
-
-                            // إرسال رسالة لاختيار الطريق
-                            socket.send(JSON.stringify(pathChoiceMessage));
-
-                            // بدء مؤقت رسائل التحفيز
-                            sendReminderMessage(parsedData);
-
-                            // بدء المؤقت لاختيار الطريق (30 ثانية)
-                            stopGameAfterChoiceTimeout(parsedData);
-
-                            // السماح للاعب باختيار الطريق
-                            canChoosePath = true;
-                        } else {
-                            // إذا كان الشخص الذي أرسل "ابدأ" ليس هو نفس الشخص الذي أرسل "كنز"
-                            const errorMessage = {
-                                handler: 'room_message',
-                                id: 'TclBVHgBzPGTMRTNpgWV',
-                                type: 'text',
-                                room: parsedData.room,
-                                url: '',
-                                length: '',
-                                body: `❌ لا يمكنك بدء اللعبة لأنك لم ترسل كلمة "كنز" أولاً.`
-                            };
-
-                            socket.send(JSON.stringify(errorMessage));
-                        }
-                    }
-
-                    // إذا أرسل اللاعب اختيارًا للطريق (1 أو 2 أو 3) بعد كلمة "ابدأ"
-                    // تعديل عند إرسال اللغز
-                    if (canChoosePath && ['1', '2', '3'].includes(parsedData.body)) {
-                        clearTimeout(userChoiceTimeout); // إيقاف رسائل التحفيز
-
-                        const successMessage = {
+                    if (isGameActive) {
+                        const gameActiveMessage = {
                             handler: 'room_message',
                             id: 'TclBVHgBzPGTMRTNpgWV',
                             type: 'text',
                             room: parsedData.room,
                             url: '',
                             length: '',
-                            body: `🏁 تم اختيارك للطريق ${parsedData.body}! اللعبة مستمرة...`
+                            body: `❌ هناك لعبة جارية بالفعل! لا يمكن بدء لعبة جديدة.`
                         };
 
-                        socket.send(JSON.stringify(successMessage));
+                        socket.send(JSON.stringify(gameActiveMessage));
+                    } else {
+                        gameData.lastUserWhoSentTreasure = senderUsername;
+                        saveGameData(gameData);
 
-                        // إرسال اللغز بعد اختيار الطريق
-                        const puzzle = sendRandomPuzzle(parsedData, parsedData.body); // إرسال اللغز بناءً على الطريق المختار
+                        const welcomeMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `🏝️ مرحباً بك في لعبة البحث عن الكنز! هل أنت مستعد للبحث عن الكنز؟ أرسل "ابدأ" لبدء اللعبة!`
+                        };
 
-                        // حفظ اللغز في بيانات اللعبة
-                        gameData.lastPuzzle = puzzle;
-                        console.log(gameData, 'gameData.lastPuzzle');
-
-                        saveGameData(gameData); // حفظ بيانات اللعبة
-
-                        // إيقاف المؤقت بعد الاختيار
-                        clearTimeout(choiceTimeout);
-                        isGameActive = false; // إيقاف اللعبة
-                        canChoosePath = false; // منع الاختيارات المستقبلية
+                        socket.send(JSON.stringify(welcomeMessage));
+                        isGameActive = true;
+                        canChoosePath = false;
                     }
-                
-                    
-                    // تحقق من إجابة اللاعب
-                    if (parsedData.body && parsedData.body.trim() !== "" && parsedData.from === gameData.lastUserWhoSentTreasure) {
-                        // تحقق من وجود آخر لغز في اللعبة
-                        if (gameData.lastPuzzle) {
-                            const puzzle = gameData.lastPuzzle; // اللغز المرسل
-                    
-                            // تحويل الإجابة المدخلة إلى الحروف الصغيرة للمقارنة
-                            const playerAnswer = parsedData.body.trim().toLowerCase();
-                            const correctAnswer = puzzle.answer.trim().toLowerCase();
-                    
-                            // التحقق من الإجابة
-                            if (playerAnswer === correctAnswer) {
-                                // إذا كانت الإجابة صحيحة
-                                const correctAnswerMessage = {
-                                    handler: 'room_message',
-                                    id: 'TclBVHgBzPGTMRTNpgWV',
-                                    type: 'text',
+                }
+
+                // إذا كانت الرسالة هي "ابدأ"
+                if (parsedData.body === 'ابدأ') {
+                    console.log(`Received the word "ابدأ" from: ${senderUsername}`);
+
+                    if (gameData.lastUserWhoSentTreasure === null) {
+                        const errorMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `❌ يجب أن ترسل كلمة "كنز" أولاً! لا يمكنك بدء اللعبة.`
+                        };
+
+                        socket.send(JSON.stringify(errorMessage));
+                    } else if (senderUsername === gameData.lastUserWhoSentTreasure) {
+                        const pathChoiceMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `🔹 اختر طريقك:
+                            1. الغابة المظلمة 🌲  
+                            2. الجبال الصخرية ⛰️  
+                            3. النهر الهائج 🌊`
+                        };
+
+                        socket.send(JSON.stringify(pathChoiceMessage));
+
+                        // بدء مؤقت رسائل التحفيز
+                        sendReminderMessage(parsedData);
+
+                        // بدء المؤقت لاختيار الطريق (30 ثانية)
+                        stopGameAfterChoiceTimeout(parsedData);
+
+                        // السماح للاعب باختيار الطريق
+                        canChoosePath = true;
+                    } else {
+                        const errorMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `❌ لا يمكنك بدء اللعبة لأنك لم ترسل كلمة "كنز" أولاً.`
+                        };
+
+                        socket.send(JSON.stringify(errorMessage));
+                    }
+                }
+
+                const waitForAnswer = (parsedData, currentQuestionNumber) => {
+                    puzzleTimeout = setTimeout(() => {
+
+                        if (isGameActive) {
+                            // إذا لم يتم الإجابة على السؤال الحالي
+                            console.log("Timeout reached!");
+                            if (
+                                gameData.playerProgress &&
+                                gameData.playerProgress.correctAnswersCount < currentQuestionNumber
+                            ) {
+                                const timeoutMessage = {
+                                    handler: "room_message",
+                                    id: "TclBVHgBzPGTMRTNpgWV",
+                                    type: "text",
                                     room: parsedData.room,
-                                    url: '',
-                                    length: '',
-                                    body: `✅ الإجابة صحيحة! حصلت على 10 نقاط.`
+                                    url: "",
+                                    length: "",
+                                    body: `⏰ انتهت المهلة! لم يتم الإجابة على السؤال ${currentQuestionNumber} في الوقت المحدد. اللعبة توقفت.`,
                                 };
-                    
-                                socket.send(JSON.stringify(correctAnswerMessage));
+
+                                socket.send(JSON.stringify(timeoutMessage));
+
+                                // إيقاف اللعبة
+                                isGameActive = false;
+                                canChoosePath = false;
                                 gameData.lastPuzzle = null;
-                                saveGameData(gameData); // حفظ التحديث
-                                clearGameTimeout(); // إيقاف المؤقت إذا تم إرسال الإجابة الصحيحة
-                                // تحديث نقاط اللاعب هنا إذا لزم الأمر
+                                saveGameData(gameData);
+
+                                // إيقاف جميع المؤقتات الأخرى
+                                clearTimeout(choiceTimeout);
+                                clearTimeout(userChoiceTimeout);
+                                clearTimeout(puzzleTimeout);
+                                resetGameData();
                             }
                         }
+                    }, 10000); // 10 ثوانٍ
+                };
+
+                // استدعاء دالة إرسال لغز جديد
+                const sendNextPuzzle = (parsedData) => {
+                    const currentQuestionNumber =
+                        gameData.playerProgress.correctAnswersCount + 1;
+
+                    if (currentQuestionNumber <= 5) {
+                        // إرسال لغز جديد
+                        const puzzle = sendRandomPuzzle(parsedData, gameData.selectedPath);
+                        gameData.lastPuzzle = puzzle;
+                        saveGameData(gameData);
+
+                        // بدء مؤقت الانتظار للإجابة على السؤال الجديد
+                        waitForAnswer(parsedData, currentQuestionNumber);
                     } else {
-                        // لا تفعل شيء إذا لم يرسل اللاعب إجابة
-                        console.log("لا توجد إجابة مدخلة من اللاعب.");
+                        // إذا أجاب اللاعب على 5 أسئلة صحيحة
+                        const winMessage = {
+                            handler: "room_message",
+                            id: "TclBVHgBzPGTMRTNpgWV",
+                            type: "text",
+                            room: parsedData.room,
+                            url: "",
+                            length: "",
+                            body: `🎉 تهانينا! لقد أجبت على جميع الأسئلة بشكل صحيح! حصلت على مليون نقطة إضافية!`,
+                        };
+                        let respondingUser = users.find(user => user.username === parsedData.from);
+                        if (respondingUser) {
+                            respondingUser.points += 1000000; // إضافة النقاط الخاصة بالإيموجي
+                            writeUsersToFile(users);
+
+                            socket.send(JSON.stringify(winMessage));
+                        }
+                        resetGameData();
                     }
-                    
-                   
-                    
+                };
 
+                // استدعاء دالة انتظار الإجابة بعد إرسال اللغز
+                if (canChoosePath && ['1', '2', '3'].includes(parsedData.body)) {
+                    clearTimeout(userChoiceTimeout);  // إيقاف تذكير الاختيار إذا تم الاختيار في الوقت المحدد
+                    const selectedPath = parsedData.body;  // تخزين الطريق الذي اختاره اللاعب
 
-
-
-
-
-                } else {
-                    console.log('Error: parsedData.from is undefined');
-                }
-            }
-            if (parsedData.handler === 'room_event' && parsedData.body === currentEmoji) {
-                console.log(currentEmoji, 'currentEmoji');
-
-                let respondingUser = users.find(user => user.username === parsedData.from);
-                if (respondingUser) {
-                    respondingUser.points += emojiPoints; // إضافة النقاط الخاصة بالإيموجي
-                    const autoMessage = {
+                    // تحديث gameData لحفظ الطريق الذي اختاره اللاعب
+                    gameData.selectedPath = selectedPath;  // إضافة الطريق إلى بيانات اللعبة
+                    saveGameData(gameData);  // حفظ التحديثات إلى ملف اللعبة
+                    const successMessage = {
                         handler: 'room_message',
                         id: 'TclBVHgBzPGTMRTNpgWV',
                         type: 'text',
                         room: parsedData.room,
                         url: '',
                         length: '',
-                        body: `تهانينا ${respondingUser.username}! لقد حصلت على ${emojiPoints} نقطة بسبب إجابتك الصحيحة!`,
+                        body: `🏁 تم اختيارك للطريق ${parsedData.body}! اللعبة مستمرة...`
                     };
-                    socket.send(JSON.stringify(autoMessage));
-                    writeUsersToFile(users);
+
+                    socket.send(JSON.stringify(successMessage));
+
+                    // إرسال اللغز بعد اختيار الطريق
+                    const puzzle = sendRandomPuzzle(parsedData, parsedData.body);
+
+                    gameData.lastPuzzle = puzzle;
+                    saveGameData(gameData);
+
+                    // بدء وقت الانتظار للإجابة بعد الاختيار
+                    waitForAnswer(parsedData, 1);
                 }
 
-                // إيقاف إرسال الإيموجي بعد أن يرسل المستخدم الإجابة
-                currentEmoji = null; // إعادة تعيين الإيموجي
+
+
+                // تحقق من إجابة اللاعب
+                if (parsedData.body && parsedData.body.trim() !== "" && parsedData.from === gameData.lastUserWhoSentTreasure) {
+                    if (gameData.lastPuzzle) {
+                        const puzzle = gameData.lastPuzzle;
+
+                        const playerAnswer = parsedData.body.trim().toLowerCase();
+                        const correctAnswer = puzzle.answer.trim().toLowerCase();
+
+                        if (playerAnswer === correctAnswer) {
+                            const correctAnswerMessage = {
+                                handler: "room_message",
+                                id: "TclBVHgBzPGTMRTNpgWV",
+                                type: "text",
+                                room: parsedData.room,
+                                url: "",
+                                length: "",
+                                body: `✅ الإجابة صحيحة! حصلت على 100 نقاط.`,
+                            };
+                            let respondingUser = users.find(user => user.username === parsedData.from);
+                            if (respondingUser) {
+                                respondingUser.points += 100; // إضافة النقاط الخاصة بالإيموجي
+                                writeUsersToFile(users);
+
+                            socket.send(JSON.stringify(correctAnswerMessage));
+                            }
+
+                            // تحديث عدد الإجابات الصحيحة
+                            if (!gameData.playerProgress) {
+                                gameData.playerProgress = { correctAnswersCount: 0, totalPoints: 0 };
+                            }
+
+                            gameData.playerProgress.correctAnswersCount += 1;
+                            gameData.playerProgress.totalPoints += 100;
+                            saveGameData(gameData);
+
+                            // إلغاء مؤقت المهلة إذا كانت الإجابة صحيحة
+                            if (puzzleTimeout) {
+                                clearTimeout(puzzleTimeout);
+                                console.log("تم إيقاف المؤقت بنجاح");
+                            }
+
+                            // إرسال لغز جديد إذا لم نصل للسؤال الخامس
+                            sendNextPuzzle(parsedData);
+                        }
+                    }
+                }
+                if (parsedData.handler === 'room_event' && parsedData.body === currentEmoji) {
+                    console.log(currentEmoji, 'currentEmoji');
+
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+                        respondingUser.points += emojiPoints; // إضافة النقاط الخاصة بالإيموجي
+                        const autoMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `تهانينا ${respondingUser.username}! لقد حصلت على ${emojiPoints} نقطة بسبب إجابتك الصحيحة!`,
+                        };
+                        socket.send(JSON.stringify(autoMessage));
+                        writeUsersToFile(users);
+                    }
+
+                    // إيقاف إرسال الإيموجي بعد أن يرسل المستخدم الإجابة
+                    currentEmoji = null; // إعادة تعيين الإيموجي
+                }
+
             }
-            // تحقق مما إذا كان المستخدم موثقًا
+
+
+
+            if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
+                sendMainMessage(parsedData.name, `🌟𝗪𝗘𝗟𝗖𝗢𝗠𝗘🌟 \n ${parsedData.username}`);
+            }
+
+
+
             if (parsedData.handler === 'room_event' && parsedData.body === 'فزوره') {
                 const senderUsername = parsedData.from; // المستخدم الذي أرسل كلمة "فزوره"
 
@@ -1008,10 +1086,6 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     puzzleInProgress = false;
                 }
             }
-            if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
-                sendMainMessage(parsedData.name, `🌟𝗪𝗘𝗟𝗖𝗢𝗠𝗘🌟 \n ${parsedData.username}`);
-            }
-
             // التعامل مع التحقق من المستخدم عند إضافة أو حذف مستخدم
             if (parsedData.handler === 'room_event') {
                 const userblocked = users.find(user => user === parsedData.from);
@@ -1105,7 +1179,7 @@ Ex : agi@NumberGift@username@message
 `);
 
                     sendMainMessage(parsedData.room, ` 
- ⑪ 🍹 𝑺𝒖𝒈𝒂𝒓𝒄𝒂𝒏𝒆 𝑱𝒖𝒊𝒄𝒆
+⑪ 🍹 𝑺𝒖𝒈𝒂𝒓𝒄𝒂𝒏𝒆 𝑱𝒖𝒊𝒄𝒆
 ⑫ 🐎 𝑯𝒐𝒓𝒔𝒆
 ⑬ 🌸 𝑭𝒍𝒐𝒘𝒆𝒓
 ⑭ 🦁 𝑳𝒊𝒐𝒏
@@ -1115,13 +1189,13 @@ Ex : agi@NumberGift@username@message
 ⑱ 🎂 𝑩𝒊𝒓𝒕𝒉𝒅𝒂𝒚
 ⑲ 🐭 𝑴𝒊𝒄𝒌𝒆𝒚 𝑴𝒐𝒖𝒔𝒆
 ⑳ 🐶 𝑺𝒄𝒐𝒐𝒃𝒚-𝑫𝒐𝒐
-    
+
 Ex : agi@NumberGift@username@message
-    
-    `);
+
+`);
 
                     sendMainMessage(parsedData.room, ` 
-   ㉑ 🐰 𝑩𝒖𝒈𝒔 𝑩𝒖𝒏𝒏𝒚
+㉑ 🐰 𝑩𝒖𝒈𝒔 𝑩𝒖𝒏𝒏𝒚
 ㉒ 🍍 𝑺𝒑𝑜𝒏𝒈𝑩𝒐𝒃
 ㉓ 🌟 𝑫𝒐𝒓𝒂 𝒕𝒉𝒆 𝑬𝒙𝒑𝒍𝒐𝒓𝒆𝒓
 ㉔ 🦸‍♂️ 𝑺𝒖𝒑𝒆𝒓𝒎𝒂𝒏
@@ -1134,18 +1208,18 @@ Ex : agi@NumberGift@username@message
 31 🐈 Shalby
 
 Ex : agi@NumberGift@username@message
-        
-        `);
+
+`);
                     sendMainMessage(parsedData.room, `
-            32 butterflies
-            33 Strawberry
-            34 Snafer
-            35 ariel
-            36 repunzel
-            37 joker
-            Ex : agi@NumberGift@username@message
-            
-            `);
+    32 butterflies
+    33 Strawberry
+    34 Snafer
+    35 ariel
+    36 repunzel
+    37 joker
+    Ex : agi@NumberGift@username@message
+    
+    `);
 
                 } else if (body.startsWith('gi@')) {
                     const atCount = (body.match(/@/g) || []).length; // عد عدد الرموز @ في النص
@@ -2299,12 +2373,9 @@ Ex : agi@NumberGift@username@message
 
 
 
-
-
-
-
-
     };
+
+
 
     socket.onclose = () => {
         console.log(`Socket closed for username: ${username}`);
