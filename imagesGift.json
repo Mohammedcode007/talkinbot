@@ -430,5 +430,89 @@
       "id": 2,
       "url": "https://i.pinimg.com/736x/c2/d4/1b/c2d41b0c1a59e42391f52ec8bda810c6.jpg"
     }
+  ],
+  "Snafer": [
+    {
+      "id": 1,
+      "url": "https://i.pinimg.com/736x/9a/a8/6f/9aa86fceaf2bbf95bfd7394093ab6ba5.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/00/07/a7/0007a7e4c51d46f88e5ea166b282b8e9.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/09/49/8c/09498c2f31224a38253ada4bf4523e95.jpg"
+    }
+  ],
+   "ariel": [
+    {
+      "id": 1,
+      "url": "https://i.pinimg.com/736x/4f/47/d1/4f47d18bcfcdcf55dcb8908724216d81.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/2f/f3/f7/2ff3f7e0667a20ef06dd0b4735a72eea.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/63/0d/59/630d596402a1922b34c103cf56588d27.jpg"
+    }
+  ],
+  "repunzel": [
+    {
+      "id": 1,
+      "url": "https://i.pinimg.com/736x/ff/76/70/ff767023df861499dc3afb718b05b395.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/b2/90/3b/b2903b721b9db0c5bab84827e5629d5e.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/6e/77/fc/6e77fcd9f4d820b479d7b46b80c8f5f7.jpg"
+    }
+  ],
+  "butterflies": [
+    {
+      "id": 1,
+      "url": "https://i.pinimg.com/736x/ef/81/3f/ef813f8dee949394baf51cd1ed311c92.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/ce/df/c3/cedfc3bb7b30d6522ca7c645fc187387.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/f4/01/33/f40133e28a8928d38ca5768596daad25.jpg"
+    }
+  ],
+  "Strawberry": [
+    {
+      "id": 1,
+      "url": "https://i.pinimg.com/736x/b0/c7/85/b0c785786ecccb8b28f6c893be22ce18.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/8c/b0/4f/8cb04ff2f15361c758683fc448650be7.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/7a/ca/b3/7acab3f0295c144d36b5664cf9a3e702.jpg"
+    }
+  ],
+  "Joker": [
+    {
+      "id": 1,
+      "url": "https://i.pinimg.com/736x/1c/d0/14/1cd014782e6a9cde2d8b5877176daadb.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/80/77/b9/8077b920f9a1382d28d915cd524afe08.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/28/b3/21/28b321f2a4d2d042991ecec1412b1f49.jpg"
+    }
   ]
 }
