@@ -514,5 +514,35 @@
       "id": 2,
       "url": "https://i.pinimg.com/736x/28/b3/21/28b321f2a4d2d042991ecec1412b1f49.jpg"
     }
+  ],
+  "kill": [
+    {
+      "id": 1,
+      "url": "https://media.tenor.com/Fzuj3Tzj6N8AAAAe/ill-find-you-i-will-kill-you.png"
+    },
+    {
+      "id": 2,
+      "url": "https://i.ytimg.com/vi/-LIIf7E-qFI/maxresdefault.jpg"
+    }
+  ],
+  "girl shoting": [
+    {
+      "id": 1,
+      "url": "https://i.pinimg.com/736x/be/93/97/be93970437b09ff1b28637e3e46b9e57.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/31/8f/9f/318f9f41e746a997c59d813deea55bc0.jpg"
+    }
+  ],
+  "man shoting": [
+    {
+      "id": 1,
+      "url": "https://i.pinimg.com/736x/d7/eb/1e/d7eb1e0fd8eed66002b85a5c6b0279dc.jpg"
+    },
+    {
+      "id": 2,
+      "url": "https://i.pinimg.com/736x/5d/da/55/5dda5597b4eed920301b185dac3c8608.jpg"
+    }
   ]
 }

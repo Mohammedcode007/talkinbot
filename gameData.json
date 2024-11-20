@@ -1,12 +1,15 @@
 {
-  "lastUserWhoSentTreasure": null,
-  "lastPuzzle": null,
+  "lastUserWhoSentTreasure": "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا",
+  "lastPuzzle": {
+    "question": "ما هي عاصمة أيسلندا؟",
+    "answer": "ريكيافيك"
+  },
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": null,
+  "selectedPath": "3",
   "playerProgress": {
-    "correctAnswersCount": 0,
-    "totalPoints": 0
+    "correctAnswersCount": 1,
+    "totalPoints": 100
   },
   "correctAnswersCount": 0
 }

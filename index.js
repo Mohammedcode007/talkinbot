@@ -19,8 +19,8 @@ function getRandomNumber() {
   }
   
   console.log(getRandomNumber());
-saveImage([5, 10, 15, 20, 25]); // سيقوم هذا بشطب الأرقام من 1 إلى 5 (الصف الأول) ورسم خط عبر الصف مع كلمة WIN
-
+  const avatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfdTT9eH7KU0t6Xqo8YwG-5gb3gXUzjkGLaw&s';
+  saveImage([1, 2, 3, 4,5], avatarUrl);
 // resetImage()
 function loadPuzzles() {
     const rawData = fs.readFileSync('path_puzzles.json'); // تحديث اسم الملف هنا
@@ -1245,6 +1245,9 @@ Ex : agi@NumberGift@username@message
     35 ariel
     36 repunzel
     37 joker
+    38 killing u if found u
+    39 girl shoting
+    40 army man
     Ex : agi@NumberGift@username@message
     
     `);
@@ -2312,6 +2315,69 @@ Ex : agi@NumberGift@username@message
                             } else if (id === 37) {
                                 imageType5 = 'Joker';
                                 if (imageType5 === 'Joker') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
+
+                                        console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
+
+                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
+                                            console.log(`Sending message to room: ${ur}`);
+                                            sendMainImageMessage(ur, imageUrl);
+                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            } else if (id === 38) {
+                                imageType5 = 'kill';
+                                if (imageType5 === 'kill') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
+
+                                        console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
+
+                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
+                                            console.log(`Sending message to room: ${ur}`);
+                                            sendMainImageMessage(ur, imageUrl);
+                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            }else if (id === 39) {
+                                imageType5 = 'girl shoting';
+                                if (imageType5 === 'girl shoting') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
+
+                                        console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
+
+                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
+                                            console.log(`Sending message to room: ${ur}`);
+                                            sendMainImageMessage(ur, imageUrl);
+                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            }else if (id === 40) {
+                                imageType5 = 'man shoting';
+                                if (imageType5 === 'man shoting') {
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { createCanvas } = require('canvas');
+const { createCanvas, loadImage } = require('canvas');
 
 // إعدادات الرسم
 const canvasSize = 500; // حجم الصورة
@@ -19,8 +19,18 @@ const numbers = [
   21, 22, 23, 24, 25
 ];
 
+// تحميل صورة الأفتار
+async function loadAvatarImage(imageUrl) {
+  try {
+    return await loadImage(imageUrl);
+  } catch (error) {
+    console.error('فشل تحميل الصورة:', error);
+    return null;
+  }
+}
+
 // دالة لإعادة رسم الصورة من البداية (إعادة تعيين الصورة)
-function resetImage() {
+async function resetImage() {
   // تعيين الخلفية
   ctx.fillStyle = '#f0f0f0'; // خلفية فاتحة
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -66,8 +76,15 @@ function resetImage() {
   out.on('finish', () => console.log('تم حفظ الصورة بنجاح بعد إعادة تعيينها في مجلد images.'));
 }
 
-// دالة لحفظ الصورة مع شطب عدة أرقام ورسم الخطوط
-function saveImage(numbersToCrossOut) {
+// دالة لحفظ الصورة مع شطب عدة أرقام ورسم صورة أفتار
+async function saveImage(numbersToCrossOut, avatarUrl) {
+  // تحميل صورة الأفتار
+  const avatarImage = await loadAvatarImage(avatarUrl);
+  if (!avatarImage) {
+    console.log('لم يتم تحميل صورة الأفتار، سيتم استخدام الخط الأحمر.');
+    return;
+  }
+
   // إعادة رسم المربعات مع الأرقام كما في الرسم الأساسي
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
@@ -92,53 +109,13 @@ function saveImage(numbersToCrossOut) {
       ctx.textBaseline = 'middle';
       ctx.fillText(number, smallX + smallSquareSize / 2, smallY + smallSquareSize / 2);
 
-      // إذا كان الرقم من الأرقام التي نريد شطبها، نرسم خطًا عبره
+      // إذا كان الرقم من الأرقام التي نريد شطبها، نرسم صورة الأفتار
       if (numbersToCrossOut.includes(number)) {
-        ctx.strokeStyle = 'red'; // تحديد لون الخط
-        ctx.lineWidth = 5; // تحديد سمك الخط
-        ctx.beginPath();
-        ctx.moveTo(smallX, smallY); // نقطة البداية للخط
-        ctx.lineTo(smallX + smallSquareSize, smallY + smallSquareSize); // نقطة النهاية للخط
-        ctx.stroke();
+        // رسم صورة الأفتار على المربع
+        const avatarSize = smallSquareSize;
+        ctx.drawImage(avatarImage, smallX, smallY, avatarSize, avatarSize);
       }
     }
-  }
-
-  // التحقق إذا كانت الأرقام المرسلة تمثل صفًا أو عمودًا
-  const rowNumbers = numbersToCrossOut.filter(num => Math.floor((num - 1) / 5) === Math.floor((numbersToCrossOut[0] - 1) / 5));
-  const colNumbers = numbersToCrossOut.filter(num => (num - 1) % 5 === (numbersToCrossOut[0] - 1) % 5);
-
-  // رسم الخط عبر الصف إذا كانت الأرقام تمثل صفًا
-  if (rowNumbers.length === 5) {
-    const row = Math.floor((rowNumbers[0] - 1) / 5);
-    ctx.strokeStyle = 'green';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.moveTo(0, row * squareSize + squareSize / 2);
-    ctx.lineTo(canvasSize, row * squareSize + squareSize / 2);
-    ctx.stroke();
-  }
-
-  // رسم الخط عبر العمود إذا كانت الأرقام تمثل عمودًا
-  if (colNumbers.length === 5) {
-    const col = (colNumbers[0] - 1) % 5;
-    ctx.strokeStyle = 'green';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.moveTo(col * squareSize + squareSize / 2, 0);
-    ctx.lineTo(col * squareSize + squareSize / 2, canvasSize);
-    ctx.stroke();
-  }
-
-  // إضافة كلمة WIN في حالة وجود صف أو عمود كامل
-  if (rowNumbers.length === 5 || colNumbers.length === 5) {
-    ctx.fillStyle = 'green';
-    ctx.font = '50px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.lineWidth = 10;  // خط عريض
-    ctx.strokeText('WIN', canvasSize / 2, canvasSize / 2); // رسم النص بخط عريض
-    ctx.fillText('WIN', canvasSize / 2, canvasSize / 2); // ملء النص
   }
 
   // تحديد مسار المجلد
