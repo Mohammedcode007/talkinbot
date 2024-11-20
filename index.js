@@ -2,6 +2,7 @@ const { Console } = require('console');
 const fs = require('fs');
 const path = require('path');
 const WebSocket = require('ws');
+const { saveImage ,resetImage} = require('./generateImage');
 
 // Define the file path for storing login data
 const loginDataFilePath = path.join(__dirname, 'users.json');
@@ -12,6 +13,15 @@ const USERS_FILE_PATH = path.join(__dirname, 'verifyusers.json');
 const filePath = path.join(__dirname, 'blockedUsers.json');
 
 const filePathPlayers = './gameData.json'; // المسار إلى ملف JSON
+
+function getRandomNumber() {
+    return Math.floor(Math.random() * 25) + 1;
+  }
+  
+  console.log(getRandomNumber());
+saveImage([5, 10, 15, 20, 25]); // سيقوم هذا بشطب الأرقام من 1 إلى 5 (الصف الأول) ورسم خط عبر الصف مع كلمة WIN
+
+// resetImage()
 function loadPuzzles() {
     const rawData = fs.readFileSync('path_puzzles.json'); // تحديث اسم الملف هنا
     return JSON.parse(rawData);
@@ -609,7 +619,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                 socket.send(JSON.stringify(emojiMessage));
             }
-        }, 60000);
+        }, 300000);
 
 
         rooms.forEach(room => {
@@ -798,7 +808,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                                 resetGameData();
                             }
                         }
-                    }, 10000); // 10 ثوانٍ
+                    }, 20000); // 10 ثوانٍ
                 };
 
                 // استدعاء دالة إرسال لغز جديد
@@ -902,7 +912,25 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                             gameData.playerProgress.correctAnswersCount += 1;
                             gameData.playerProgress.totalPoints += 100;
                             saveGameData(gameData);
-
+                            const motivationalMessages = [
+                                "👏 أحسنت! لقد أجبت على أول سؤال! انطلق نحو الكنز!",
+                                "🎉 رائع! إجابتك الثانية تزيدك قربًا من الكنز!",
+                                "💪 مذهل! لقد أنجزت ثلاثة أسئلة! الكنز يقترب أكثر!",
+                                "🔥 عبقري! إجابتك الرابعة تُظهر تفوقك! استمر!",
+                                "🌟 تهانينا! أكملت الخمسة أسئلة! الكنز ملكك الآن!"
+                            ];
+                
+                            const currentCorrectAnswers = gameData.playerProgress.correctAnswersCount;
+                            const motivationalMessage = {
+                                handler: "room_message",
+                                id: "TclBVHgBzPGTMRTNpgWV",
+                                type: "text",
+                                room: parsedData.room,
+                                url: "",
+                                length: "",
+                                body: motivationalMessages[Math.min(currentCorrectAnswers - 1, motivationalMessages.length - 1)],
+                            };
+                            socket.send(JSON.stringify(motivationalMessage));
                             // إلغاء مؤقت المهلة إذا كانت الإجابة صحيحة
                             if (puzzleTimeout) {
                                 clearTimeout(puzzleTimeout);
