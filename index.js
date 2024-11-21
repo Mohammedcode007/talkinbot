@@ -2,7 +2,8 @@ const { Console } = require('console');
 const fs = require('fs');
 const path = require('path');
 const WebSocket = require('ws');
-const { saveImage ,resetImage} = require('./generateImage');
+const { saveImage, resetImage } = require('./generateImage');
+const moment = require('moment');  // التأكد من استيراد moment
 
 // Define the file path for storing login data
 const loginDataFilePath = path.join(__dirname, 'users.json');
@@ -14,13 +15,98 @@ const filePath = path.join(__dirname, 'blockedUsers.json');
 
 const filePathPlayers = './gameData.json'; // المسار إلى ملف JSON
 
+
+
+// دالة لتحديث `lasttimegift` إلى الوقت الحالي + 30 ثانية
+function updateLastTimeGift(username, currentTime) {
+    try {
+        const data = fs.readFileSync('verifyusers.json', 'utf8');
+        const users = JSON.parse(data);
+
+        const user = users.find((us) => us.username === username);
+
+        if (user) {
+            // إذا كانت قيمة `lasttimegift` موجودة ويجب أن ننتظر 30 ثانية قبل التحديث
+            if (!user.lasttimegift || moment().diff(moment(user.lasttimegift), 'seconds') >= 30) {
+                user.lasttimegift = currentTime;  // حفظ الوقت في `lasttimegift`
+                fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                console.log(`Successfully updated lasttimegift for ${username}`);
+                
+                // حذف `lasttimegift` بعد 30 ثانية
+                setTimeout(() => {
+                    removeLastTimeGift(username);
+                }, 30000);  // 30000 ميلي ثانية (30 ثانية)
+            } else {
+                console.log(`User ${username} must wait 30 seconds before sending another gift.`);
+            }
+        } else {
+            console.error(`User ${username} not found`);
+        }
+    } catch (err) {
+        console.error('Error updating lasttimegift:', err);
+    }
+}
+
+
+
+function removeLastTimeGift(username) {
+    try {
+        const data = fs.readFileSync('verifyusers.json', 'utf8');
+        const users = JSON.parse(data);
+
+        const user = users.find((us) => us.username === username);
+        const currentTime = moment().local();
+
+        // تحويل وقت الهدية السابقة إلى الوقت المحلي
+        if (user) {
+            user.lasttimegift = null;  // حذف الوقت
+            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+            console.log(`Successfully removed lasttimegift for ${username}`);
+        } else {
+            console.error(`User ${username} not found`);
+        }
+    } catch (err) {
+        console.error('Error removing lasttimegift:', err);
+    }
+}
+
+function canSendGift(username) {
+    try {
+        const data = fs.readFileSync('verifyusers.json', 'utf8');
+        const users = JSON.parse(data);
+
+        const user = users.find((us) => us.username === username);
+
+        if (user && user.lasttimegift) {
+            const currentTime = moment();
+            const lastGiftTime = moment(user.lasttimegift);
+            const timeDifference = currentTime.diff(lastGiftTime, 'seconds');  // Difference in seconds
+
+            if (timeDifference < 120) {
+                const remainingTime = 120 - timeDifference;
+                return `Please wait\n${username} ${remainingTime} seconds to send another gift.`; // User must wait
+            }
+        }
+        return true;  // Can send gift if no lasttimegift or 30 seconds passed
+    } catch (err) {
+        console.error('Error checking lasttimegift:', err);
+        return false;
+    }
+}
+
+
+
+
+
+
+
 function getRandomNumber() {
     return Math.floor(Math.random() * 25) + 1;
-  }
-  
-  console.log(getRandomNumber());
-  const avatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfdTT9eH7KU0t6Xqo8YwG-5gb3gXUzjkGLaw&s';
-  saveImage([1, 2, 3, 4,5], avatarUrl);
+}
+
+console.log(getRandomNumber());
+const avatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfdTT9eH7KU0t6Xqo8YwG-5gb3gXUzjkGLaw&s';
+saveImage([1, 2, 3, 4, 5], avatarUrl);
 // resetImage()
 function loadPuzzles() {
     const rawData = fs.readFileSync('path_puzzles.json'); // تحديث اسم الملف هنا
@@ -358,7 +444,7 @@ const ws_TeBot = async ({ username, password, roomName }) => {
 
             if (parsedData.body && parsedData.body.includes('@'), parsedData.room === "shot") {
                 const [command, roomName] = parsedData.body.split('@');
-                console.log(`Chat message received1: ${parsedData?.from}`);
+                // console.log(`Chat message received1: ${parsedData?.from}`);
 
                 if (command === 'login' && roomName) {
 
@@ -646,7 +732,26 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
 
     };
+    function handleUnverifiedUser(socket, users, parsedData) {
+        const respondingUser = users.find(user => user.username === parsedData.from);
 
+        if (!respondingUser) {
+            const gameActiveMessage = {
+                handler: 'room_message',
+                id: 'TclBVHgBzPGTMRTNpgWV',
+                type: 'text',
+                room: parsedData.room,
+                url: '',
+                length: '',
+                body: `❌ Alert: There is a new request from an unverified user in room ${parsedData.room}. Please verify by msg to "♥♪".`
+            };
+
+            socket.send(JSON.stringify(gameActiveMessage));
+            return true; // Return true to indicate the user is unverified
+        }
+
+        return false; // Return false to indicate the user is verified
+    }
 
     socket.onmessage = async (event) => {
         const parsedData = JSON.parse(event.data);
@@ -679,13 +784,15 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         if (parsedData.handler === 'room_event') {
             if (parsedData.from) {
                 const senderUsername = parsedData.from.trim();
-                console.log(`Received message from: ${senderUsername}`);
                 let gameData = readGameData();
 
                 // إذا كانت الرسالة هي "كنز"
                 if (parsedData.body === 'كنز') {
-                    console.log(`Received the word "كنز" from: ${senderUsername}`);
-
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
                     if (isGameActive) {
                         const gameActiveMessage = {
                             handler: 'room_message',
@@ -720,8 +827,11 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                 // إذا كانت الرسالة هي "ابدأ"
                 if (parsedData.body === 'ابدأ') {
-                    console.log(`Received the word "ابدأ" from: ${senderUsername}`);
-
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
                     if (gameData.lastUserWhoSentTreasure === null) {
                         const errorMessage = {
                             handler: 'room_message',
@@ -848,6 +958,11 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                 // استدعاء دالة انتظار الإجابة بعد إرسال اللغز
                 if (canChoosePath && ['1', '2', '3'].includes(parsedData.body)) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
                     clearTimeout(userChoiceTimeout);  // إيقاف تذكير الاختيار إذا تم الاختيار في الوقت المحدد
                     const selectedPath = parsedData.body;  // تخزين الطريق الذي اختاره اللاعب
 
@@ -880,6 +995,11 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                 // تحقق من إجابة اللاعب
                 if (parsedData.body && parsedData.body.trim() !== "" && parsedData.from === gameData.lastUserWhoSentTreasure) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
                     if (gameData.lastPuzzle) {
                         const puzzle = gameData.lastPuzzle;
 
@@ -901,7 +1021,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                                 respondingUser.points += 100; // إضافة النقاط الخاصة بالإيموجي
                                 writeUsersToFile(users);
 
-                            socket.send(JSON.stringify(correctAnswerMessage));
+                                socket.send(JSON.stringify(correctAnswerMessage));
                             }
 
                             // تحديث عدد الإجابات الصحيحة
@@ -919,7 +1039,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                                 "🔥 عبقري! إجابتك الرابعة تُظهر تفوقك! استمر!",
                                 "🌟 تهانينا! أكملت الخمسة أسئلة! الكنز ملكك الآن!"
                             ];
-                
+
                             const currentCorrectAnswers = gameData.playerProgress.correctAnswersCount;
                             const motivationalMessage = {
                                 handler: "room_message",
@@ -943,8 +1063,11 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     }
                 }
                 if (parsedData.handler === 'room_event' && parsedData.body === currentEmoji) {
-                    console.log(currentEmoji, 'currentEmoji');
-
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                         respondingUser.points += emojiPoints; // إضافة النقاط الخاصة بالإيموجي
@@ -976,6 +1099,11 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
 
             if (parsedData.handler === 'room_event' && parsedData.body === 'فزوره') {
+                const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                if (isUnverified) {
+                    // Additional actions if needed when user is unverified
+                    return;
+                }
                 const senderUsername = parsedData.from; // المستخدم الذي أرسل كلمة "فزوره"
 
                 const userblocked = usersblockes.find(user => user === senderUsername);
@@ -1143,7 +1271,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                     let user = users.find(user => user.username === usernameToVerify);
                     if (!user) {
-                        user = { username: usernameToVerify, verified: true };
+                        user = { username: usernameToVerify, verified: true, lasttimegift: null, points: null };
                         users.push(user);
                         console.log(`New user added: ${usernameToVerify}`);
                         sendVerificationMessage(parsedData.room, `User verified: ${usernameToVerify}`);
@@ -1179,9 +1307,13 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     removeUserFromMasterBot(usernameToRemove);
                     sendVerificationMessage(parsedData.room, `User removed Master: ${usernameToRemove}`);
 
-                } else if (body.startsWith('.p@')) {
-                    const username = body.split('@')[1].trim();
-                    let respondingUser = users.find(user => user.username === username);
+                } else if (body ==='.po') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+                    let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
 
                         sendMainMessage(parsedData.room, `User ${username}  have : ${respondingUser?.points} points`);
@@ -1189,8 +1321,62 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     }
 
 
-                } else if (body === '.lg') {
-
+                } else if (body.startsWith('قول ')) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when the user is unverified
+                        return;
+                    }
+                
+                    // مصفوفة إيموجيات الفاكهة
+                    const fruitEmojis = ['🍎', '🍌', '🍊', '🍉', '🍓', '🍍', '🍇', '🍑', '🍒', '🍍'];
+                
+                    // اختيار إيموجي فاكهة عشوائي
+                    const randomFruitEmoji = fruitEmojis[Math.floor(Math.random() * fruitEmojis.length)];
+                
+                    // استخراج النص بالكامل بعد "say"
+                    const textAfterSay = body.slice(4).trim(); // بعد "say " يتم استخدام slice لاستخراج النص بالكامل
+                
+                    if (textAfterSay) {
+                        // إرسال النص مع إيموجي الفاكهة العشوائي
+                        sendMainMessage(parsedData.room, `${textAfterSay} ${randomFruitEmoji}`);
+                    } else {
+                        sendMainMessage(parsedData.room, "No text provided after 'say'");
+                    }
+                }
+                else if (body.startsWith('say ')) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when the user is unverified
+                        return;
+                    }
+                
+                    // مصفوفة إيموجيات الفاكهة
+                    const fruitEmojis = ['🍎', '🍌', '🍊', '🍉', '🍓', '🍍', '🍇', '🍑', '🍒', '🍍'];
+                
+                    // اختيار إيموجي فاكهة عشوائي
+                    const randomFruitEmoji = fruitEmojis[Math.floor(Math.random() * fruitEmojis.length)];
+                
+                    // استخراج النص بالكامل بعد "say"
+                    const textAfterSay = body.slice(4).trim(); // بعد "say " يتم استخدام slice لاستخراج النص بالكامل
+                
+                    if (textAfterSay) {
+                        // إرسال النص مع إيموجي الفاكهة العشوائي
+                        sendMainMessage(parsedData.room, `${textAfterSay} ${randomFruitEmoji}`);
+                    } else {
+                        sendMainMessage(parsedData.room, "No text provided after 'say'");
+                    }
+                }
+                
+                
+                
+                
+                 else if (body === '.lg') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
 
                     sendMainMessage(parsedData.room, ` ① ✧･ﾟ🍳 𝑬𝒈𝒈𝒔
 ② 🍔 𝑩𝒖𝒓𝒈𝒆𝒓
@@ -1252,168 +1438,12 @@ Ex : agi@NumberGift@username@message
     
     `);
 
-                } else if (body.startsWith('gi@')) {
-                    const atCount = (body.match(/@/g) || []).length; // عد عدد الرموز @ في النص
-
-                    // التحقق إذا كان يوجد أكثر من 2 @
-                    if (atCount === 2) {
-                        const username = body.split('@')[2].trim();
-
-                        const id = Number(body.split('@')[1].trim());
-
-
-
-                        if (body && parsedData.room && id === 1) {
-                            imageType = 'eggs';
-
-                            if (imageType === 'eggs') {
-                                const imageUrl = getRandomImage(imageType);
-                                if (imageUrl) {
-                                    sendMainImageMessage(parsedData.room, imageUrl);
-                                    sendMainMessage(parsedData.room, `🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟  ᵂᴱ ᴴᴼᴾᴱ ʸᴼᵁ ᴴᴬⱽᴱ ᴬ ᴳᴿᴱᴬᵀ ᴱˣᴾᴱᴿᴵᴱᴺᶜᴱ 🎉`);
-                                } else {
-                                    console.error('No images found for the specified type.');
-                                }
-                            }
-
-
-                        } else if (id && id === 2) {
-                            imageType2 = 'burger';
-
-                            if (imageType2 === 'burger') {
-                                const imageUrl = getRandomImage(imageType2);
-                                if (imageUrl) {
-                                    sendMainImageMessage(parsedData.room, imageUrl);
-                                    sendMainMessage(parsedData.room, `🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟  ᵂᴱ ᴴᴼᴾᴱ ʸᴼᵁ ᴴᴬⱽᴱ ᴬ ᴳᴿᴱᴬᵀ ᴱˣᴾᴱᴿᴵᴱᴺᶜᴱ 🎉`);
-                                } else {
-                                    console.error('No images found for the specified type.');
-                                }
-                            }
-                        } else if (id === 3) {
-                            imageType3 = 'shawarma';
-
-                            if (imageType3 === 'shawarma') {
-                                const imageUrl = getRandomImage(imageType3);
-                                if (imageUrl) {
-                                    sendMainImageMessage(parsedData.room, imageUrl);
-                                    sendMainMessage(parsedData.room, `🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟  ᵂᴱ ᴴᴼᴾᴱ ʸᴼᵁ ᴴᴬⱽᴱ ᴬ ᴳᴿᴱᴬᵀ ᴱˣᴾᴱᴿᴵᴱᴺᶜᴱ 🎉`);
-                                } else {
-                                    console.error('No images found for the specified type.');
-                                }
-                            }
-
-                        } else if (id === 4) {
-                            imageType4 = 'pizza';
-
-                            if (imageType4 === 'pizza') {
-                                const imageUrl = getRandomImage(imageType4);
-                                if (imageUrl) {
-                                    sendMainImageMessage(parsedData.room, imageUrl);
-                                    sendMainMessage(parsedData.room, `🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟  ᵂᴱ ᴴᴼᴾᴱ ʸᴼᵁ ᴴᴬⱽᴱ ᴬ ᴳᴿᴱᴬᵀ ᴱˣᴾᴱᴿᴵᴱᴺᶜᴱ 🎉`);
-                                } else {
-                                    console.error('No images found for the specified type.');
-                                }
-                            }
-
-                        } else if (id === 5) {
-                            imageType5 = 'potato';
-
-                            if (imageType5 === 'potato') {
-                                const imageUrl = getRandomImage(imageType5);
-                                if (imageUrl) {
-                                    sendMainImageMessage(parsedData.room, imageUrl);
-                                    sendMainMessage(parsedData.room, `🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟  ᵂᴱ ᴴᴼᴾᴱ ʸᴼᵁ ᴴᴬⱽᴱ ᴬ ᴳᴿᴱᴬᵀ ᴱˣᴾᴱᴿᴵᴱᴺᶜᴱ 🎉`);
-                                } else {
-                                    console.error('No images found for the specified type.');
-                                }
-                            }
-
-                        }
-
-                    } else if (atCount === 3) {
-
-                        if (body.startsWith('gi@')) {
-                            const username = body.split('@')[2].trim();
-                            const msg = body.split('@')[3].trim();
-
-                            const id = Number(body.split('@')[1].trim());
-                            console.log(username, id);
-
-
-
-                            if (body && parsedData.room && id === 1 && msg) {
-                                imageType = 'eggs';
-
-                                if (imageType === 'eggs' && msg) {
-                                    const imageUrl = getRandomImage(imageType);
-                                    if (imageUrl) {
-                                        sendMainImageMessage(parsedData.room, imageUrl);
-                                        sendMainMessage(parsedData.room, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
-                                    } else {
-                                        console.error('No images found for the specified type.');
-                                    }
-                                }
-
-
-                            } else if (id && id === 2) {
-                                imageType2 = 'burger';
-
-                                if (imageType2 === 'burger') {
-                                    const imageUrl = getRandomImage(imageType2);
-                                    if (imageUrl) {
-                                        sendMainImageMessage(parsedData.room, imageUrl);
-                                        sendMainMessage(parsedData.room, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
-                                    } else {
-                                        console.error('No images found for the specified type.');
-                                    }
-                                }
-                            } else if (id === 3) {
-                                imageType3 = 'shawarma';
-
-                                if (imageType3 === 'shawarma') {
-                                    const imageUrl = getRandomImage(imageType3);
-                                    if (imageUrl) {
-                                        sendMainImageMessage(parsedData.room, imageUrl);
-                                        sendMainMessage(parsedData.room, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
-                                    } else {
-                                        console.error('No images found for the specified type.');
-                                    }
-                                }
-
-                            } else if (id === 4) {
-                                imageType4 = 'pizza';
-
-                                if (imageType4 === 'pizza') {
-                                    const imageUrl = getRandomImage(imageType4);
-                                    if (imageUrl) {
-                                        sendMainImageMessage(parsedData.room, imageUrl);
-                                        sendMainMessage(parsedData.room, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
-                                    } else {
-                                        console.error('No images found for the specified type.');
-                                    }
-                                }
-
-                            } else if (id === 5) {
-                                imageType5 = 'potato';
-
-                                if (imageType5 === 'potato') {
-                                    const imageUrl = getRandomImage(imageType5);
-                                    if (imageUrl) {
-                                        sendMainImageMessage(parsedData.room, imageUrl);
-                                        sendMainMessage(parsedData.room, ` 🎁 G ✨ I 💫 F 🌈 T 🔥 🎉 \n 🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟 \n  𝗠𝗘𝗦𝗦𝗔𝗚𝗘 : ${msg} 🎉`);
-                                    } else {
-                                        console.error('No images found for the specified type.');
-                                    }
-                                }
-
-                            }
-
-                        }
-
+                } else if (body.startsWith('agi@')) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
                     }
-
-                }
-                else if (body.startsWith('agi@')) {
                     const atCount = (body.match(/@/g) || []).length; // عد عدد الرموز @ في النص
 
                     // التحقق إذا كان يوجد أكثر من 2 @
@@ -1421,7 +1451,6 @@ Ex : agi@NumberGift@username@message
                         const username = body.split('@')[2].trim();
 
                         const id = Number(body.split('@')[1].trim());
-                        console.log(username, id);
 
 
 
@@ -1453,12 +1482,14 @@ Ex : agi@NumberGift@username@message
                             }
                         } else if (id === 3) {
                             imageType3 = 'shawarma';
+                            console.log(imageType3);
 
                             if (imageType3 === 'shawarma') {
                                 const imageUrl = getRandomImage(imageType3);
                                 if (imageUrl) {
+
                                     sendMainImageMessage(parsedData.room, imageUrl);
-                                    sendMainMessage(parsedData.room, `🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟  ᵂᴱ ᴴᴼᴾᴱ ʸᴼᵁ ᴴᴬⱽᴱ ᴬ ᴳᴿᴱᴬᵀ ᴱˣᴾᴱᴿᴵᴱᴺᶜᴱ 🎉`);
+                                    sendMainMessage(parsedData.room, `🎉 𝗙𝗥𝗢𝗠 : [${parsedData.from}] 💬\n➡️ 𝗧𝗢 : [${username}] 📩\n🌟  ᵂᴱ ᴴᴼᴾᴱ ʸᴼᵁ ᴴᴬⱽᴱ ᴬ ᴳᴿᴱᴬᵀ ᴱˣᴾᴱᴿᴵᴱᴺᶜᴱ55 🎉`);
                                 } else {
                                     console.error('No images found for the specified type.');
                                 }
@@ -1520,11 +1551,21 @@ Ex : agi@NumberGift@username@message
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
                                         const rooms = JSON.parse(data);
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            sendMainMessage(ur, ` ✅ ᵀᴴᴱ ᴹᴱᔆᔆᴬᴳᴱ ᴴᴬᔆ ᴮᴱᴱᴺ ᔆᵁᶜᶜᴱᔆᔆᶠᵁᴸᴸʸ ᔆᴱᴺᵀ ᵀᴼ ᴬᴸᴸ ᴿᴼᴼᴹᔆ`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
 
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1541,13 +1582,21 @@ Ex : agi@NumberGift@username@message
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
                                         const rooms = JSON.parse(data);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
 
-                                        console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
-
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1562,20 +1611,29 @@ Ex : agi@NumberGift@username@message
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
                                         const rooms = JSON.parse(data);
+                                
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
 
-                                        console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
-
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         console.error('No images found for the specified type.');
                                     }
                                 }
-
+                                
+                                
                             } else if (id === 4) {
                                 imageType4 = 'pizza';
 
@@ -1587,10 +1645,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1609,10 +1678,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1631,10 +1711,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1653,10 +1744,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1675,10 +1777,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1697,10 +1810,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1719,10 +1843,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1741,10 +1876,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1763,10 +1909,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1785,10 +1942,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1807,10 +1975,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1829,10 +2008,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1851,10 +2041,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1873,10 +2074,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1895,10 +2107,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1917,10 +2140,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1939,10 +2173,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1961,10 +2206,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -1983,10 +2239,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2005,10 +2272,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2027,10 +2305,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2049,10 +2338,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2070,10 +2370,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2091,10 +2402,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2112,10 +2434,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2133,10 +2466,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2154,10 +2498,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2175,10 +2530,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2196,10 +2562,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2217,10 +2594,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2238,10 +2626,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2259,10 +2658,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2280,10 +2690,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2301,10 +2722,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2322,10 +2754,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2343,10 +2786,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2354,7 +2808,7 @@ Ex : agi@NumberGift@username@message
                                     }
                                 }
 
-                            }else if (id === 39) {
+                            } else if (id === 39) {
                                 imageType5 = 'girl shoting';
                                 if (imageType5 === 'girl shoting') {
                                     const imageUrl = getRandomImage(imageType5);
@@ -2364,10 +2818,21 @@ Ex : agi@NumberGift@username@message
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2375,7 +2840,7 @@ Ex : agi@NumberGift@username@message
                                     }
                                 }
 
-                            }else if (id === 40) {
+                            } else if (id === 40) {
                                 imageType5 = 'man shoting';
                                 if (imageType5 === 'man shoting') {
                                     const imageUrl = getRandomImage(imageType5);
@@ -2383,12 +2848,21 @@ Ex : agi@NumberGift@username@message
                                         const data = fs.readFileSync('rooms.json', 'utf8');
                                         const rooms = JSON.parse(data);
 
-                                        console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
 
-                                        for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
-                                            console.log(`Sending message to room: ${ur}`);
-                                            sendMainImageMessage(ur, imageUrl);
-                                            sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
                                         }
                                     }
                                     else {
@@ -2403,7 +2877,35 @@ Ex : agi@NumberGift@username@message
 
                     }
 
-                }
+                }else if (body ==='help') {
+                  
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+
+                        sendMainMessage(parsedData.room, `1. List of Gifts:
+  Command: .lg
+   Action: Display the list of gifts.
+2. Play Puzzle (Arabic):
+  Command: فزوره
+  Action: Play the puzzle game.
+3. Play Treasure Hunt (Arabic):
+   Command: كنز
+   Action: Play the treasure hunt game.
+4. For Your Points:
+  Command: .po
+  Action: Display your points.
+5. For say:
+  Ex: say i love u
+  Action: repeat your words.
+  6. For قول:
+  Ex: قول i love u
+  Action: repeat your words.
+`);
+
+                    }
+
+
+                } 
             }
             if (parsedData.handler === 'room_event') {
                 const body = parsedData.body || '';
@@ -2435,7 +2937,7 @@ Ex : agi@NumberGift@username@message
                             };
                             socket.send(JSON.stringify(errorMessage));
                         } else {
-                            console.log('Received message:', message);
+                            // console.log('Received message:', message);
 
                             const data = fs.readFileSync('rooms.json', 'utf8');
                             const rooms = JSON.parse(data);
@@ -2607,7 +3109,7 @@ function processMessage(message) {
     const parsedData = JSON.parse(message);
 
     if (parsedData.handler === 'chat_message') {
-        console.log(`Chat message received: ${parsedData.body}`);
+        // console.log(`Chat message received: ${parsedData.body}`);
 
         const body = parsedData.body;
 
