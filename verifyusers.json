@@ -3,342 +3,736 @@
     "username": "user1",
     "verified": true,
     "points": 0,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "user2",
     "verified": false,
     "points": 0,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "🪷ᵛ͢ᵎᵖ",
     "verified": true,
     "points": 113000,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا",
     "verified": true,
-    "points": 100,
-    "lasttimegift": null
+    "points": 1001300,
+    "lasttimegift": null,
+    "name": "حودا",
+    "nickname": "🍌"
   },
   {
     "username": "غرو♡انثي♡ور",
     "verified": true,
-    "points": 5400,
-    "lasttimegift": null
+    "points": 39000,
+    "lasttimegift": "2024-11-21 22:27:19",
+    "name": null,
+    "nickname": null
   },
   {
     "username": "ٱلعُظَـ♥ـمَٱء•لٱ•يَسْقُـ♚ـطُوפنَ•ٱلٱ•بِٱلخِـ♪ـيَٱنَھہ",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "↲رآقُـ✵ۣۘ͡ـيَ˚⸙͎۪۫⋆بًآخِـۦٰـلَآقُـ✵ۣۘ͡ـيَ↳",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "مـنىَ",
     "verified": true,
-    "points": null,
-    "lasttimegift": null
+    "points": 4000,
+    "lasttimegift": null,
+    "name": "manosh",
+    "nickname": "كل المنى"
   },
   {
     "username": "ۦڤــ͢ـــِٰۋقۦالسحۦـــ͢ـــآپۦ𐏓♚",
     "verified": true,
     "points": 10500,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "crystaal",
     "verified": true,
     "points": 51600,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "شـۦـيخـۦـۿٰ۪ۃٓـ៹❖ۦﭑۛﭑۛلـۦغـيـۦ𐀔ۦـ᭡",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "◗ۦﺂݪــقـۦـݪـﺐ›🖤‹ﺂݪـاﺳــۦـودۦ◖",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "ˬ⭒̸໋⃬࣪𝑲𝒍𝒂𝒖𝒔♞⭒",
     "verified": true,
-    "points": null,
-    "lasttimegift": null
+    "points": 150500,
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "___soo___",
     "verified": true,
-    "points": null,
-    "lasttimegift": null
+    "points": 1500,
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "كلَآشّـيّـنِكوِفُ🥷",
     "verified": true,
     "points": 10500,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "zawia",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "بَسّـ❥ـمَـہْۛ°✾°آمّـ♡ـْل",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "مـنيَ",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "​𓄹₎​❥​𝄠⃝​❤քąąʂʍą♡゙࿐",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "--------------11--------------",
     "verified": true,
-    "points": null,
-    "lasttimegift": null
+    "points": 10000,
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "الـنـسـ♥الجارح♥ــــــر",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "༄❥͜͡кυσвє∂ℓσνє",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "l0lee",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "ـ♚ســـ°∫※∫چۚــڔوحــيې∫※∫°ـــيــد♚ـ",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "𝐿𝒶𝒹𝓎︎♪✨",
     "verified": true,
-    "points": null,
-    "lasttimegift": null
+    "points": 6000,
+    "lasttimegift": "2024-11-21 22:27:04",
+    "name": "ليلو",
+    "nickname": "🪽✨"
   },
   {
     "username": "⤥͚͂⤹ᘓཻ⎽ɹ̈ᦇȷɹ̣⎽֟፝֯⎽ᓗฺ𓄹᮫ֺ໋ٜ⭒ָ",
     "verified": true,
     "points": 500,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "تيم",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "឵⇠𓆩〭〬🌸⃝ʀɛʍǟռ🥂⸼꯭᪳⃕🖇〭〬𓆪",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": "2024-11-21 20:55:57",
+    "name": null,
+    "nickname": null
   },
   {
     "username": "❥͜͡ڊلُـِـِِـِِِـِِـِـͫـͬـ̈ـــــــــعٌ𓇢˚𝆺𝅥⃝ꗃـ",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "ڤخــ°○ــٱمھ∫♜∫شــ○°ــمريــے",
     "verified": true,
     "points": 100,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "آ̱لَ̠خ̣ـ̞𓃗ــ̭آل",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "حــَ‘ًـآ‘زم🦅",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "؛♦☠مُـ‘ـُحُـ‘ـُمُـ‘ـُډ♚كُـ‘ـُوٌمُـ‘ـُنُـ‘ـُډٱ☠♦؛",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "فرع.المخابرات",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "esbany",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "kan..wahm",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "silent..spring",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "....103....",
     "verified": true,
     "points": 2500,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "ﻣۡﮫ۟رٰہ࣫ˊ˛",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "berihan_i",
     "verified": true,
-    "points": null,
-    "lasttimegift": null
+    "points": 4000,
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "𝒩𝑒𝓈𝓇𝑒𝓃𝒶🍓",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": "نسرين",
+    "nickname": "فلاولات كثيرين🥹"
   },
   {
     "username": "مزاجيـے.فؤضويـے.لآأحب.أن.يقترب.منيـے.أحد",
     "verified": true,
-    "points": null,
-    "lasttimegift": null
+    "points": 2000,
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "testbot101",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "نٌےــۦـ♔ـۦـوٌر",
     "verified": true,
     "points": 1500,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "✨ᴊαყɳꫀ✨𝆺𝅥⃝🤍🪽",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": "jayne",
+    "nickname": "drink poison  😊"
   },
   {
     "username": "رشـو★علۍ★قـبـري★مـטּ★دمـوع★عـينـه",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "عدوالشيطان",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "឵🍁خـر🍂мjσd🍂يـف🍁",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "~æñ$♥ãn~",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "αяωα∂",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "adam1994",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "ð",
     "verified": true,
     "points": null,
-    "lasttimegift": null
+    "lasttimegift": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "♥♪",
     "verified": true,
     "lasttimegift": null,
-    "points": null
+    "points": 83200,
+    "name": "edi",
+    "nickname": "👊Shot on clowns🤡👊"
   },
   {
     "username": "𝕒𝕙𝕞𝕒𝕕𝕫𝕒𝕚",
     "verified": true,
     "lasttimegift": null,
-    "points": null
+    "points": null,
+    "name": null,
+    "nickname": null
   },
   {
     "username": "🕷⃝hคcͥkeͣrͫ",
     "verified": true,
     "lasttimegift": null,
-    "points": null
+    "points": null,
+    "name": "شاينونتي",
+    "nickname": "أشيننه"
   },
   {
     "username": "ּۛ؏َــٱڝــڣــۿہ∘",
     "verified": true,
     "lasttimegift": null,
-    "points": null
+    "points": 18000,
+    "name": "فرح",
+    "nickname": "🎧🧘🏼‍♀️"
   },
   {
     "username": "𓃦",
     "verified": true,
     "lasttimegift": null,
-    "points": null
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "ۤ؏ـمـآدُ✿⇣",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 1000,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "الـــ☬ـــخــــــ☬ــــــــديــــ☬ـوي",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "♠♪الـٓ͢ـُذ𝕨๏𝙻𝙵ئـُ͢ـٓبُ☬◌͜͡🐺",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 3500,
+    "name": "حازم",
+    "nickname": "☣️"
+  },
+  {
+    "username": ".8lm.",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 50000,
+    "name": "ساره",
+    "nickname": "اشطر كتكوت🐣"
+  },
+  {
+    "username": "sss",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "الـٰﮧ•سـٓـ›♜‹ـنـآفـٓﯿـٓے",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 10000,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "waradayh",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "name",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "اެخـٰٜتمۘـ͜ـًࢪ⋆̸مۘـטּ𓈒عـᩚִֶذبڪ⃯𝆞𐫱؍حتـᤨی⤸اݪ͚ـسڪ⃯ـࢪ🍻",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "🅘🅨🅐🅓🅞ᵘʷᵏ",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "deмenтιa..",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 500,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "ℎǎʑҽϻ♣ḱǎj",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 3000,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "3am_ayoub",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 4000,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "ⲘᎧⴑꌗⲀ⭒",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 1016100,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "semba",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "i_gamd_i",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": "المتنمر",
+    "nickname": null
+  },
+  {
+    "username": "مصطفي♤《☠》♤السويسي",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 100,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "ا̍نۨــڄۚـــ𔘓˓ـــې♪❀",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "ּا̍نۨــڄۚـــ𔘓˓ـــې♪❀",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "™رٍۆبـﹻۛٓ۬ﹻـابـَيَګـ❞ـياツ",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "✯",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "◕",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "🝮",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "engy",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "ll-.__taher__.-ll",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": ".hls.",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "dark_knight",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "mostafa-suez",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "ۦمُــتـٰ,ـمــ«ـِྀ☬ـِྀ»ـــ❥ــ,ـٓـرנۦ",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "❥❀لـــوٌاحــ❁ཻ͜͡ـــظہ❥❀",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "رحٌــــ🤎ــــيِّمَ",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "мσиɪɪя",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "𝙎𝙖𝙖𝙙",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
+  },
+  {
+    "username": "𝐚𝐲𝐚𝐧",
+    "verified": true,
+    "lasttimegift": null,
+    "points": null,
+    "name": null,
+    "nickname": null
   }
 ]

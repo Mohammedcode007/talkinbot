@@ -2,7 +2,6 @@ const { Console } = require('console');
 const fs = require('fs');
 const path = require('path');
 const WebSocket = require('ws');
-const { saveImage, resetImage } = require('./generateImage');
 const moment = require('moment');  // التأكد من استيراد moment
 
 // Define the file path for storing login data
@@ -105,8 +104,8 @@ function getRandomNumber() {
 }
 
 console.log(getRandomNumber());
-const avatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfdTT9eH7KU0t6Xqo8YwG-5gb3gXUzjkGLaw&s';
-saveImage([1, 2, 3, 4, 5], avatarUrl);
+// const avatarUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfdTT9eH7KU0t6Xqo8YwG-5gb3gXUzjkGLaw&s';
+// saveImage([1, 2, 3, 4, 5], avatarUrl);
 // resetImage()
 function loadPuzzles() {
     const rawData = fs.readFileSync('path_puzzles.json'); // تحديث اسم الملف هنا
@@ -499,7 +498,6 @@ const ws_TeBot = async ({ username, password, roomName }) => {
                                 body: message
                             };
                             socket.send(JSON.stringify(verificationMessage));
-                            console.log('Verification message sent:', message);
                         };
                         sendMainMessage(String(ur), message);
 
@@ -1078,10 +1076,26 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                             room: parsedData.room,
                             url: '',
                             length: '',
-                            body: `تهانينا ${respondingUser.username}! لقد حصلت على ${emojiPoints} نقطة بسبب إجابتك الصحيحة!`,
+                            body: `تهانينا ${respondingUser.username}! لقد حصلت على ${emojiPoints} نقطة بسبب اجابته الصحيحة!`,
                         };
                         socket.send(JSON.stringify(autoMessage));
                         writeUsersToFile(users);
+                        const data = fs.readFileSync('rooms.json', 'utf8');
+                         const rooms = JSON.parse(data);
+
+                        for (let ur of rooms) {
+                            const autoMessage = {
+                                handler: 'room_message',
+                                id: 'TclBVHgBzPGTMRTNpgWV',
+                                type: 'text',
+                                room: ur,
+                                url: '',
+                                length: '',
+                                body: `تهانينا ${respondingUser.username}! لقد حصل على ${emojiPoints}  نقطة بسبب اجابته الصحيحه في غرفه ${parsedData.room}!`,
+                            };
+                            socket.send(JSON.stringify(autoMessage));
+                        }
+
                     }
 
                     // إيقاف إرسال الإيموجي بعد أن يرسل المستخدم الإجابة
@@ -1271,7 +1285,8 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                     let user = users.find(user => user.username === usernameToVerify);
                     if (!user) {
-                        user = { username: usernameToVerify, verified: true, lasttimegift: null, points: null };
+                        user = { username: usernameToVerify, verified: true, lasttimegift: null, points: null, name:null,
+                            nickname:null };
                         users.push(user);
                         console.log(`New user added: ${usernameToVerify}`);
                         sendVerificationMessage(parsedData.room, `User verified: ${usernameToVerify}`);
@@ -1294,7 +1309,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     } else {
                         console.log(`User not found: ${usernameToDelete}`);
                     }
-                } else if (body.startsWith('ms@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
+                } else if (body.startsWith('ms@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" && parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓" ) {
 
                     const usernameToAdd = body.split('@')[1].trim();
                     addUserToMasterBot(usernameToAdd);
@@ -1366,7 +1381,74 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     } else {
                         sendMainMessage(parsedData.room, "No text provided after 'say'");
                     }
+                }else if (body.startsWith('name@')) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+                
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+                        // استخراج الكلمة بعد name@
+                        const newName = body.split('name@')[1]?.trim(); // الحصول على النص بعد name@
+                        if (newName) {
+                            if (newName.length > 50) {
+                                // إذا تجاوز الاسم 50 حرفًا، أرسل رسالة تحذيرية
+                                sendMainMessage(parsedData.room, "Error: The name must not exceed 50 characters.");
+                                return;
+                            }
+                            respondingUser.name = newName; // تحديث قيمة "name"
+                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+
+                            sendMainMessage(parsedData.room, `User ${respondingUser.username} now has name: ${respondingUser.name}`);
+                        }
+                    }
                 }
+                else if (body.startsWith('nickname@')) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+                
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+                        // استخراج الكلمة بعد name@
+                        const newName = body.split('nickname@')[1]?.trim(); // الحصول على النص بعد name@
+                        if (newName) {
+                            if (newName.length > 50) {
+                                // إذا تجاوز الاسم 50 حرفًا، أرسل رسالة تحذيرية
+                                sendMainMessage(parsedData.room, "Error: The name must not exceed 50 characters.");
+                                return;
+                            }
+                            respondingUser.nickname = newName; // تحديث قيمة "name"
+                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+
+                            sendMainMessage(parsedData.room, `User ${respondingUser.username} now has nickname: ${respondingUser.nickname}`);
+                        }
+                    }
+                }
+                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help" && body !== "فزوره") {
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+                  
+
+                    
+                    if (users && Array.isArray(users)) {
+                        for (let i = 0; i < users.length; i++) {
+                            if (body === users[i].name) {
+                                // إرسال اسم الشهرة الخاص بالمستخدم
+                                sendMainMessage(parsedData.room, ` ${users[i].nickname}`);
+                                return; // إنهاء العملية بمجرد العثور على المستخدم
+                            }
+                        }
+                    }
+                }
+            }
+                
+                
+                
                 
                 
                 
@@ -2994,7 +3076,6 @@ Ex : agi@NumberGift@username@message
             body: message
         };
         socket.send(JSON.stringify(verificationMessage));
-        console.log('Verification message sent:', message);
     };
 
     const sendMainMessage = (room, message) => {
@@ -3008,7 +3089,6 @@ Ex : agi@NumberGift@username@message
             body: message
         };
         socket.send(JSON.stringify(verificationMessage));
-        console.log('Verification message sent:', message);
     };
 
     const sendMainImageMessage = (room, imageURL) => {
