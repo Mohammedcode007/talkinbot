@@ -1021,9 +1021,10 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                 
                     // تحديث النقاط: الفائز يحصل على ضعف المبلغ
                     let winnerPlayer = users.find(user => user.username === winner.username);
-                    if (winnerPlayer) {
-                        winnerPlayer.points += winner.betAmount;
+                    if (winnerPlayer && winner.betAmount > 0 && roomData.players.length > 0) {
+                        winnerPlayer.points += winner.betAmount * roomData.players.length;
                     }
+                    
                 
                     // خصم المبلغ من اللاعبين الخاسرين
                     roomData.players.forEach(player => {
@@ -1222,7 +1223,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}.`);
                 }
                 
-                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help"&& body !== ".lg@" && body !== ".lg@2"  && body !== ".lg@1" && body !== "فزوره"&& !body.startsWith('help@1')&& body !== "+tp@") {
+                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help"&& body !== ".lg@" && body !== ".lg@4"&& body !== ".lg@2"  && body !== ".lg@1" && body !== "فزوره"&& !body.startsWith('help@1')&& body !== "+tp@") {
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                   
@@ -1296,35 +1297,7 @@ to next .lg@2
 
 `);
 
-                    sendMainMessage(parsedData.room, ` 
-㉑ 🐰 𝑩𝒖𝒈𝒔 𝑩𝒖𝒏𝒏𝒚
-㉒ 🍍 𝑺𝒑𝑜𝒏𝒈𝑩𝒐𝒃
-㉓ 🌟 𝑫𝒐𝒓𝒂 𝒕𝒉𝒆 𝑬𝒙𝒑𝒍𝒐𝒓𝒆𝒓
-㉔ 🦸‍♂️ 𝑺𝒖𝒑𝒆𝒓𝒎𝒂𝒏
-㉕ ❄️ 𝑭𝒓𝒐𝒛𝒆𝒏
-㉖ 🌊 𝑴𝒐𝒂𝒏𝒂
-㉗ 🚗 𝑪𝒂𝒓
-28 🐈 Tom
-29 🐈 Mike
-30 🐈 Boo
-31 🐈 Shalby
 
-Ex : agi@NumberGift@username@message
-
-`);
-                    sendMainMessage(parsedData.room, `
-    32 butterflies
-    33 Strawberry
-    34 Snafer
-    35 ariel
-    36 repunzel
-    37 joker
-    38 killing u if found u
-    39 girl shoting
-    40 army man
-    Ex : agi@NumberGift@username@message
-    
-    `);
 
                 }
                 else if (body === '.lg@2') {

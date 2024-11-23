@@ -24,10 +24,15 @@
     "active": false
   },
   "كـافيـه♨️رآقـي": {
-    "betAmount": null,
-    "players": [],
-    "startedBy": null,
-    "active": false
+    "betAmount": 1000,
+    "players": [
+      {
+        "username": "غرو♡انثي♡ور",
+        "betAmount": 1000
+      }
+    ],
+    "startedBy": "غرو♡انثي♡ور",
+    "active": true
   },
   "𝕋𝕙𝕖_𝕆𝕣𝕚𝕘𝕚𝕟𝕒𝕝𝕤_✨": {
     "betAmount": null,
