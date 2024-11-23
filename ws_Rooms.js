@@ -1,6 +1,8 @@
 const fs = require('fs');
 const WebSocket = require('ws');
 const {
+    readBettingData,
+    writeBettingData,
     updateLastTimeGift,
     saveLoginData,
     deleteUserFromFile,
@@ -20,6 +22,7 @@ const {
     addUserToMasterBot,
     writeUsersToFile,
     removeLastTimeGift,
+    formatPoints,
     loadImagesData,
     readBlockedUsers,
     deleteBlockedUser,
@@ -210,7 +213,30 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
         return false; // Return false to indicate the user is verified
     }
-
+    function endBettingGame(room) {
+        const bettingData = readBettingData();
+        const roomData = bettingData[room];
+        const players = roomData.players;
+    
+        // Select a winner randomly
+        const winnerIndex = Math.floor(Math.random() * players.length);
+        const winner = players[winnerIndex];
+    
+        // Update points
+        const totalPot = players.reduce((sum, player) => sum + player.betAmount, 0);
+        let winnerUser = users.find(u => u.username === winner.username);
+        winnerUser.points += totalPot;
+    
+        // Save winner's points and finalize the game
+        sendMainMessage(
+            room,
+            `🎉 User ${winner.username} won the bet and now has ${formatPoints(winnerUser.points)} points!`
+        );
+    
+        // Clear betting data for the room
+        delete bettingData[room];
+        writeBettingData(bettingData);
+    }
     socket.onmessage = async (event) => {
         const parsedData = JSON.parse(event.data);
         const usersblockes = readBlockedUsers();
@@ -822,7 +848,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     removeUserFromMasterBot(usernameToRemove);
                     sendVerificationMessage(parsedData.room, `User removed Master: ${usernameToRemove}`);
 
-                } else if (body ==='.po') {
+                } else if (body === '.po') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // Additional actions if needed when user is unverified
@@ -830,13 +856,228 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     }
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
-
-                        sendMainMessage(parsedData.room, `User ${username}  have : ${respondingUser?.points} points`);
-
+                        // Convert points to a formatted string
+                        const formattedPoints = formatPoints(respondingUser?.points);
+                        sendMainMessage(parsedData.room, `User ${parsedData.from} has: ${formattedPoints} points`);
                     }
+                }else if (body.startsWith('spec@')) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        return; // Betting is not allowed for unverified users
+                    }
+                
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+                        const betAmount = parseInt(body.split('@')[1], 10); // Extract the bet amount
+                        if (isNaN(betAmount) || betAmount <= 0) {
+                            sendMainMessage(parsedData.room, `❌ Invalid bet amount! Please enter a positive number.`);
+                            return;
+                        }
+                
+                        if (respondingUser.points < betAmount) {
+                            sendMainMessage(parsedData.room, `❌ User ${parsedData.from} does not have enough points to bet ${betAmount}.`);
+                            return;
+                        }
+                
+                        // Determine the bet result
+                        const win = Math.random() < 0.5; // 50% chance to win
+                        const changeAmount = Math.floor(betAmount * (Math.random() * 0.5 + 0.5)); // Random change between 50% and 100%
+                
+                        if (win) {
+                            respondingUser.points += changeAmount;
+                            sendMainMessage(
+                                parsedData.room,
+                                `🎉 User ${parsedData.from} won ${changeAmount} points! New balance: ${formatPoints(respondingUser.points)}.`
+                            );
+                        } else {
+                            respondingUser.points -= changeAmount;
+                            sendMainMessage(
+                                parsedData.room,
+                                `😢 User ${parsedData.from} lost ${changeAmount} points. New balance: ${formatPoints(respondingUser.points)}.`
+                            );
+                        }
+                    }
+                }
+                else if (body.startsWith('bet@')) {
+                    const betAmount = parseInt(body.split('@')[1]);  // استخراج المبلغ المراهن عليه
+                    const bettingData = readBettingData();
+                    const player = users.find(user => user.username === parsedData.from);
+                    if (!player || player.points < betAmount) {
+                        sendMainMessage(parsedData.room, `❌ You don't have enough points to start a bet. You currently have ${player ? player.points : 0} points.`);
+                        return;
+                    }
+                
+                    // التحقق من وجود بيانات الغرفة
+                    if (!bettingData[parsedData.room]) {
+                        bettingData[parsedData.room] = {
+                            betAmount: null,
+                            players: [],
+                            startedBy: null,
+                            active: false
+                        };
+                    }
+                
+                    const roomData = bettingData[parsedData.room];
+                
+                    // تحقق إذا كانت هناك لعبة جارية في الغرفة
+                    if (roomData.active) {
+                        sendMainMessage(parsedData.room, `❌ A game is already in progress. Please wait until it finishes.`);
+                        return;
+                    }
+                
+                    // إعداد بيانات اللعبة الجديدة
+                    roomData.betAmount = betAmount;
+                    roomData.players = [{
+                        username: parsedData.from,
+                        betAmount: betAmount
+                    }];
+                    roomData.startedBy = parsedData.from;
+                    roomData.active = true;
+                
+                    // حفظ بيانات المراهنة
+                    writeBettingData(bettingData);
+                
+                    sendMainMessage(parsedData.room, `🎲 ${parsedData.from} has started a bet with ${betAmount} points!`);
+                    sendMainMessage(parsedData.room, `🎲 Other players can join by typing 'bet'.`);
+                
+                    // تعيين مؤقت لإغلاق اللعبة بعد دقيقة إذا لم يُرسل .start
+                    setTimeout(() => {
+                        const updatedBettingData = readBettingData();
+                        const updatedRoomData = updatedBettingData[parsedData.room];
+                        if (updatedRoomData && updatedRoomData.active && updatedRoomData.startedBy === parsedData.from) {
+                            sendMainMessage(parsedData.room, `⏰ The game has been automatically ended due to no action from ${parsedData.from}.`);
+                            // إعادة تعيين بيانات المراهنة بعد مرور دقيقة
+                            updatedRoomData.active = false;
+                            updatedRoomData.betAmount = null;
+                            updatedRoomData.startedBy = null;
+                            updatedRoomData.players = [];
+                            writeBettingData(updatedBettingData);
+                        }
+                    }, 60000); // 60,000 ms = 1 دقيقة
+                }
+                
+                else if (body === 'bet') {
+                    const bettingData = readBettingData();
+                    const roomData = bettingData[parsedData.room];
+                
+                    // تحقق إذا كانت المراهنة قد بدأت
+                    if (!roomData || !roomData.active) {
+                        sendMainMessage(parsedData.room, `❌ No betting has started yet. Use "bet@<amount>" to start the bet.`);
+                        return;
+                    }
+                    let player = users.find(user => user.username === parsedData.from);
+                    if (!player) {
+                        sendMainMessage(parsedData.room, `❌ Player not found. Please make sure you are logged in.`);
+                        return;
+                    }
+                
+                    if (player.points < roomData.betAmount) {
+                        sendMainMessage(parsedData.room, `❌ You don't have enough points to join the bet. Your current points are ${player.points}.`);
+                        return;
+                    }
+                
+                    // تحقق إذا كان اللاعب لديه نقاط كافية
+                    if (player && player.points >= roomData.betAmount) {
+                        // تحقق إذا كان اللاعب قد انضم بالفعل
+                        if (!roomData.players.find(player => player.username === parsedData.from)) {
+                            player.points -= roomData.betAmount;  // خصم المبلغ من نقاط اللاعب
+                            roomData.players.push({
+                                username: parsedData.from,
+                                betAmount: roomData.betAmount
+                            });
+                
+                            writeBettingData(bettingData);  // تحديث بيانات المراهنة
+                
+                            sendMainMessage(parsedData.room, `🎲 ${parsedData.from} has joined the bet with ${roomData.betAmount} points.`);
+                        } else {
+                            sendMainMessage(parsedData.room, `❌ You have already joined the bet.`);
+                        }
+                    } else {
+                        sendMainMessage(parsedData.room, `❌ You don't have enough points to join the bet. Your current points are ${player ? player.points : 0}.`);
+                    }
+                }
+                
 
-
-                } else if (body.startsWith('قول ')) {
+                else if (body === '.start') {
+                    const bettingData = readBettingData();
+                    const roomData = bettingData[parsedData.room];
+                
+                    if (!roomData || roomData.startedBy !== parsedData.from) {
+                        sendMainMessage(parsedData.room, `❌ Only the player who started the bet can start the game.`);
+                        return;
+                    }
+                
+                    if (roomData.players.length < 2) {
+                        sendMainMessage(parsedData.room, `❌ There must be at least two players to start the game.`);
+                        return;
+                    }
+                
+                    // تحديد الفائز عشوائيًا
+                    const winnerIndex = Math.floor(Math.random() * roomData.players.length);
+                    const winner = roomData.players[winnerIndex];
+                    sendMainMessage(parsedData.room, `🎉 The winner is ${winner.username} with ${winner.betAmount} points! 🎉`);
+                
+                    // تحديث النقاط: الفائز يحصل على ضعف المبلغ
+                    let winnerPlayer = users.find(user => user.username === winner.username);
+                    if (winnerPlayer) {
+                        winnerPlayer.points += winner.betAmount * 2;
+                    }
+                
+                    // خصم المبلغ من اللاعبين الخاسرين
+                    roomData.players.forEach(player => {
+                        if (player.username !== winner.username) {
+                            let losingPlayer = users.find(user => user.username === player.username);
+                            if (losingPlayer) {
+                                losingPlayer.points -= player.betAmount;
+                            }
+                        }
+                    });
+                
+                    // إعادة تعيين حالة المراهنة
+                    roomData.players = [];
+                    roomData.active = false;
+                    roomData.betAmount = null;
+                    roomData.startedBy = null;
+                
+                    // حفظ البيانات بعد انتهاء اللعبة
+                    writeBettingData(bettingData);
+                }
+                
+                
+                else if (body === '.lp') {
+                    // ترتيب اللاعبين بناءً على النقاط من الأكبر إلى الأصغر
+                    const topPlayers = users
+                        .sort((a, b) => b.points - a.points) // ترتيب تنازلي للنقاط
+                        .slice(0, 10); // اختيار أكبر 10 لاعبين
+                
+                    if (topPlayers.length === 0) {
+                        sendMainMessage(parsedData.room, `❌ No players available.`);
+                        return;
+                    }
+                
+                    // قائمة الإيموجي حسب الترتيب
+                    const rankEmojis = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '⭐', '✨', '🌟', '🔥'];
+                
+                    // بناء الرسالة التي تحتوي على قائمة اللاعبين مع إجبار الاتجاه من اليسار لليمين
+                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n`;
+                    
+                    topPlayers.forEach((player, index) => {
+                        const emoji = rankEmojis[index] || '🔹'; // اختيار الإيموجي بناءً على الترتيب
+                        leaderboardMessage += `${emoji} ${index + 1}. ${player.username}: ${player.points} points\n`;
+                    });
+                
+                    leaderboardMessage += `\u202C`; // إنهاء تنسيق اتجاه النص
+                
+                    // إرسال الرسالة إلى الغرفة
+                    sendMainMessage(parsedData.room, leaderboardMessage);
+                }
+                
+                
+                
+                
+                
+                
+                 else if (body.startsWith('قول ')) {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // Additional actions if needed when the user is unverified

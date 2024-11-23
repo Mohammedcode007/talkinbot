@@ -16,6 +16,34 @@ const filePath = path.join(__dirname, 'blockedUsers.json');
 const filePathPlayers = './gameData.json'; // المسار إلى ملف JSON
 const {items,hikam} = require('./data');
 
+const bettingFile = './bettingPlayers.json';
+
+// Helper function to read the JSON file
+function readBettingData() {
+    if (!fs.existsSync(bettingFile)) {
+        fs.writeFileSync(bettingFile, JSON.stringify({}));
+    }
+    const data = fs.readFileSync(bettingFile);
+    return JSON.parse(data);
+}
+
+// Helper function to write to the JSON file
+function writeBettingData(data) {
+    fs.writeFileSync(bettingFile, JSON.stringify(data, null, 2));
+}
+
+function formatPoints(points) {
+    if (points >= 1_000_000_000) {
+        return (points / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + ' B'; // Billion
+    } else if (points >= 1_000_000) {
+        return (points / 1_000_000).toFixed(1).replace(/\.0$/, '') + ' M'; // Million
+    } else if (points >= 1_000) {
+        return (points / 1_000).toFixed(1).replace(/\.0$/, '') + ' K'; // Thousand
+    } else {
+        return points.toString(); // Less than 1000
+    }
+}
+
 
   function getRandomHikma() {
     const randomIndex = Math.floor(Math.random() * hikam.length);
@@ -402,6 +430,8 @@ function getRandomEmoji() {
 
 
 module.exports = {
+    readBettingData,
+    writeBettingData,
     updateLastTimeGift,
     canSendGift,
     saveLoginData,
@@ -413,6 +443,7 @@ module.exports = {
     isUserInMasterBot,
     readLoginDataRooms,
     removeUserFromMasterBot,
+    formatPoints,
     addBlockedUser,
     getPuzzles,
     loadPuzzles,
