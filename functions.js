@@ -40,7 +40,7 @@ function formatPoints(points) {
     } else if (points >= 1_000) {
         return (points / 1_000).toFixed(1).replace(/\.0$/, '') + ' K'; // Thousand
     } else {
-        return points.toString(); // Less than 1000
+        return points // Less than 1000
     }
 }
 

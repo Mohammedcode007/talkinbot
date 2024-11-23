@@ -1022,7 +1022,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     // تحديث النقاط: الفائز يحصل على ضعف المبلغ
                     let winnerPlayer = users.find(user => user.username === winner.username);
                     if (winnerPlayer) {
-                        winnerPlayer.points += winner.betAmount * 2;
+                        winnerPlayer.points += winner.betAmount;
                     }
                 
                     // خصم المبلغ من اللاعبين الخاسرين
@@ -1222,7 +1222,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}.`);
                 }
                 
-                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help" && body !== "فزوره"&& body !== "help@1"&& body !== "+tp@") {
+                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help"&& body !== ".lg@" && body !== ".lg@2"  && body !== ".lg@1" && body !== "فزوره"&& !body.startsWith('help@1')&& body !== "+tp@") {
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                   
@@ -1351,20 +1351,6 @@ Ex : agi@NumberGift@username@message
 Ex : agi@NumberGift@username@message
 to next .lg@3
 `);
-                    sendMainMessage(parsedData.room, `
-    32 butterflies
-    33 Strawberry
-    34 Snafer
-    35 ariel
-    36 repunzel
-    37 joker
-    38 killing u if found u
-    39 girl shoting
-    40 army man
-    Ex : agi@NumberGift@username@message
-    
-    `);
-
                 }
                 else if (body === '.lg@3') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
