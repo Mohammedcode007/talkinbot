@@ -1172,7 +1172,57 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         }
                     }
                 }
-                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help" && body !== "فزوره") {
+                else if (body.startsWith('+tp@')) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+                
+                    const parts = body.split('@');
+                    if (parts.length !== 3) {
+                        sendMainMessage(parsedData.room, "Error: Invalid format. Use +tp@username@points.");
+                        return;
+                    }
+                
+                    const targetUsername = parts[1]?.trim();
+                    const pointsToTransfer = parseInt(parts[2]?.trim(), 10);
+                
+                    if (!targetUsername || isNaN(pointsToTransfer) || pointsToTransfer <= 0) {
+                        sendMainMessage(parsedData.room, "Error: Invalid username or points. Points must be a positive number.");
+                        return;
+                    }
+                
+                    let sender = users.find(user => user.username === parsedData.from);
+                    let receiver = users.find(user => user.username === targetUsername);
+                
+                    if (!sender) {
+                        sendMainMessage(parsedData.room, "Error: Sender not found.");
+                        return;
+                    }
+                
+                    if (!receiver) {
+                        sendMainMessage(parsedData.room, `Error: User "${targetUsername}" not found.`);
+                        return;
+                    }
+                
+                    if (sender.points === null || sender.points < pointsToTransfer) {
+                        sendMainMessage(parsedData.room, "Error: Insufficient points.");
+                        return;
+                    }
+                
+                    // Perform the transaction
+                    sender.points -= pointsToTransfer;
+                    receiver.points = (receiver.points || 0) + pointsToTransfer;
+                
+                    // Save the updated data
+                    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                    // Notify both users
+                    sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}.`);
+                }
+                
+                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help" && body !== "فزوره"&& body !== "help@1"&& body !== "+tp@") {
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                   
@@ -1214,8 +1264,20 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 ⑨ 🦁 𝑺𝒊𝒎𝒃𝒂
 ⑩ 🦁😈 𝑺𝒄𝒂𝒓
 Ex : agi@NumberGift@username@message
+to next .lg@1
 
 `);
+
+
+                }
+                else if (body === '.lg@1') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+
+     
 
                     sendMainMessage(parsedData.room, ` 
 ⑪ 🍹 𝑺𝒖𝒈𝒂𝒓𝒄𝒂𝒏𝒆 𝑱𝒖𝒊𝒄𝒆
@@ -1230,6 +1292,7 @@ Ex : agi@NumberGift@username@message
 ⑳ 🐶 𝑺𝒄𝒐𝒐𝒃𝒚-𝑫𝒐𝒐
 
 Ex : agi@NumberGift@username@message
+to next .lg@2
 
 `);
 
@@ -1263,7 +1326,92 @@ Ex : agi@NumberGift@username@message
     
     `);
 
-                } else if (body.startsWith('agi@')) {
+                }
+                else if (body === '.lg@2') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+
+  
+                    sendMainMessage(parsedData.room, ` 
+㉑ 🐰 𝑩𝒖𝒈𝒔 𝑩𝒖𝒏𝒏𝒚
+㉒ 🍍 𝑺𝒑𝑜𝒏𝒈𝑩𝒐𝒃
+㉓ 🌟 𝑫𝒐𝒓𝒂 𝒕𝒉𝒆 𝑬𝒙𝒑𝒍𝒐𝒓𝒆𝒓
+㉔ 🦸‍♂️ 𝑺𝒖𝒑𝒆𝒓𝒎𝒂𝒏
+㉕ ❄️ 𝑭𝒓𝒐𝒛𝒆𝒏
+㉖ 🌊 𝑴𝒐𝒂𝒏𝒂
+㉗ 🚗 𝑪𝒂𝒓
+28 🐈 Tom
+29 🐈 Mike
+30 🐈 Boo
+31 🐈 Shalby
+
+Ex : agi@NumberGift@username@message
+to next .lg@3
+`);
+                    sendMainMessage(parsedData.room, `
+    32 butterflies
+    33 Strawberry
+    34 Snafer
+    35 ariel
+    36 repunzel
+    37 joker
+    38 killing u if found u
+    39 girl shoting
+    40 army man
+    Ex : agi@NumberGift@username@message
+    
+    `);
+
+                }
+                else if (body === '.lg@3') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+
+  
+
+                    sendMainMessage(parsedData.room, `
+    32 butterflies
+    33 Strawberry
+    34 Snafer
+    35 ariel
+    36 repunzel
+    37 joker
+    38 killing u if found u
+    39 girl shoting
+    40 army man
+    Ex : agi@NumberGift@username@message
+    to next .lg@4
+    `);
+
+                }
+                else if (body === '.lg@4') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+
+  
+
+                    sendMainMessage(parsedData.room, `
+    41 venom
+    42 Ninja
+    43 she look like
+    44 he look like
+    45 neon cute
+  
+    Ex : agi@NumberGift@username@message
+    
+    `);
+
+                }
+                else if (body.startsWith('agi@')) {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // Additional actions if needed when user is unverified
@@ -2696,6 +2844,160 @@ Ex : agi@NumberGift@username@message
                                 }
 
                             }
+                            else if (id === 41) {
+                                imageType5 = 'venom';
+                                if (imageType5 === 'venom') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
+
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            }
+                            else if (id === 42) {
+                                imageType5 = 'Ninja';
+                                if (imageType5 === 'Ninja') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
+
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            }
+                            else if (id === 43) {
+                                imageType5 = 'she look like';
+                                if (imageType5 === 'she look like') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
+
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            }
+                            else if (id === 44) {
+                                imageType5 = 'he look like';
+                                if (imageType5 === 'he look like') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
+
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            } else if (id === 45) {
+                                imageType5 = 'neon cute';
+                                if (imageType5 === 'neon cute') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
+
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            }
 
 
                         }
@@ -2725,12 +3027,40 @@ Ex : agi@NumberGift@username@message
   6. For قول:
   Ex: قول i love u
   Action: repeat your words.
+   For next help@1
 `);
 
                     }
 
 
                 } 
+                else if (body ==='help@1') {
+                  
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+
+                        sendMainMessage(parsedData.room, `1.playing bet:
+  Command: bet@amount
+   Action: Display to play bet.
+2. Play Speculation:
+  Command: spec
+  Action: Play the Speculation game.
+3. name replay:
+   Command: name@username
+   Action: set name action.
+4. nickname replay:
+  Command: nickname@superman
+  Action: Display your nickname.
+  5. transfaer  points:
+  Command: +tp@username@amoun
+  Action: transfaer  your point to friends.
+
+`);
+
+                    }
+
+
+                }
             }
             if (parsedData.handler === 'room_event') {
                 const body = parsedData.body || '';
