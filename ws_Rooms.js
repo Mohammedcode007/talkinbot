@@ -26,6 +26,7 @@ const {
     saveGameData,
     users,
     getRandomNumber,
+    getRandomHikma,
     getRandomImage,
 }= require('./functions');
 
@@ -296,6 +297,26 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         url: '',
                         length: '',
                         body: emoji
+                    };
+
+                    socket.send(JSON.stringify(youget));
+                   
+                }
+                if (parsedData.body === 'حكمه') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // Additional actions if needed when user is unverified
+                        return;
+                    }
+                 const hikma=   getRandomHikma()
+                    const youget = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room,
+                        url: '',
+                        length: '',
+                        body: hikma
                     };
 
                     socket.send(JSON.stringify(youget));

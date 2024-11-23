@@ -14,9 +14,13 @@ const USERS_FILE_PATH = path.join(__dirname, 'verifyusers.json');
 const filePath = path.join(__dirname, 'blockedUsers.json');
 
 const filePathPlayers = './gameData.json'; // المسار إلى ملف JSON
-const items = require('./data');
+const {items,hikam} = require('./data');
 
 
+  function getRandomHikma() {
+    const randomIndex = Math.floor(Math.random() * hikam.length);
+    return hikam[randomIndex].text;
+  }
 
 // دالة لتحديث `lasttimegift` إلى الوقت الحالي + 30 ثانية
 function updateLastTimeGift(username, currentTime) {
@@ -425,4 +429,5 @@ module.exports = {
     users,
     getRandomNumber,
     getRandomImage,
+    getRandomHikma
 };
