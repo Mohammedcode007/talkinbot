@@ -835,7 +835,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     } else {
                         console.log(`User not found: ${usernameToDelete}`);
                     }
-                } else if (body.startsWith('ms@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" && parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓" ) {
+                } else if (body.startsWith('ms@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا"  ) {
 
                     const usernameToAdd = body.split('@')[1].trim();
                     addUserToMasterBot(usernameToAdd);
