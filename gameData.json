@@ -1,15 +1,15 @@
 {
-  "lastUserWhoSentTreasure": "i_gamd_i",
+  "lastUserWhoSentTreasure": "رآمـِِـِـِِـِ✮ـــ℘ـِـِِـِـِِـي",
   "lastPuzzle": {
-    "question": "ما الشيء الذي يأكل ولا يشبع؟",
-    "answer": "النار"
+    "question": "ما هي الرياضة التي تتضمن رفع الأوزان الثقيلة؟",
+    "answer": "رفع_الأثقال"
   },
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "1",
+  "selectedPath": "2",
   "playerProgress": {
-    "correctAnswersCount": 0,
-    "totalPoints": 0
+    "correctAnswersCount": 4,
+    "totalPoints": 400
   },
   "correctAnswersCount": 0
 }
