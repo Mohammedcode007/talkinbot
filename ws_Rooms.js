@@ -1076,6 +1076,53 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                 }
                 
                 
+                else if (body === 'lucky') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        return; // Game is not allowed for unverified users
+                    }
+                
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+                        const currentTime = Date.now();
+                        const lastCommandTime = respondingUser.lastLuckyTime || 0;
+                        const interval = 5 * 60 * 1000; // 5 minutes in milliseconds
+                
+                        if (currentTime - lastCommandTime < interval) {
+                            sendMainMessage(
+                                parsedData.room,
+                                `⏳ You need to wait ${Math.ceil((interval - (currentTime - lastCommandTime)) / 60000)} more minute(s) before trying again.`
+                            );
+                            return;
+                        }
+                
+                        // Update the last command time
+                        respondingUser.lastLuckyTime = currentTime;
+                
+                        // Determine the luck outcome
+                        const goodLuck = Math.random() < 0.5; // 50% chance of good luck
+                        if (goodLuck) {
+                            const gainedPoints = respondingUser.points * 2;
+                            respondingUser.points += gainedPoints;
+                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+
+                            sendMainMessage(
+                                parsedData.room,
+                                `🎉 Lucky you! You won ${formatPoints(gainedPoints)} points! Your new balance: ${formatPoints(respondingUser.points)}.`
+                            );
+                        } else {
+                            const lostPoints = Math.floor(respondingUser.points * 0.5);
+                            respondingUser.points -= lostPoints;
+                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+
+                            sendMainMessage(
+                                parsedData.room,
+                                `😢 Unlucky! You lost ${formatPoints(lostPoints)} points. Your new balance: ${formatPoints(respondingUser.points)}.`
+                            );
+                        }
+                    }
+                }
+                
                 
                 
                 
