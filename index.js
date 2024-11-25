@@ -35,6 +35,14 @@ const {
 }= require('./functions');
 
 
+// استيراد الدالة من ملف createImage.js
+const createBlueSquareImage = require('./createImage');
+
+// تحديد المسار الذي سيتم حفظ الصورة فيه
+const outputPath = 'C:/ImagesServers/blueSquare.png';
+
+// استدعاء الدالة لإنشاء الصورة
+createBlueSquareImage(outputPath);
 
 
 
