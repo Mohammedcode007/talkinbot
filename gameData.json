@@ -1,12 +1,12 @@
 {
-  "lastUserWhoSentTreasure": "ð",
+  "lastUserWhoSentTreasure": "6uwaiq",
   "lastPuzzle": {
-    "question": "ما هي الرياضة التي تُمارس في الجبال الثلجية باستخدام ألواح؟",
-    "answer": "تزلج_ألب"
+    "question": "ما هو عدد الأقطاب المغناطيسية؟",
+    "answer": "اثنان"
   },
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "2",
+  "selectedPath": "3",
   "playerProgress": {
     "correctAnswersCount": 4,
     "totalPoints": 400

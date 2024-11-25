@@ -33,7 +33,13 @@ function writeBettingData(data) {
 }
 
 function formatPoints(points) {
-    if (points >= 1_000_000_000) {
+    if (points >= 1_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Q'; // Quintillion
+    } else if (points >= 1_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Qa'; // Quadrillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' T'; // Trillion
+    } else if (points >= 1_000_000_000) {
         return (points / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + ' B'; // Billion
     } else if (points >= 1_000_000) {
         return (points / 1_000_000).toFixed(1).replace(/\.0$/, '') + ' M'; // Million
@@ -43,6 +49,7 @@ function formatPoints(points) {
         return points // Less than 1000
     }
 }
+
 
 
   function getRandomHikma() {
