@@ -1047,34 +1047,89 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                 }
                 
                 
-                else if (body === '.lp') {
-                    // ترتيب اللاعبين بناءً على النقاط من الأكبر إلى الأصغر
-                    const topPlayers = users
-                        .sort((a, b) => b.points - a.points) // ترتيب تنازلي للنقاط
-                        .slice(0, 10); // اختيار أكبر 10 لاعبين
+              // دالة لتحويل الأرقام إلى تنسيق مختصر
+
+
+else if (body === '.lp') {
+    // ترتيب اللاعبين بناءً على النقاط من الأكبر إلى الأصغر
+    const topPlayers = users
+        .sort((a, b) => b.points - a.points) // ترتيب تنازلي للنقاط
+        .slice(0, 10); // اختيار أكبر 10 لاعبين
+
+    if (topPlayers.length === 0) {
+        sendMainMessage(parsedData.room, `❌ No players available.`);
+        return;
+    }
+
+    // قائمة الإيموجي حسب الترتيب
+    const rankEmojis = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '⭐', '✨', '🌟', '🔥'];
+
+    // بناء الرسالة التي تحتوي على قائمة اللاعبين مع إجبار الاتجاه من اليسار لليمين
+    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n`;
+
+    topPlayers.forEach((player, index) => {
+        const emoji = rankEmojis[index] || '🔹'; // اختيار الإيموجي بناءً على الترتيب
+        const formattedPoints = formatPoints(player.points); // تنسيق النقاط
+        leaderboardMessage += `${emoji} ${index + 1}. ${player.username}: ${formattedPoints} points\n`;
+    });
+
+    leaderboardMessage += `\u202C`; // إنهاء تنسيق اتجاه النص
+
+    // إرسال الرسالة إلى الغرفة
+    sendMainMessage(parsedData.room, leaderboardMessage);
+}
+
                 
-                    if (topPlayers.length === 0) {
-                        sendMainMessage(parsedData.room, `❌ No players available.`);
-                        return;
-                    }
-                
-                    // قائمة الإيموجي حسب الترتيب
-                    const rankEmojis = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '⭐', '✨', '🌟', '🔥'];
-                
-                    // بناء الرسالة التي تحتوي على قائمة اللاعبين مع إجبار الاتجاه من اليسار لليمين
-                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n`;
-                    
-                    topPlayers.forEach((player, index) => {
-                        const emoji = rankEmojis[index] || '🔹'; // اختيار الإيموجي بناءً على الترتيب
-                        leaderboardMessage += `${emoji} ${index + 1}. ${player.username}: ${player.points} points\n`;
-                    });
-                
-                    leaderboardMessage += `\u202C`; // إنهاء تنسيق اتجاه النص
-                
-                    // إرسال الرسالة إلى الغرفة
-                    sendMainMessage(parsedData.room, leaderboardMessage);
-                }
-                
+else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉' || body === '🍓' || body === '🍇' || body === '🍍' || body === '🥭' || body === '🍑' || body === '🍈') {
+    // قائمة الإيموجيات الفاكهة المسموحة
+    const fruitEmojis = ['🍎', '🍊', '🍌', '🍉', '🍓', '🍇', '🍍', '🥭', '🍑', '🍈'];
+
+    // تحديد اللاعب بناءً على الاسم
+    const player = users.find(u => u.username === parsedData.from);  
+    
+    // التأكد من أن اللاعب موجود في النظام
+    if (player) {
+        // التحقق من الوقت الذي أرسل فيه اللاعب آخر إيموجي
+        const currentTime = Date.now();  // الحصول على الوقت الحالي بالـ milliseconds
+        const lastTime = player.lastEmojiTime || 0;  // إذا لم يكن موجوداً تعيين القيمة إلى 0
+        
+        const timeDifference = currentTime - lastTime;  // الفرق بين الوقت الحالي وآخر وقت أرسل فيه اللاعب الإيموجي
+        
+        // إذا مر أكثر من دقيقة (60,000 ملي ثانية)
+        if (timeDifference >= 60000) {
+            // تحديد "الحظ" العشوائي
+            const luck = Math.random();  // يعطي قيمة عشوائية بين 0 و 1
+
+            // إذا كان الحظ جيدًا (مثلاً 50% حظ جيد)
+            if (luck <= 0.5) {
+                // زيادة النقاط للاعب إذا كان الحظ جيدًا
+                player.points += 10000;  // إضافة 10,000 نقطة
+
+                // تحديث وقت آخر إيموجي أرسله اللاعب
+                player.lastEmojiTime = currentTime;
+
+                // حفظ التحديثات في الملف
+                fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+
+                // إرسال نفس الإيموجي الذي أرسله المستخدم لأن الحظ جيد
+                sendMainMessage(parsedData.room, `🎉 ${parsedData.from} is lucky! They win 10,000 points! ${body}`);
+            } else {
+                // إرسال إيموجي مختلف إذا لم يكن الحظ جيدًا
+                const unluckyEmoji = '❌'; // الإيموجي الذي سيرد به البوت إذا لم يكن الحظ جيدًا
+                sendMainMessage(parsedData.room, `${parsedData.from} is not lucky this time. Try again! ${unluckyEmoji}`);
+            }
+        } else {
+            // إرسال رسالة للمستخدم بأنه يجب أن ينتظر حتى يمر دقيقة كاملة
+            const remainingTime = Math.ceil((60000 - timeDifference) / 1000);  // حساب الوقت المتبقي بالثواني
+            sendMainMessage(parsedData.room, `${parsedData.from}, please wait ${remainingTime} seconds before sending another emoji!`);
+        }
+    }
+}
+
+
+
+
+  
                 
                 else if (body === 'lucky') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -1270,7 +1325,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}.`);
                 }
                 
-                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help"&& body !== ".lg@" && body !== ".lg@4"&& body !== ".lg@2"  && body !== ".lg@1" && body !== "فزوره"&& !body.startsWith('help@1')&& body !== "+tp@") {
+                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help"&& body !== ".lg@" && body !== ".lg@4"&& body !== ".lg@2" && body !== ".lg@3" && body !== ".lg@1" && body !== "فزوره"&& !body.startsWith('help@1')&& body !== "+tp@") {
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                   
