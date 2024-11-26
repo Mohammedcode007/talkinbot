@@ -1,5 +1,6 @@
 const fs = require('fs');
 const moment = require('moment');  // التأكد من استيراد moment
+const createCanvasWithBackground = require('./createImage');
 
 const WebSocket = require('ws');
 const {
@@ -669,7 +670,34 @@ console.log(parsedData,`parsedData`);
                 // Send the store message
                 sendMainMessage(parsedData.room, storeMessage);
             }
-            
+           
+            if (parsedData.handler === 'room_event' && parsedData.body === 'vip') {
+                // تحقق مما إذا كان المستخدم موجودًا في ملف masterbot
+                if (!isUserInMasterBot(parsedData.from)) {
+                    console.log(`User ${parsedData.from} not found in masterbot, verification skipped.`);
+                    return;
+                }
+                
+                const outputPath = 'C:/ImagesServers/111.png';
+                const backgroundImagePath = './images/moon.jpg';  // مسار صورة القمر
+                const overlayImageUrl = 'http://192.168.5.23/111.png';  // رابط الصورة الثانية
+                
+                // التحقق مما إذا كانت الصورة موجودة عبر رابط URL
+                fetch(overlayImageUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            // إذا كانت الصورة موجودة، قم بإنشاء الصورة
+                            console.log(`Image ${overlayImageUrl} is available. Proceeding with canvas creation.`);
+                            createCanvasWithBackground(backgroundImagePath, overlayImageUrl, outputPath);
+                            sendMainImageMessage(parsedData.room, overlayImageUrl);
+                        } else {
+                            console.log(`Image ${overlayImageUrl} not found. Cannot proceed.`);
+                        }
+                    })
+                    .catch(error => {
+                        console.log(`Error fetching image: ${error}`);
+                    });
+            }
             
 
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
@@ -994,6 +1022,26 @@ console.log(parsedData,`parsedData`);
                             writeBettingData(updatedBettingData);
                         }
                     }, 60000); // 60,000 ms = 1 دقيقة
+                } else if (body.startsWith('vip@')) {
+                    const usernameToVerify = body.split('@')[1].trim();
+
+                    // تحقق مما إذا كان المستخدم موجودًا في ملف masterbot
+                    if (!isUserInMasterBot(parsedData.from)) {
+                        console.log(`User ${parsedData.from} not found in masterbot, verification skipped.`);
+                        return;
+                    }
+                    const outputPath = 'C:/ImagesServers/111.png';
+                    const backgroundImagePath = './images/moon.jpg';  // مسار صورة القمر
+                    const overlayImageUrl = 'https://cdn.goenhance.ai/user/2024/07/19/c0c1400b-abc2-4541-a849-a7e4f361d28d_0.jpg';  // رابط الصورة الثانية
+                    console.log(usernameToVerify,`usernameToVerify`);
+                    
+                    createCanvasWithBackground(backgroundImagePath, overlayImageUrl, outputPath);
+                    // let user = users.find(user => user.username === usernameToVerify);
+                    // sendVerificationMessage(parsedData.room, `User verified: ${usernameToVerify}`);
+                    sendMainImageMessage(parsedData.room, overlayImageUrl);
+
+                   
+
                 }
                 
                 else if (body === 'bet') {

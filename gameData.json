@@ -1,15 +1,15 @@
 {
   "lastUserWhoSentTreasure": "6uwaiq",
   "lastPuzzle": {
-    "question": "ما هو عدد الأقطاب المغناطيسية؟",
-    "answer": "اثنان"
+    "question": "ما هو الشيء الذي إذا أخذنا منه ازداد وكبر؟",
+    "answer": "الحفرة"
   },
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "3",
+  "selectedPath": "1",
   "playerProgress": {
-    "correctAnswersCount": 4,
-    "totalPoints": 400
+    "correctAnswersCount": 2,
+    "totalPoints": 200
   },
   "correctAnswersCount": 0
 }

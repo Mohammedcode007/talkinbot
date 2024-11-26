@@ -34,15 +34,16 @@ const {
     getRandomImage,
 }= require('./functions');
 
+// const createCanvasWithBackground = require('./createImage');
 
-// استيراد الدالة من ملف createImage.js
-const createBlueSquareImage = require('./createImage');
+// // تحديد مسار حفظ الصورة
 
-// تحديد المسار الذي سيتم حفظ الصورة فيه
-const outputPath = 'C:/ImagesServers/blueSquare.png';
+// const outputPath = 'C:/ImagesServers/monster1.png';
+// const backgroundImagePath = './images/moon.jpg';  // مسار صورة القمر
+// const overlayImageUrl = 'https://cdn.goenhance.ai/user/2024/07/19/c0c1400b-abc2-4541-a849-a7e4f361d28d_0.jpg';  // رابط الصورة الثانية
 
-// استدعاء الدالة لإنشاء الصورة
-createBlueSquareImage(outputPath);
+// createCanvasWithBackground(backgroundImagePath, overlayImageUrl, outputPath);
+// استدعاء الدالة لإنشاء صورة وحش
 
 
 
