@@ -244,7 +244,6 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         const parsedData = JSON.parse(event.data);
         const usersblockes = readBlockedUsers();
         if(parsedData.room === `egypt`){
-console.log(parsedData,`parsedData`);
 
         }
 
@@ -686,6 +685,8 @@ console.log(parsedData,`parsedData`);
                 fetch(overlayImageUrl)
                     .then(response => {
                         if (response.ok) {
+                            console.log(response);
+                            
                             // إذا كانت الصورة موجودة، قم بإنشاء الصورة
                             console.log(`Image ${overlayImageUrl} is available. Proceeding with canvas creation.`);
                             createCanvasWithBackground(backgroundImagePath, overlayImageUrl, outputPath);
