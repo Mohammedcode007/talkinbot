@@ -77,7 +77,6 @@ function updateLastTimeGift(username, currentTime) {
                     removeLastTimeGift(username);
                 }, 30000);  // 30000 ميلي ثانية (30 ثانية)
             } else {
-                console.log(`User ${username} must wait 30 seconds before sending another gift.`);
             }
         } else {
             console.error(`User ${username} not found`);

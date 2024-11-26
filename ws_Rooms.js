@@ -242,6 +242,10 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     socket.onmessage = async (event) => {
         const parsedData = JSON.parse(event.data);
         const usersblockes = readBlockedUsers();
+        if(parsedData.room === `egypt`){
+console.log(parsedData,`parsedData`);
+
+        }
 
         // إرسال لغز عشوائي بعد اختيار الطريق
         function sendRandomPuzzle(parsedData, pathNumber) {
@@ -632,7 +636,41 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
             }
 
-
+            if (parsedData.handler === 'room_event' && parsedData.body === '*store') {
+                // Define 10 different emojis with their corresponding prices in points
+                const emojiStore = [
+                    // Planets
+                    { emoji: "🌍", name: "Earth", price: "50 points" },
+                    { emoji: "🪐", name: "Saturn", price: "100 points" },
+                    { emoji: "🌑", name: "Pluto", price: "110 points" },
+                    
+                    // Moons
+                    { emoji: "🌙", name: "Crescent Moon", price: "35 points" },
+                    { emoji: "🌒", name: "Waning Crescent", price: "40 points" },
+                    
+                    // Stars and Celestial Objects
+                    { emoji: "⭐", name: "Star", price: "20 points" },
+                    { emoji: "🌟", name: "Shining Star", price: "70 points" },
+                    { emoji: "💫", name: "Shooting Star", price: "25 points" },
+                    
+                    // Phenomena
+                    { emoji: "☄️", name: "Comet", price: "60 points" },
+                    { emoji: "🌌", name: "Galaxy", price: "200 points" }
+                ];
+                
+                // Create the store message
+                let storeMessage = "Here are the available items in the store:\n";
+                
+                // Loop through the emojiStore and create a list
+                emojiStore.forEach(item => {
+                    storeMessage += `${item.emoji} - ${item.name}: ${item.price}\n`;
+                });
+                
+                // Send the store message
+                sendMainMessage(parsedData.room, storeMessage);
+            }
+            
+            
 
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
                 sendMainMessage(parsedData.name, `🌟𝗪𝗘𝗟𝗖𝗢𝗠𝗘🌟 \n ${parsedData.username}`);
@@ -1466,6 +1504,7 @@ to next .lg@3
     43 she look like
     44 he look like
     45 neon cute
+    46 Mems Arabic 
   
     Ex : agi@NumberGift@username@message
     
@@ -3059,7 +3098,37 @@ to next .lg@3
                                 }
 
                             }
+                            else if (id === 46) {
+                                imageType5 = 'MEMS';
+                                if (imageType5 === 'MEMS') {
+                                    const imageUrl = getRandomImage(imageType5);
+                                    if (imageUrl) {
+                                        const data = fs.readFileSync('rooms.json', 'utf8');
+                                        const rooms = JSON.parse(data);
 
+                                        for (let ur of rooms) {
+                                            const message = canSendGift(parsedData.from);  
+                                            if (message === true) {
+                                                const currentTime = new Date();  
+                                                const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
+                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
+                                
+                                                setTimeout(() => {
+                                                    updateLastTimeGift(parsedData.from, localTime);
+
+                                                }, 1000); 
+                                            } else {
+                                                sendMainMessage(ur, message); 
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        console.error('No images found for the specified type.');
+                                    }
+                                }
+
+                            }
 
                         }
 
@@ -3181,6 +3250,8 @@ to next .lg@3
                     }
                 }
             }
+           
+
         };
 
 
