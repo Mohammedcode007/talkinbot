@@ -18,6 +18,26 @@ const {items,hikam} = require('./data');
 
 const bettingFile = './bettingPlayers.json';
 
+function readVipFile() {
+    try {
+        const data = fs.readFileSync('vip.json', 'utf-8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.log('Error reading vip.json, initializing as empty:', error);
+        return [];
+    }
+}
+
+// وظيفة لكتابة بيانات JSON إلى ملف
+function writeVipFile(data) {
+    try {
+        fs.writeFileSync('vip.json', JSON.stringify(data, null, 2), 'utf-8');
+        console.log('vip.json updated successfully.');
+    } catch (error) {
+        console.log('Error writing to vip.json:', error);
+    }
+}
+
 // Helper function to read the JSON file
 function readBettingData() {
     if (!fs.existsSync(bettingFile)) {
@@ -471,6 +491,8 @@ module.exports = {
     getRandomEmoji,
     deleteUserFromFile,
     deleteRoomName,
+    readVipFile,
+    writeVipFile,
     saveRoomName,
     readLoginDataTeBot,
     isUserInMasterBot,

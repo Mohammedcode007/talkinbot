@@ -27,6 +27,8 @@ const {
     removeLastTimeGift,
     formatPoints,
     loadImagesData,
+    readVipFile,
+    writeVipFile,
     readBlockedUsers,
     deleteBlockedUser,
     saveGameData,
@@ -34,7 +36,7 @@ const {
     getRandomNumber,
     getRandomHikma,
     getRandomImage,
-}= require('./functions');
+} = require('./functions');
 
 
 
@@ -46,7 +48,13 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     let correctAnswer = null;
     let puzzleInProgress = false;
     let revealedLayers = 5; // Number of parts to reveal gradually
+    const pendingSvipRequests = new Map(); // لتتبع طلبات svip
+    const storedImages = new Map(); // لتخزين الصور المرسلة لكل مستخدم
+    const lastSvipRequestTime = new Map(); // لتتبع توقيت آخر طلب لكل مستخدم
+    const THIRTY_SECONDS = 30 * 1000; // 30 ثانية بالمللي ثانية
+    let VIPGIFTTOUSER = null
 
+    const FIVE_MINUTES = 5 * 60 * 1000; // بالمللي ثانية
     let emojiTimer;
     let currentEmoji = null;
     let emojiPoints = 0;
@@ -220,22 +228,22 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         const bettingData = readBettingData();
         const roomData = bettingData[room];
         const players = roomData.players;
-    
+
         // Select a winner randomly
         const winnerIndex = Math.floor(Math.random() * players.length);
         const winner = players[winnerIndex];
-    
+
         // Update points
         const totalPot = players.reduce((sum, player) => sum + player.betAmount, 0);
         let winnerUser = users.find(u => u.username === winner.username);
         winnerUser.points += totalPot;
-    
+
         // Save winner's points and finalize the game
         sendMainMessage(
             room,
             `🎉 User ${winner.username} won the bet and now has ${formatPoints(winnerUser.points)} points!`
         );
-    
+
         // Clear betting data for the room
         delete bettingData[room];
         writeBettingData(bettingData);
@@ -243,7 +251,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     socket.onmessage = async (event) => {
         const parsedData = JSON.parse(event.data);
         const usersblockes = readBlockedUsers();
-        if(parsedData.room === `egypt`){
+        if (parsedData.room === `egypt`) {
 
         }
 
@@ -320,7 +328,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         // Additional actions if needed when user is unverified
                         return;
                     }
-                 const emoji=   getRandomEmoji()
+                    const emoji = getRandomEmoji()
                     const youget = {
                         handler: 'room_message',
                         id: 'TclBVHgBzPGTMRTNpgWV',
@@ -332,7 +340,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     };
 
                     socket.send(JSON.stringify(youget));
-                   
+
                 }
                 if (parsedData.body === 'حكمه') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -340,7 +348,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         // Additional actions if needed when user is unverified
                         return;
                     }
-                 const hikma=   getRandomHikma()
+                    const hikma = getRandomHikma()
                     const youget = {
                         handler: 'room_message',
                         id: 'TclBVHgBzPGTMRTNpgWV',
@@ -352,7 +360,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     };
 
                     socket.send(JSON.stringify(youget));
-                   
+
                 }
 
                 // إذا كانت الرسالة هي "ابدأ"
@@ -613,7 +621,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         socket.send(JSON.stringify(autoMessage));
                         writeUsersToFile(users);
                         const data = fs.readFileSync('rooms.json', 'utf8');
-                         const rooms = JSON.parse(data);
+                        const rooms = JSON.parse(data);
 
                         for (let ur of rooms) {
                             const autoMessage = {
@@ -643,40 +651,40 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     { emoji: "🌍", name: "Earth", price: "50 points" },
                     { emoji: "🪐", name: "Saturn", price: "100 points" },
                     { emoji: "🌑", name: "Pluto", price: "110 points" },
-                    
+
                     // Moons
                     { emoji: "🌙", name: "Crescent Moon", price: "35 points" },
                     { emoji: "🌒", name: "Waning Crescent", price: "40 points" },
-                    
+
                     // Stars and Celestial Objects
                     { emoji: "⭐", name: "Star", price: "20 points" },
                     { emoji: "🌟", name: "Shining Star", price: "70 points" },
                     { emoji: "💫", name: "Shooting Star", price: "25 points" },
-                    
+
                     // Phenomena
                     { emoji: "☄️", name: "Comet", price: "60 points" },
                     { emoji: "🌌", name: "Galaxy", price: "200 points" }
                 ];
-                
+
                 // Create the store message
                 let storeMessage = "Here are the available items in the store:\n";
-                
+
                 // Loop through the emojiStore and create a list
                 emojiStore.forEach(item => {
                     storeMessage += `${item.emoji} - ${item.name}: ${item.price}\n`;
                 });
-                
+
                 // Send the store message
                 sendMainMessage(parsedData.room, storeMessage);
             }
-           
+
             if (parsedData.handler === 'room_event' && parsedData.body === 'vip') {
                 // تحقق مما إذا كان المستخدم موجودًا في ملف masterbot
                 if (!isUserInMasterBot(parsedData.from)) {
                     console.log(`User ${parsedData.from} not found in masterbot, verification skipped.`);
                     return;
                 }
-                
+
                 const outputPath = 'C:/ImagesServers/111.png';
                 const backgroundImagePath = './images/moon.jpg';  // مسار صورة القمر
                 const overlayImageUrl = 'https://www.tebot.online/image1.jpg';  // رابط الصورة الثانية
@@ -686,7 +694,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     .then(response => {
                         if (response.ok) {
                             console.log(response);
-                            
+
                             // إذا كانت الصورة موجودة، قم بإنشاء الصورة
                             console.log(`Image ${overlayImageUrl} is available. Proceeding with canvas creation.`);
                             createCanvasWithBackground(backgroundImagePath, overlayImageUrl, outputPath);
@@ -699,7 +707,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         console.log(`Error fetching image: ${error}`);
                     });
             }
-            
+
 
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
                 sendMainMessage(parsedData.name, `🌟𝗪𝗘𝗟𝗖𝗢𝗠𝗘🌟 \n ${parsedData.username}`);
@@ -880,8 +888,10 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                     let user = users.find(user => user.username === usernameToVerify);
                     if (!user) {
-                        user = { username: usernameToVerify, verified: true, lasttimegift: null, points: null, name:null,
-                            nickname:null };
+                        user = {
+                            username: usernameToVerify, verified: true, lasttimegift: null, points: null, name: null,
+                            nickname: null
+                        };
                         users.push(user);
                         console.log(`New user added: ${usernameToVerify}`);
                         sendVerificationMessage(parsedData.room, `User verified: ${usernameToVerify}`);
@@ -904,7 +914,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     } else {
                         console.log(`User not found: ${usernameToDelete}`);
                     }
-                } else if (body.startsWith('ms@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا"  ) {
+                } else if (body.startsWith('ms@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
 
                     const usernameToAdd = body.split('@')[1].trim();
                     addUserToMasterBot(usernameToAdd);
@@ -929,12 +939,12 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         const formattedPoints = formatPoints(respondingUser?.points);
                         sendMainMessage(parsedData.room, `User ${parsedData.from} has: ${formattedPoints} points`);
                     }
-                }else if (body.startsWith('spec@')) {
+                } else if (body.startsWith('spec@')) {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         return; // Betting is not allowed for unverified users
                     }
-                
+
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                         const betAmount = parseInt(body.split('@')[1], 10); // Extract the bet amount
@@ -942,16 +952,16 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                             sendMainMessage(parsedData.room, `❌ Invalid bet amount! Please enter a positive number.`);
                             return;
                         }
-                
+
                         if (respondingUser.points < betAmount) {
                             sendMainMessage(parsedData.room, `❌ User ${parsedData.from} does not have enough points to bet ${betAmount}.`);
                             return;
                         }
-                
+
                         // Determine the bet result
                         const win = Math.random() < 0.5; // 50% chance to win
                         const changeAmount = Math.floor(betAmount * (Math.random() * 0.5 + 0.5)); // Random change between 50% and 100%
-                
+
                         if (win) {
                             respondingUser.points += changeAmount;
                             sendMainMessage(
@@ -975,7 +985,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         sendMainMessage(parsedData.room, `❌ You don't have enough points to start a bet. You currently have ${player ? player.points : 0} points.`);
                         return;
                     }
-                
+
                     // التحقق من وجود بيانات الغرفة
                     if (!bettingData[parsedData.room]) {
                         bettingData[parsedData.room] = {
@@ -985,15 +995,15 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                             active: false
                         };
                     }
-                
+
                     const roomData = bettingData[parsedData.room];
-                
+
                     // تحقق إذا كانت هناك لعبة جارية في الغرفة
                     if (roomData.active) {
                         sendMainMessage(parsedData.room, `❌ A game is already in progress. Please wait until it finishes.`);
                         return;
                     }
-                
+
                     // إعداد بيانات اللعبة الجديدة
                     roomData.betAmount = betAmount;
                     roomData.players = [{
@@ -1002,13 +1012,13 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     }];
                     roomData.startedBy = parsedData.from;
                     roomData.active = true;
-                
+
                     // حفظ بيانات المراهنة
                     writeBettingData(bettingData);
-                
+
                     sendMainMessage(parsedData.room, `🎲 ${parsedData.from} has started a bet with ${betAmount} points!`);
                     sendMainMessage(parsedData.room, `🎲 Other players can join by typing 'bet'.`);
-                
+
                     // تعيين مؤقت لإغلاق اللعبة بعد دقيقة إذا لم يُرسل .start
                     setTimeout(() => {
                         const updatedBettingData = readBettingData();
@@ -1023,32 +1033,12 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                             writeBettingData(updatedBettingData);
                         }
                     }, 60000); // 60,000 ms = 1 دقيقة
-                } else if (body.startsWith('vip@')) {
-                    const usernameToVerify = body.split('@')[1].trim();
-
-                    // تحقق مما إذا كان المستخدم موجودًا في ملف masterbot
-                    if (!isUserInMasterBot(parsedData.from)) {
-                        console.log(`User ${parsedData.from} not found in masterbot, verification skipped.`);
-                        return;
-                    }
-                    const outputPath = 'C:/ImagesServers/111.png';
-                    const backgroundImagePath = './images/moon.jpg';  // مسار صورة القمر
-                    const overlayImageUrl = 'https://cdn.goenhance.ai/user/2024/07/19/c0c1400b-abc2-4541-a849-a7e4f361d28d_0.jpg';  // رابط الصورة الثانية
-                    console.log(usernameToVerify,`usernameToVerify`);
-                    
-                    createCanvasWithBackground(backgroundImagePath, overlayImageUrl, outputPath);
-                    // let user = users.find(user => user.username === usernameToVerify);
-                    // sendVerificationMessage(parsedData.room, `User verified: ${usernameToVerify}`);
-                    sendMainImageMessage(parsedData.room, overlayImageUrl);
-
-                   
-
                 }
-                
+
                 else if (body === 'bet') {
                     const bettingData = readBettingData();
                     const roomData = bettingData[parsedData.room];
-                
+
                     // تحقق إذا كانت المراهنة قد بدأت
                     if (!roomData || !roomData.active) {
                         sendMainMessage(parsedData.room, `❌ No betting has started yet. Use "bet@<amount>" to start the bet.`);
@@ -1059,12 +1049,12 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         sendMainMessage(parsedData.room, `❌ Player not found. Please make sure you are logged in.`);
                         return;
                     }
-                
+
                     if (player.points < roomData.betAmount) {
                         sendMainMessage(parsedData.room, `❌ You don't have enough points to join the bet. Your current points are ${player.points}.`);
                         return;
                     }
-                
+
                     // تحقق إذا كان اللاعب لديه نقاط كافية
                     if (player && player.points >= roomData.betAmount) {
                         // تحقق إذا كان اللاعب قد انضم بالفعل
@@ -1074,9 +1064,9 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                                 username: parsedData.from,
                                 betAmount: roomData.betAmount
                             });
-                
+
                             writeBettingData(bettingData);  // تحديث بيانات المراهنة
-                
+
                             sendMainMessage(parsedData.room, `🎲 ${parsedData.from} has joined the bet with ${roomData.betAmount} points.`);
                         } else {
                             sendMainMessage(parsedData.room, `❌ You have already joined the bet.`);
@@ -1085,34 +1075,34 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         sendMainMessage(parsedData.room, `❌ You don't have enough points to join the bet. Your current points are ${player ? player.points : 0}.`);
                     }
                 }
-                
+
 
                 else if (body === '.start') {
                     const bettingData = readBettingData();
                     const roomData = bettingData[parsedData.room];
-                
+
                     if (!roomData || roomData.startedBy !== parsedData.from) {
                         sendMainMessage(parsedData.room, `❌ Only the player who started the bet can start the game.`);
                         return;
                     }
-                
+
                     if (roomData.players.length < 2) {
                         sendMainMessage(parsedData.room, `❌ There must be at least two players to start the game.`);
                         return;
                     }
-                
+
                     // تحديد الفائز عشوائيًا
                     const winnerIndex = Math.floor(Math.random() * roomData.players.length);
                     const winner = roomData.players[winnerIndex];
                     sendMainMessage(parsedData.room, `🎉 The winner is ${winner.username} with ${winner.betAmount} points! 🎉`);
-                
+
                     // تحديث النقاط: الفائز يحصل على ضعف المبلغ
                     let winnerPlayer = users.find(user => user.username === winner.username);
                     if (winnerPlayer && winner.betAmount > 0 && roomData.players.length > 0) {
                         winnerPlayer.points += winner.betAmount * roomData.players.length;
                     }
-                    
-                
+
+
                     // خصم المبلغ من اللاعبين الخاسرين
                     roomData.players.forEach(player => {
                         if (player.username !== winner.username) {
@@ -1122,117 +1112,270 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                             }
                         }
                     });
-                
+
                     // إعادة تعيين حالة المراهنة
                     roomData.players = [];
                     roomData.active = false;
                     roomData.betAmount = null;
                     roomData.startedBy = null;
-                
+
                     // حفظ البيانات بعد انتهاء اللعبة
                     writeBettingData(bettingData);
                 }
-                
-                
-              // دالة لتحويل الأرقام إلى تنسيق مختصر
 
 
-else if (body === '.lp') {
-    // ترتيب اللاعبين بناءً على النقاط من الأكبر إلى الأصغر
-    const topPlayers = users
-        .sort((a, b) => b.points - a.points) // ترتيب تنازلي للنقاط
-        .slice(0, 10); // اختيار أكبر 10 لاعبين
+                else if (body.startsWith('vip@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
+                    const usernameToAdd = body.split('@')[1].trim();
 
-    if (topPlayers.length === 0) {
-        sendMainMessage(parsedData.room, `❌ No players available.`);
-        return;
-    }
+                    let vipUsers = readVipFile();
 
-    // قائمة الإيموجي حسب الترتيب
-    const rankEmojis = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '⭐', '✨', '🌟', '🔥'];
+                    // تحقق إذا كان المستخدم موجودًا بالفعل
+                    if (vipUsers.some(user => user.username === usernameToAdd)) {
+                        console.log(`User ${usernameToAdd} is already in VIP list.`);
+                        sendVerificationMessage(parsedData.room, `User ${usernameToAdd} is already in VIP list.`);
+                    } else {
+                        vipUsers.push({ username: usernameToAdd });
+                        console.log(`User added to VIP: ${usernameToAdd}`);
+                        sendVerificationMessage(parsedData.room, `User added to VIP: ${usernameToAdd}`);
+                        writeVipFile(vipUsers);
+                    }
+                } else if (body.startsWith('uvip@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
+                    const usernameToRemove = body.split('@')[1].trim();
 
-    // بناء الرسالة التي تحتوي على قائمة اللاعبين مع إجبار الاتجاه من اليسار لليمين
-    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n`;
+                    let vipUsers = readVipFile();
 
-    topPlayers.forEach((player, index) => {
-        const emoji = rankEmojis[index] || '🔹'; // اختيار الإيموجي بناءً على الترتيب
-        const formattedPoints = formatPoints(player.points); // تنسيق النقاط
-        leaderboardMessage += `${emoji} ${index + 1}. ${player.username}: ${formattedPoints} points\n`;
-    });
+                    // ابحث عن المستخدم في القائمة
+                    const userIndex = vipUsers.findIndex(user => user.username === usernameToRemove);
 
-    leaderboardMessage += `\u202C`; // إنهاء تنسيق اتجاه النص
+                    if (userIndex !== -1) {
+                        vipUsers.splice(userIndex, 1);
+                        console.log(`User removed from VIP: ${usernameToRemove}`);
+                        sendVerificationMessage(parsedData.room, `User removed from VIP: ${usernameToRemove}`);
+                        writeVipFile(vipUsers);
+                    } else {
+                        console.log(`User not found in VIP list: ${usernameToRemove}`);
+                        sendVerificationMessage(parsedData.room, `User not found in VIP list: ${usernameToRemove}`);
+                    }
+                }
 
-    // إرسال الرسالة إلى الغرفة
-    sendMainMessage(parsedData.room, leaderboardMessage);
-}
+                else if (body === '.lp') {
+                    // ترتيب اللاعبين بناءً على النقاط من الأكبر إلى الأصغر
+                    const topPlayers = users
+                        .sort((a, b) => b.points - a.points) // ترتيب تنازلي للنقاط
+                        .slice(0, 10); // اختيار أكبر 10 لاعبين
 
-else if (parsedData.url !== '') {
-    
-    // إرسال رسالة "تم استلام رسالة"
-}             
-else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉' || body === '🍓' || body === '🍇' || body === '🍍' || body === '🥭' || body === '🍑' || body === '🍈') {
-    // قائمة الإيموجيات الفاكهة المسموحة
-    const fruitEmojis = ['🍎', '🍊', '🍌', '🍉', '🍓', '🍇', '🍍', '🥭', '🍑', '🍈'];
+                    if (topPlayers.length === 0) {
+                        sendMainMessage(parsedData.room, `❌ No players available.`);
+                        return;
+                    }
 
-    // تحديد اللاعب بناءً على الاسم
-    const player = users.find(u => u.username === parsedData.from);  
-    
-    // التأكد من أن اللاعب موجود في النظام
-    if (player) {
-        // التحقق من الوقت الذي أرسل فيه اللاعب آخر إيموجي
-        const currentTime = Date.now();  // الحصول على الوقت الحالي بالـ milliseconds
-        const lastTime = player.lastEmojiTime || 0;  // إذا لم يكن موجوداً تعيين القيمة إلى 0
-        
-        const timeDifference = currentTime - lastTime;  // الفرق بين الوقت الحالي وآخر وقت أرسل فيه اللاعب الإيموجي
-        
-        // إذا مر أكثر من دقيقة (60,000 ملي ثانية)
-        if (timeDifference >= 60000) {
-            // تحديد "الحظ" العشوائي
-            const luck = Math.random();  // يعطي قيمة عشوائية بين 0 و 1
+                    // قائمة الإيموجي حسب الترتيب
+                    const rankEmojis = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '⭐', '✨', '🌟', '🔥'];
 
-            // إذا كان الحظ جيدًا (مثلاً 50% حظ جيد)
-            if (luck <= 0.5) {
-                // زيادة النقاط للاعب إذا كان الحظ جيدًا
-                player.points += 10000;  // إضافة 10,000 نقطة
+                    // بناء الرسالة التي تحتوي على قائمة اللاعبين مع إجبار الاتجاه من اليسار لليمين
+                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n`;
 
-                // تحديث وقت آخر إيموجي أرسله اللاعب
-                player.lastEmojiTime = currentTime;
+                    topPlayers.forEach((player, index) => {
+                        const emoji = rankEmojis[index] || '🔹'; // اختيار الإيموجي بناءً على الترتيب
+                        const formattedPoints = formatPoints(player.points); // تنسيق النقاط
+                        leaderboardMessage += `${emoji} ${index + 1}. ${player.username}: ${formattedPoints} points\n`;
+                    });
 
-                // حفظ التحديثات في الملف
-                fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                    leaderboardMessage += `\u202C`; // إنهاء تنسيق اتجاه النص
 
-                // إرسال نفس الإيموجي الذي أرسله المستخدم لأن الحظ جيد
-                sendMainMessage(parsedData.room, `🎉 ${parsedData.from} is lucky! They win 10,000 points! ${body}`);
-            } else {
-                // إرسال إيموجي مختلف إذا لم يكن الحظ جيدًا
-                const unluckyEmoji = '❌'; // الإيموجي الذي سيرد به البوت إذا لم يكن الحظ جيدًا
-                sendMainMessage(parsedData.room, `${parsedData.from} is not lucky this time. Try again! ${unluckyEmoji}`);
-            }
-        } else {
-            // إرسال رسالة للمستخدم بأنه يجب أن ينتظر حتى يمر دقيقة كاملة
-            const remainingTime = Math.ceil((60000 - timeDifference) / 1000);  // حساب الوقت المتبقي بالثواني
-            sendMainMessage(parsedData.room, `${parsedData.from}, please wait ${remainingTime} seconds before sending another emoji!`);
-        }
-    }
-}
+                    // إرسال الرسالة إلى الغرفة
+                    sendMainMessage(parsedData.room, leaderboardMessage);
+                }
 
 
+                else if (body.startsWith('svip@')) {
+                    const sender = parsedData.from; // المرسل الحقيقي للطلب
+                    const vipUsers = readVipFile(); // افترض أن هذه الدالة تقرأ قائمة VIP من ملف vip.json
+
+                    // تحقق إذا كان المستخدم في قائمة VIP
+                    const isVip = vipUsers.some(user => user.username === sender);
+
+                    if (!isVip) {
+                        // إذا كان المستخدم ليس في قائمة VIP، أرسل رسالة له
+                        console.log(`User ${sender} is not a VIP.`);
+                        sendMainMessage(parsedData.room, `You are not subscribed to the SuperVIP service.`);
+                        return;
+                    }
+                    const currentTime = Date.now();
+
+                    // التحقق من إذا قام المستخدم بإرسال طلب خلال آخر 5 دقائق
+                    if (lastSvipRequestTime.has(sender)) {
+                        const lastRequestTime = lastSvipRequestTime.get(sender);
+                        const timeSinceLastRequest = currentTime - lastRequestTime;
+
+                        if (timeSinceLastRequest < FIVE_MINUTES) {
+                            const remainingTime = Math.ceil((FIVE_MINUTES - timeSinceLastRequest) / 1000);
+                            console.log(`Request rejected for sender: ${sender}, please wait ${remainingTime} seconds.`);
+                            sendMainMessage(parsedData.room, `You can only send svip@ requests every 5 minutes. Please wait ${remainingTime} seconds.`);
+                            return;
+                        }
+                    }
+
+                    const username = body.split('@')[1].trim();
+                    VIPGIFTTOUSER = username
+                    if (pendingSvipRequests.has(sender)) {
+                        console.log(`Request already pending for sender: ${sender}`);
+                        sendMainMessage(parsedData.room, `Request already pending for you.`);
+                        return;
+                    }
+
+                    console.log(`svip request received from sender: ${sender} for user: ${username}`);
+                    sendMainMessage(parsedData.room, `Please send the image within 30 seconds for user: ${username}`);
+
+                    const timeoutId = setTimeout(() => {
+                        if (pendingSvipRequests.has(sender)) {
+                            console.log(`Timeout for sender: ${sender}`);
+                            sendMainMessage(parsedData.room, `Timeout! No image received for your request.`);
+                            pendingSvipRequests.delete(sender); // حذف الطلب بعد 30 ثانية
+                            const { timeoutId } = pendingSvipRequests.get(sender);
+                            clearTimeout(timeoutId); // إيقاف المؤقت بعد إرسال الصورة
+                        }
+                    }, THIRTY_SECONDS);
+
+                    pendingSvipRequests.set(sender, { timeoutId });
+                    lastSvipRequestTime.set(sender, currentTime); // تحديث توقيت الطلب الأخير
+                }
+
+                else if (parsedData.type === 'image' && parsedData.url && parsedData.url !== '') {
+                    const sender = Array.from(pendingSvipRequests.keys()).find(key => pendingSvipRequests.has(key));
+
+                    if (sender) {
+                        const imageUrl = parsedData.url;
+                        console.log(`Image received from sender: ${sender}, URL: ${imageUrl}`);
+                        sendMainMessage(parsedData.room, `Image received and processed for your request.`);
+
+                        storedImages.set(sender, imageUrl);
+                        console.log(`Image stored for sender: ${sender}`);
 
 
-  
-                
+                        const { timeoutId } = pendingSvipRequests.get(sender);
+                        clearTimeout(timeoutId); // إيقاف المؤقت بعد إرسال الصورة
+                        pendingSvipRequests.delete(sender); // حذف الطلب بعد إرسال الصورة
+                    } else {
+                        console.log('Image received but no pending svip request found.');
+                    }
+                }
+
+                else if (body === '.send') {
+                    const sender = parsedData.from; // المرسل الحقيقي للطلب
+                    const vipUsers = readVipFile(); // افترض أن هذه الدالة تقرأ قائمة VIP من ملف vip.json
+
+                    // تحقق إذا كان المستخدم في قائمة VIP
+                    const isVip = vipUsers.some(user => user.username === sender);
+
+                    if (!isVip) {
+                        // إذا كان المستخدم ليس في قائمة VIP، أرسل رسالة له
+                        console.log(`User ${sender} is not a VIP.`);
+                        sendMainMessage(parsedData.room, `You are not subscribed to the SuperVIP service.`);
+                        return;
+                    }
+                    if (storedImages.has(sender)) {
+                        const imageUrl = storedImages.get(sender);
+                        const data = fs.readFileSync('rooms.json', 'utf8');
+                        const rooms = JSON.parse(data);
+
+
+                        for (let ur of rooms) {
+                            sendMainImageMessage(ur, imageUrl);
+                            sendMainMessage(ur, `⚠️ *sᴜᴘᴇʀ ᴠɪᴘ ɢɪғᴛ* ⚠️\n 𝔽ℝ𝕆𝕄 : [${sender}] 𝕋𝕆 : [${VIPGIFTTOUSER}]`);
+
+
+                        }
+
+                    } else {
+                        sendMainMessage(parsedData.room, `No stored image found for you.`);
+                    }
+                }
+
+
+
+                else if (parsedData.url && parsedData.url !== '') {
+                    console.log('Parsed Data:', parsedData);
+
+                    // تخزين قيمة URL
+                    const imageUrl = parsedData.url;
+                    const sender = parsedData.from;
+
+                    // التحقق من قائمة VIP
+                    const vipUsers = readVipFile(); // افترض أن هذه الدالة تقرأ قائمة VIP من ملف vip.json
+                    const isVip = vipUsers.some(user => user.username === sender);
+                    if (isVip) {
+                        sendMainImageMessage(parsedData.room, imageUrl);
+
+                    }
+                    // إعادة إرسال URL
+
+                    console.log(`URL stored and resent: ${imageUrl}`);
+                }
+
+                else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉' || body === '🍓' || body === '🍇' || body === '🍍' || body === '🥭' || body === '🍑' || body === '🍈') {
+                    // قائمة الإيموجيات الفاكهة المسموحة
+                    const fruitEmojis = ['🍎', '🍊', '🍌', '🍉', '🍓', '🍇', '🍍', '🥭', '🍑', '🍈'];
+
+                    // تحديد اللاعب بناءً على الاسم
+                    const player = users.find(u => u.username === parsedData.from);
+
+                    // التأكد من أن اللاعب موجود في النظام
+                    if (player) {
+                        // التحقق من الوقت الذي أرسل فيه اللاعب آخر إيموجي
+                        const currentTime = Date.now();  // الحصول على الوقت الحالي بالـ milliseconds
+                        const lastTime = player.lastEmojiTime || 0;  // إذا لم يكن موجوداً تعيين القيمة إلى 0
+
+                        const timeDifference = currentTime - lastTime;  // الفرق بين الوقت الحالي وآخر وقت أرسل فيه اللاعب الإيموجي
+
+                        // إذا مر أكثر من دقيقة (60,000 ملي ثانية)
+                        if (timeDifference >= 60000) {
+                            // تحديد "الحظ" العشوائي
+                            const luck = Math.random();  // يعطي قيمة عشوائية بين 0 و 1
+
+                            // إذا كان الحظ جيدًا (مثلاً 50% حظ جيد)
+                            if (luck <= 0.5) {
+                                // زيادة النقاط للاعب إذا كان الحظ جيدًا
+                                player.points += 10000;  // إضافة 10,000 نقطة
+
+                                // تحديث وقت آخر إيموجي أرسله اللاعب
+                                player.lastEmojiTime = currentTime;
+
+                                // حفظ التحديثات في الملف
+                                fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+
+                                // إرسال نفس الإيموجي الذي أرسله المستخدم لأن الحظ جيد
+                                sendMainMessage(parsedData.room, `🎉 ${parsedData.from} is lucky! They win 10,000 points! ${body}`);
+                            } else {
+                                // إرسال إيموجي مختلف إذا لم يكن الحظ جيدًا
+                                const unluckyEmoji = '❌'; // الإيموجي الذي سيرد به البوت إذا لم يكن الحظ جيدًا
+                                sendMainMessage(parsedData.room, `${parsedData.from} is not lucky this time. Try again! ${unluckyEmoji}`);
+                            }
+                        } else {
+                            // إرسال رسالة للمستخدم بأنه يجب أن ينتظر حتى يمر دقيقة كاملة
+                            const remainingTime = Math.ceil((60000 - timeDifference) / 1000);  // حساب الوقت المتبقي بالثواني
+                            sendMainMessage(parsedData.room, `${parsedData.from}, please wait ${remainingTime} seconds before sending another emoji!`);
+                        }
+                    }
+                }
+
+
+
+
+
+
                 else if (body === 'lucky') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         return; // Game is not allowed for unverified users
                     }
-                
+
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                         const currentTime = Date.now();
                         const lastCommandTime = respondingUser.lastLuckyTime || 0;
                         const interval = 5 * 60 * 1000; // 5 minutes in milliseconds
-                
+
                         if (currentTime - lastCommandTime < interval) {
                             sendMainMessage(
                                 parsedData.room,
@@ -1240,10 +1383,10 @@ else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉
                             );
                             return;
                         }
-                
+
                         // Update the last command time
                         respondingUser.lastLuckyTime = currentTime;
-                
+
                         // Determine the luck outcome
                         const goodLuck = Math.random() < 0.5; // 50% chance of good luck
                         if (goodLuck) {
@@ -1267,27 +1410,27 @@ else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉
                         }
                     }
                 }
-                
-                
-                
-                
-                
-                 else if (body.startsWith('قول ')) {
+
+
+
+
+
+                else if (body.startsWith('قول ')) {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // Additional actions if needed when the user is unverified
                         return;
                     }
-                
+
                     // مصفوفة إيموجيات الفاكهة
                     const fruitEmojis = ['🍎', '🍌', '🍊', '🍉', '🍓', '🍍', '🍇', '🍑', '🍒', '🍍'];
-                
+
                     // اختيار إيموجي فاكهة عشوائي
                     const randomFruitEmoji = fruitEmojis[Math.floor(Math.random() * fruitEmojis.length)];
-                
+
                     // استخراج النص بالكامل بعد "say"
                     const textAfterSay = body.slice(4).trim(); // بعد "say " يتم استخدام slice لاستخراج النص بالكامل
-                
+
                     if (textAfterSay) {
                         // إرسال النص مع إيموجي الفاكهة العشوائي
                         sendMainMessage(parsedData.room, `${textAfterSay} ${randomFruitEmoji}`);
@@ -1301,29 +1444,29 @@ else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉
                         // Additional actions if needed when the user is unverified
                         return;
                     }
-                
+
                     // مصفوفة إيموجيات الفاكهة
                     const fruitEmojis = ['🍎', '🍌', '🍊', '🍉', '🍓', '🍍', '🍇', '🍑', '🍒', '🍍'];
-                
+
                     // اختيار إيموجي فاكهة عشوائي
                     const randomFruitEmoji = fruitEmojis[Math.floor(Math.random() * fruitEmojis.length)];
-                
+
                     // استخراج النص بالكامل بعد "say"
                     const textAfterSay = body.slice(4).trim(); // بعد "say " يتم استخدام slice لاستخراج النص بالكامل
-                
+
                     if (textAfterSay) {
                         // إرسال النص مع إيموجي الفاكهة العشوائي
                         sendMainMessage(parsedData.room, `${textAfterSay} ${randomFruitEmoji}`);
                     } else {
                         sendMainMessage(parsedData.room, "No text provided after 'say'");
                     }
-                }else if (body.startsWith('name@')) {
+                } else if (body.startsWith('name@')) {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // Additional actions if needed when user is unverified
                         return;
                     }
-                
+
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                         // استخراج الكلمة بعد name@
@@ -1347,7 +1490,7 @@ else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉
                         // Additional actions if needed when user is unverified
                         return;
                     }
-                
+
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                         // استخراج الكلمة بعد name@
@@ -1371,75 +1514,75 @@ else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉
                         // Additional actions if needed when user is unverified
                         return;
                     }
-                
+
                     const parts = body.split('@');
                     if (parts.length !== 3) {
                         sendMainMessage(parsedData.room, "Error: Invalid format. Use +tp@username@points.");
                         return;
                     }
-                
+
                     const targetUsername = parts[1]?.trim();
                     const pointsToTransfer = parseInt(parts[2]?.trim(), 10);
-                
+
                     if (!targetUsername || isNaN(pointsToTransfer) || pointsToTransfer <= 0) {
                         sendMainMessage(parsedData.room, "Error: Invalid username or points. Points must be a positive number.");
                         return;
                     }
-                
+
                     let sender = users.find(user => user.username === parsedData.from);
                     let receiver = users.find(user => user.username === targetUsername);
-                
+
                     if (!sender) {
                         sendMainMessage(parsedData.room, "Error: Sender not found.");
                         return;
                     }
-                
+
                     if (!receiver) {
                         sendMainMessage(parsedData.room, `Error: User "${targetUsername}" not found.`);
                         return;
                     }
-                
+
                     if (sender.points === null || sender.points < pointsToTransfer) {
                         sendMainMessage(parsedData.room, "Error: Insufficient points.");
                         return;
                     }
-                
+
                     // Perform the transaction
                     sender.points -= pointsToTransfer;
                     receiver.points = (receiver.points || 0) + pointsToTransfer;
-                
+
                     // Save the updated data
                     fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-                
+
                     // Notify both users
                     sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}.`);
                 }
-                
-                else if (body && body !== ".lg" && !body.startsWith('agi@')&& body !== "help"&& body !== ".lg@" && body !== ".lg@4"&& body !== ".lg@2" && body !== ".lg@3" && body !== ".lg@1" && body !== "فزوره"&& !body.startsWith('help@1')&& body !== "+tp@") {
+
+                else if (body && body !== ".lg" && !body.startsWith('agi@') && body !== "help" && body !== ".lg@" && body !== ".lg@4" && body !== ".lg@2" && body !== ".lg@3" && body !== ".lg@1" && body !== "فزوره" && !body.startsWith('help@1') && body !== "+tp@") {
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
-                  
 
-                    
-                    if (users && Array.isArray(users)) {
-                        for (let i = 0; i < users.length; i++) {
-                            if (body === users[i].name) {
-                                // إرسال اسم الشهرة الخاص بالمستخدم
-                                sendMainMessage(parsedData.room, ` ${users[i].nickname}`);
-                                return; // إنهاء العملية بمجرد العثور على المستخدم
+
+
+                        if (users && Array.isArray(users)) {
+                            for (let i = 0; i < users.length; i++) {
+                                if (body === users[i].name) {
+                                    // إرسال اسم الشهرة الخاص بالمستخدم
+                                    sendMainMessage(parsedData.room, ` ${users[i].nickname}`);
+                                    return; // إنهاء العملية بمجرد العثور على المستخدم
+                                }
                             }
                         }
                     }
                 }
-            }
-                
-                
-                
-                
-                
-                
-                
-                 else if (body === '.lg') {
+
+
+
+
+
+
+
+                else if (body === '.lg') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // Additional actions if needed when user is unverified
@@ -1470,7 +1613,7 @@ to next .lg@1
                         return;
                     }
 
-     
+
 
                     sendMainMessage(parsedData.room, ` 
 ⑪ 🍹 𝑺𝒖𝒈𝒂𝒓𝒄𝒂𝒏𝒆 𝑱𝒖𝒊𝒄𝒆
@@ -1499,7 +1642,7 @@ to next .lg@2
                         return;
                     }
 
-  
+
                     sendMainMessage(parsedData.room, ` 
 ㉑ 🐰 𝑩𝒖𝒈𝒔 𝑩𝒖𝒏𝒏𝒚
 ㉒ 🍍 𝑺𝒑𝑜𝒏𝒈𝑩𝒐𝒃
@@ -1524,7 +1667,7 @@ to next .lg@3
                         return;
                     }
 
-  
+
 
                     sendMainMessage(parsedData.room, `
     32 butterflies
@@ -1548,7 +1691,7 @@ to next .lg@3
                         return;
                     }
 
-  
+
 
                     sendMainMessage(parsedData.room, `
     41 venom
@@ -1677,19 +1820,19 @@ to next .lg@3
                                         const data = fs.readFileSync('rooms.json', 'utf8');
                                         const rooms = JSON.parse(data);
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -1708,19 +1851,19 @@ to next .lg@3
                                         const data = fs.readFileSync('rooms.json', 'utf8');
                                         const rooms = JSON.parse(data);
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -1736,29 +1879,29 @@ to next .lg@3
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
                                         const rooms = JSON.parse(data);
-                                
+
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     } else {
                                         console.error('No images found for the specified type.');
                                     }
                                 }
-                                
-                                
+
+
                             } else if (id === 4) {
                                 imageType4 = 'pizza';
 
@@ -1771,19 +1914,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -1804,19 +1947,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -1837,19 +1980,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -1870,19 +2013,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -1903,19 +2046,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -1936,19 +2079,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -1966,22 +2109,21 @@ to next .lg@3
                                         const data = fs.readFileSync('rooms.json', 'utf8');
                                         const rooms = JSON.parse(data);
 
-                                        console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2002,19 +2144,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2035,19 +2177,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2068,19 +2210,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2101,19 +2243,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2134,19 +2276,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2167,19 +2309,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2200,19 +2342,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2233,19 +2375,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2266,19 +2408,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2299,19 +2441,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2332,19 +2474,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2365,19 +2507,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2398,19 +2540,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2431,19 +2573,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2464,19 +2606,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2496,19 +2638,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2528,19 +2670,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2560,19 +2702,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2592,19 +2734,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2624,19 +2766,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2656,19 +2798,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2688,19 +2830,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2720,19 +2862,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2752,19 +2894,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2784,19 +2926,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2816,19 +2958,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2848,19 +2990,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2880,19 +3022,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2912,19 +3054,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2944,19 +3086,19 @@ to next .lg@3
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -2974,19 +3116,19 @@ to next .lg@3
                                         const rooms = JSON.parse(data);
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -3005,19 +3147,19 @@ to next .lg@3
                                         const rooms = JSON.parse(data);
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -3036,19 +3178,19 @@ to next .lg@3
                                         const rooms = JSON.parse(data);
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -3067,19 +3209,19 @@ to next .lg@3
                                         const rooms = JSON.parse(data);
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -3098,19 +3240,19 @@ to next .lg@3
                                         const rooms = JSON.parse(data);
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -3128,19 +3270,19 @@ to next .lg@3
                                         const rooms = JSON.parse(data);
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -3159,19 +3301,19 @@ to next .lg@3
                                         const rooms = JSON.parse(data);
 
                                         for (let ur of rooms) {
-                                            const message = canSendGift(parsedData.from);  
+                                            const message = canSendGift(parsedData.from);
                                             if (message === true) {
-                                                const currentTime = new Date();  
+                                                const currentTime = new Date();
                                                 const localTime = moment(currentTime).local().format('YYYY-MM-DD HH:mm:ss');
-                                               sendMainImageMessage(ur, imageUrl);
+                                                sendMainImageMessage(ur, imageUrl);
                                                 sendMainMessage(ur, `🎉 ＧＩＦＴ 🎉\nᶠʳᵒᵐ : [${parsedData.from}]\nᵗᵒ : [${username}]\nᵐᵉˢˢᵃᵍᵉ : ${msg} 🎉`);
-                                
+
                                                 setTimeout(() => {
                                                     updateLastTimeGift(parsedData.from, localTime);
 
-                                                }, 1000); 
+                                                }, 1000);
                                             } else {
-                                                sendMainMessage(ur, message); 
+                                                sendMainMessage(ur, message);
                                             }
                                         }
                                     }
@@ -3186,8 +3328,8 @@ to next .lg@3
 
                     }
 
-                }else if (body ==='help') {
-                  
+                } else if (body === 'help') {
+
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
 
@@ -3215,9 +3357,9 @@ to next .lg@3
                     }
 
 
-                } 
-                else if (body ==='help@1') {
-                  
+                }
+                else if (body === 'help@1') {
+
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
 
@@ -3302,7 +3444,7 @@ to next .lg@3
                     }
                 }
             }
-           
+
 
         };
 
