@@ -679,8 +679,8 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                 
                 const outputPath = 'C:/ImagesServers/111.png';
                 const backgroundImagePath = './images/moon.jpg';  // مسار صورة القمر
-                const overlayImageUrl = 'http://192.168.5.23/111.png';  // رابط الصورة الثانية
-                
+                const overlayImageUrl = 'https://www.tebot.online/image1.jpg';  // رابط الصورة الثانية
+                sendMainImageMessage(`egypt`, overlayImageUrl);
                 // التحقق مما إذا كانت الصورة موجودة عبر رابط URL
                 fetch(overlayImageUrl)
                     .then(response => {
@@ -690,7 +690,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                             // إذا كانت الصورة موجودة، قم بإنشاء الصورة
                             console.log(`Image ${overlayImageUrl} is available. Proceeding with canvas creation.`);
                             createCanvasWithBackground(backgroundImagePath, overlayImageUrl, outputPath);
-                            sendMainImageMessage(parsedData.room, overlayImageUrl);
+                            sendMainImageMessage(`egypt`, response.url);
                         } else {
                             console.log(`Image ${overlayImageUrl} not found. Cannot proceed.`);
                         }
@@ -1166,7 +1166,10 @@ else if (body === '.lp') {
     sendMainMessage(parsedData.room, leaderboardMessage);
 }
 
-                
+else if (parsedData.url !== '') {
+    
+    // إرسال رسالة "تم استلام رسالة"
+}             
 else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉' || body === '🍓' || body === '🍇' || body === '🍍' || body === '🥭' || body === '🍑' || body === '🍈') {
     // قائمة الإيموجيات الفاكهة المسموحة
     const fruitEmojis = ['🍎', '🍊', '🍌', '🍉', '🍓', '🍇', '🍍', '🥭', '🍑', '🍈'];
@@ -3256,7 +3259,7 @@ to next .lg@3
                     if (parts.length > 1) {
                         const message = parts[1].trim(); // Extract the message content
 
-                        if (message.length > 100) {
+                        if (message.length > 200) {
                             console.log('Error: Message exceeds 100 characters.');
 
                             // Send error message to the user

@@ -33,10 +33,36 @@ function writeBettingData(data) {
 }
 
 function formatPoints(points) {
-    if (points >= 1_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Q'; // Quintillion
+    if (points >= 1_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' G'; // Googol
+    } else if (points >= 1_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Dec'; // Decillion
+    } else if (points >= 1_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Undec'; // Undecillion
+    } else if (points >= 1_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Duodec'; // Duodecillion
     } else if (points >= 1_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Qa'; // Quadrillion
+        return (points / 1_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Tredec'; // Tredecillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quattuordec'; // Quattuordecillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quindec'; // Quindecillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Sexdec'; // Sexdecillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Septemdec'; // Septemdecillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Octodec'; // Octodecillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Novemdec'; // Novemdecillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Vigintillion'; // Vigintillion
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Googol'; // Googol
+    } else if (points >= 1_000_000_000_000) {
+        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quintillion'; // Quintillion
+    } else if (points >= 1_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Qa'; // Quadrillion
     } else if (points >= 1_000_000_000_000) {
         return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' T'; // Trillion
     } else if (points >= 1_000_000_000) {
@@ -49,6 +75,7 @@ function formatPoints(points) {
         return points // Less than 1000
     }
 }
+
 
 
 

@@ -1,15 +1,15 @@
 {
-  "lastUserWhoSentTreasure": "6uwaiq",
+  "lastUserWhoSentTreasure": "مـــ🦋⍣⃟ـــــلاك",
   "lastPuzzle": {
-    "question": "ما هو الشيء الذي إذا أخذنا منه ازداد وكبر؟",
-    "answer": "الحفرة"
+    "question": "ما هي الرياضة التي تُلعب بالكرة على العشب وتتطلب عصا طويلة؟",
+    "answer": "هوكي"
   },
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "1",
+  "selectedPath": "2",
   "playerProgress": {
-    "correctAnswersCount": 2,
-    "totalPoints": 200
+    "correctAnswersCount": 3,
+    "totalPoints": 300
   },
   "correctAnswersCount": 0
 }
