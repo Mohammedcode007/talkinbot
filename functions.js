@@ -17,7 +17,21 @@ const filePathPlayers = './gameData.json'; // المسار إلى ملف JSON
 const {items,hikam} = require('./data');
 
 const bettingFile = './bettingPlayers.json';
+function startSendingSpecMessage(socket, users, parsedData) {
+    // Send the spec@ message every 2 minutes (120,000 milliseconds)
+    const interval = setInterval(() => {
+        socket.emit('message', {
+            room: parsedData.room,
+            body: 'spec@100', // Adjust the bet amount as needed
+            from: parsedData.from
+        });
+    }, 120000); // 2 minutes
 
+    // Ensure the interval is cleared when the user leaves or disconnects
+    socket.on('disconnect', () => {
+        clearInterval(interval);
+    });
+}
 function readVipFile() {
     try {
         const data = fs.readFileSync('vip.json', 'utf-8');
@@ -501,6 +515,7 @@ module.exports = {
     formatPoints,
     addBlockedUser,
     getPuzzles,
+    startSendingSpecMessage,
     loadPuzzles,
     writeBlockedUsers,
     readGameData,

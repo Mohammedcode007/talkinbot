@@ -9,6 +9,7 @@ const {
     updateLastTimeGift,
     saveLoginData,
     deleteUserFromFile,
+    startSendingSpecMessage,
     deleteRoomName,
     saveRoomName,
     readLoginDataTeBot,
@@ -53,8 +54,8 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     const lastSvipRequestTime = new Map(); // لتتبع توقيت آخر طلب لكل مستخدم
     const THIRTY_SECONDS = 30 * 1000; // 30 ثانية بالمللي ثانية
     let VIPGIFTTOUSER = null
-
-    const FIVE_MINUTES = 5 * 60 * 1000; // بالمللي ثانية
+    let VIPGIFTFROMUSER = null
+    const FIVE_MINUTES = 10 * 60 * 1000; // بالمللي ثانية
     let emojiTimer;
     let currentEmoji = null;
     let emojiPoints = 0;
@@ -1191,13 +1192,13 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                 else if (body.startsWith('svip@')) {
                     const sender = parsedData.from; // المرسل الحقيقي للطلب
                     const vipUsers = readVipFile(); // افترض أن هذه الدالة تقرأ قائمة VIP من ملف vip.json
+                    VIPGIFTFROMUSER = sender
 
                     // تحقق إذا كان المستخدم في قائمة VIP
                     const isVip = vipUsers.some(user => user.username === sender);
 
                     if (!isVip) {
                         // إذا كان المستخدم ليس في قائمة VIP، أرسل رسالة له
-                        console.log(`User ${sender} is not a VIP.`);
                         sendMainMessage(parsedData.room, `You are not subscribed to the SuperVIP service.`);
                         return;
                     }
@@ -1210,8 +1211,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                         if (timeSinceLastRequest < FIVE_MINUTES) {
                             const remainingTime = Math.ceil((FIVE_MINUTES - timeSinceLastRequest) / 1000);
-                            console.log(`Request rejected for sender: ${sender}, please wait ${remainingTime} seconds.`);
-                            sendMainMessage(parsedData.room, `You can only send svip@ requests every 5 minutes. Please wait ${remainingTime} seconds.`);
+                            sendMainMessage(parsedData.room, `You can only send svip@ requests every 10 minutes. Please wait ${remainingTime} seconds.`);
                             return;
                         }
                     }
@@ -1224,16 +1224,13 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         return;
                     }
 
-                    console.log(`svip request received from sender: ${sender} for user: ${username}`);
                     sendMainMessage(parsedData.room, `Please send the image within 30 seconds for user: ${username}`);
 
                     const timeoutId = setTimeout(() => {
                         if (pendingSvipRequests.has(sender)) {
-                            console.log(`Timeout for sender: ${sender}`);
                             sendMainMessage(parsedData.room, `Timeout! No image received for your request.`);
                             pendingSvipRequests.delete(sender); // حذف الطلب بعد 30 ثانية
-                            const { timeoutId } = pendingSvipRequests.get(sender);
-                            clearTimeout(timeoutId); // إيقاف المؤقت بعد إرسال الصورة
+
                         }
                     }, THIRTY_SECONDS);
 
@@ -1241,23 +1238,20 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     lastSvipRequestTime.set(sender, currentTime); // تحديث توقيت الطلب الأخير
                 }
 
-                else if (parsedData.type === 'image' && parsedData.url && parsedData.url !== '') {
+                else if (parsedData.type === 'image' && parsedData.url && parsedData.url !== '' && parsedData.from === VIPGIFTFROMUSER) {
                     const sender = Array.from(pendingSvipRequests.keys()).find(key => pendingSvipRequests.has(key));
 
                     if (sender) {
                         const imageUrl = parsedData.url;
-                        console.log(`Image received from sender: ${sender}, URL: ${imageUrl}`);
                         sendMainMessage(parsedData.room, `Image received and processed for your request.`);
 
                         storedImages.set(sender, imageUrl);
-                        console.log(`Image stored for sender: ${sender}`);
 
 
                         const { timeoutId } = pendingSvipRequests.get(sender);
                         clearTimeout(timeoutId); // إيقاف المؤقت بعد إرسال الصورة
                         pendingSvipRequests.delete(sender); // حذف الطلب بعد إرسال الصورة
                     } else {
-                        console.log('Image received but no pending svip request found.');
                     }
                 }
 
@@ -1274,17 +1268,23 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         sendMainMessage(parsedData.room, `You are not subscribed to the SuperVIP service.`);
                         return;
                     }
+
+                    // تحقق من أن المرسل هو نفسه الذي أرسل طلب svip@
+                    if (VIPGIFTFROMUSER !== sender) {
+                        console.log(`User ${sender} is not the one who made the svip@ request.`);
+                        sendMainMessage(parsedData.room, `You are not allowed to send this image. Please ensure you are the one who made the svip@ request.`);
+                        return;
+                    }
+
                     if (storedImages.has(sender)) {
                         const imageUrl = storedImages.get(sender);
                         const data = fs.readFileSync('rooms.json', 'utf8');
                         const rooms = JSON.parse(data);
-
-
-                        for (let ur of rooms) {
-                            sendMainImageMessage(ur, imageUrl);
-                            sendMainMessage(ur, `⚠️ *sᴜᴘᴇʀ ᴠɪᴘ ɢɪғᴛ* ⚠️\n 𝔽ℝ𝕆𝕄 : [${sender}] 𝕋𝕆 : [${VIPGIFTTOUSER}]`);
-
-
+                        if (imageUrl) {
+                            for (let ur of rooms) {
+                                sendMainImageMessage(ur, imageUrl);
+                                sendMainMessage(ur, `⚠️ ✨🇸‌🇺‌🇵‌🇪‌🇷‌🏅 🇻‌🇮‌🇵‌🏅✨ ⚠️\n 𝔽ℝ𝕆𝕄 : [${sender}] 𝕋𝕆 : [${VIPGIFTTOUSER}]`);
+                            }
                         }
 
                     } else {
@@ -1294,24 +1294,6 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
 
 
-                else if (parsedData.url && parsedData.url !== '') {
-                    console.log('Parsed Data:', parsedData);
-
-                    // تخزين قيمة URL
-                    const imageUrl = parsedData.url;
-                    const sender = parsedData.from;
-
-                    // التحقق من قائمة VIP
-                    const vipUsers = readVipFile(); // افترض أن هذه الدالة تقرأ قائمة VIP من ملف vip.json
-                    const isVip = vipUsers.some(user => user.username === sender);
-                    if (isVip) {
-                        sendMainImageMessage(parsedData.room, imageUrl);
-
-                    }
-                    // إعادة إرسال URL
-
-                    console.log(`URL stored and resent: ${imageUrl}`);
-                }
 
                 else if (body === '🍎' || body === '🍊' || body === '🍌' || body === '🍉' || body === '🍓' || body === '🍇' || body === '🍍' || body === '🥭' || body === '🍑' || body === '🍈') {
                     // قائمة الإيموجيات الفاكهة المسموحة
