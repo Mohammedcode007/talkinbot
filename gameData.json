@@ -1,15 +1,12 @@
 {
-  "lastUserWhoSentTreasure": "جود",
-  "lastPuzzle": {
-    "question": "إذا كانت سرعة السيارة 60 كم/ساعة، كم تستغرق لقطع مسافة 180 كم؟",
-    "answer": "3"
-  },
+  "lastUserWhoSentTreasure": "daisy.",
+  "lastPuzzle": null,
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "2",
+  "selectedPath": null,
   "playerProgress": {
-    "correctAnswersCount": 3,
-    "totalPoints": 300
+    "correctAnswersCount": 0,
+    "totalPoints": 0
   },
   "correctAnswersCount": 0
 }

@@ -76,5 +76,23 @@
     "players": [],
     "startedBy": null,
     "active": false
+  },
+  "chat_lovers": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "funclub": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "🏰♥️🇮🇩": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
   }
 }

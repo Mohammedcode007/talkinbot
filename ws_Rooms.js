@@ -711,10 +711,278 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
 
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
-                sendMainMessage(parsedData.name, `🌟𝗪𝗘𝗟𝗖𝗢𝗠𝗘🌟 \n ${parsedData.username}`);
+                sendMainMessage(parsedData.name, `♔ 𝔀𝓮𝓵𝓬𝓸𝓶𝓮 ♔ \n ${parsedData.username}`);
             }
 
+            if (parsedData.handler === 'room_event' && parsedData.type === 'user_left' && parsedData.username === 'tebot') {
+               
+                const joinRoomMessage = {
+                    handler: 'room_join',
+                    id: 'QvyHpdnSQpEqJtVbHbFY',
+                    name: parsedData.name
+                };
+                socket.send(JSON.stringify(joinRoomMessage));
+            }
 
+            const basePrices = {
+                GOLD: 100000000000,  // سعر ابتدائي للذهب
+                OIL: 700000000000000,    // سعر ابتدائي للنفط
+                TECH: 300000000000   // سعر ابتدائي للتكنولوجيا
+            };
+            
+            // دالة لتحديث الأسعار
+            const updatePrices = () => {
+                const updatedPrices = { ...basePrices };
+            
+                // تحديث الأسعار عشوائيًا مع الحفاظ على الحجم الكبير
+                updatedPrices.GOLD = updatedPrices.GOLD * (1 + (Math.random() * (0.1) - 0.05)); // تعديل بنسبة صغيرة (±5%)
+                updatedPrices.OIL = updatedPrices.OIL * (1 + (Math.random() * (0.1) - 0.05));   // تعديل بنسبة صغيرة (±5%)
+                updatedPrices.TECH = updatedPrices.TECH * (1 + (Math.random() * (0.1) - 0.05)); // تعديل بنسبة صغيرة (±5%)
+            
+                return updatedPrices;
+            }
+            
+            
+            // تهيئة الأسعار باستخدام دالة updatePrices
+            let prices = updatePrices();
+            
+            // تحديث الأسعار بشكل دوري
+            setInterval(() => {
+                prices = updatePrices(); // تحديث الأسعار كل 10 ثوانٍ
+            }, 60000); // التحديث كل 10 ثوانٍ (10000 ميلي ثانية)
+            
+
+            if (parsedData.body === '.po') {
+                const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                if (isUnverified) {
+                    // Additional actions if needed when user is unverified
+                    return;
+                }
+                const senderUsername = parsedData.from; // The user who sent the message
+                const user = users.find(user => user.username === senderUsername);
+                
+                if (!user) {
+                    const noUserMessage = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room,
+                        url: '',
+                        length: '',
+                        body: `🚫 We couldn't find your account! Start the game with the word ".st".`
+                    };
+                    socket.send(JSON.stringify(noUserMessage));
+                    return;
+                }
+                
+                // Ensure assets are initialized
+                if (!user.assets) {
+                    user.assets = { GOLD: 0, OIL: 0, TECH: 0 };
+                }
+                
+                // Create the assets list
+                const userAssets = Object.entries(user.assets)
+                .map(([asset, count]) => {
+                    const formattedcOUNTPoints = formatPoints(count);
+                
+                    // إضافة الإيموجي بجانب الاسم
+                    let emoji = '';
+                    switch (asset) {
+                        case 'GOLD':
+                            emoji = '🟡'; // الذهب
+                            break;
+                        case 'OIL':
+                            emoji = '🛢️'; // النفط
+                            break;
+                        case 'TECH':
+                            emoji = '💻'; // التكنولوجيا
+                            break;
+                        default:
+                            emoji = ''; // إذا لم يكن هناك إيموجي مناسب
+                    }
+                    return `${emoji} ${asset}: ${formattedcOUNTPoints}`; // إضافة الإيموجي بجانب الاسم
+                })
+                .join('\n');
+            
+                const formattedPoints = formatPoints(user?.points);
+
+                const propertiesMessage = {
+                    handler: 'room_message',
+                    id: 'TclBVHgBzPGTMRTNpgWV',
+                    type: 'text',
+                    room: parsedData.room,
+                    url: '',
+                    length: '',
+                    body: `
+💰 Your remaining points: ${formattedPoints} 
+🏠 Your assets: 
+${userAssets}`
+                };
+                
+                socket.send(JSON.stringify(propertiesMessage));
+            }
+            
+            if (parsedData.body === '.st') {
+                const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                if (isUnverified) {
+                    // Additional actions if needed when user is unverified
+                    return;
+                }
+                const senderUsername = parsedData.from; // The user who sent the message
+                let user = users.find(user => user.username === senderUsername);
+            
+                if (!user) {
+                    // If the user doesn't exist, create a new user object
+                    user = {
+                        username: senderUsername,
+                        points: 1000, // Starting points
+                        assets: { GOLD: 0, OIL: 0, TECH: 0 } // Starting assets
+                    };
+                    users.push(user); // Add the new user to the users array
+                }
+            
+                const formattedPoints = formatPoints(user?.points);
+                const formattedGOLDPoints = formatPoints(prices?.GOLD);
+                const formattedOILPoints = formatPoints(prices?.OIL);
+                const formattedTECHPoints = formatPoints(prices?.TECH);
+
+                // Send the welcome message with asset prices
+                const borsaMessage = {
+                    handler: 'room_message',
+                    id: 'TclBVHgBzPGTMRTNpgWV',
+                    type: 'text',
+                    room: parsedData.room,
+                    url: '',
+                    length: '',
+                    body: `
+🎲 **Welcome to the Virtual Stock Market!**  
+You start with ${formattedPoints} points**.  
+Choose from the following assets:  
+ - 🟡 **GOLD** at **${formattedGOLDPoints}** points  
+ - 🛢️ **OIL** at **${formattedOILPoints}** points  
+ - 💻 **TECH** at **${formattedTECHPoints}** points  
+                    
+What would you like to do?  
+- **Write**: "buy GOLD", "sell OIL", or "Wait"`
+                    
+                };
+                socket.send(JSON.stringify(borsaMessage));
+            
+                // Optionally, you can log the user object or perform further actions
+                console.log('User initialized:', user);
+                return;
+            }
+            
+            
+            if (parsedData.body && (parsedData.body.startsWith('buy') || parsedData.body.startsWith('sell'))) {
+                const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                if (isUnverified) {
+                    // Additional actions if needed when user is unverified
+                    return;
+                }
+                const [action, asset] = parsedData.body.split(' ');
+            
+                // Check if user exists
+                const senderUsername = parsedData.from;
+                const user = users.find(user => user.username === senderUsername);
+                
+                if (!user) {
+                    const noUserMessage = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room,
+                        url: '',
+                        length: '',
+                        body: `🚫 We couldn't find your account! Start the game with the word ".st".`
+                    };
+                    socket.send(JSON.stringify(noUserMessage));
+                    return;
+                }
+            
+                // Ensure assets and points are initialized
+                if (!user.assets) {
+                    user.assets = { GOLD: 0, OIL: 0, TECH: 0 };
+                }
+                if (user.points === undefined) {
+                    user.points = 1000; // Default starting points
+                }
+            
+                // Ensure the asset exists in the prices object
+                if (!prices[asset]) {
+                    const invalidAssetMessage = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room,
+                        url: '',
+                        length: '',
+                        body: `❌ The asset "${asset}" doesn't exist. Choose from GOLD, OIL, or TECH.`
+                    };
+                    socket.send(JSON.stringify(invalidAssetMessage));
+                    return;
+                }
+            
+                // Handle buy or sell actions
+                if (action === 'buy') {
+                    if (user.points >= prices[asset]) {
+                        user.points -= prices[asset];
+                        user.assets[asset]++;
+                        const formattedPointsUSER = formatPoints(user?.points);
+
+                        const successMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `✅ Successfully bought ${asset}! Your points now: ${formattedPointsUSER}.`
+                        };
+                        socket.send(JSON.stringify(successMessage));
+                    } else {
+                        const insufficientFundsMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `❌ You don't have enough points to buy ${asset}.`
+                        };
+                        socket.send(JSON.stringify(insufficientFundsMessage));
+                    }
+                } else if (action === 'sell') {
+                    if (user.assets[asset] > 0) {
+                        user.points += prices[asset];
+                        user.assets[asset]--;
+                        const successMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `✅ Successfully sold ${asset}! Your points now: ${user.points}.`
+                        };
+                        socket.send(JSON.stringify(successMessage));
+                    } else {
+                        const noAssetsMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `❌ You don't have any ${asset} to sell.`
+                        };
+                        socket.send(JSON.stringify(noAssetsMessage));
+                    }
+                }
+            }
+            
+            
+            
 
             if (parsedData.handler === 'room_event' && parsedData.body === 'فزوره') {
                 const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -928,19 +1196,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     removeUserFromMasterBot(usernameToRemove);
                     sendVerificationMessage(parsedData.room, `User removed Master: ${usernameToRemove}`);
 
-                } else if (body === '.po') {
-                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
-                    if (isUnverified) {
-                        // Additional actions if needed when user is unverified
-                        return;
-                    }
-                    let respondingUser = users.find(user => user.username === parsedData.from);
-                    if (respondingUser) {
-                        // Convert points to a formatted string
-                        const formattedPoints = formatPoints(respondingUser?.points);
-                        sendMainMessage(parsedData.room, `User ${parsedData.from} has: ${formattedPoints} points`);
-                    }
-                } else if (body.startsWith('spec@')) {
+                }  else if (body.startsWith('spec@')) {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         return; // Betting is not allowed for unverified users
@@ -1281,9 +1537,18 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         const data = fs.readFileSync('rooms.json', 'utf8');
                         const rooms = JSON.parse(data);
                         if (imageUrl) {
+                            const roomJoinSuccessMessage = {
+                                handler: 'chat_message',
+                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                                to: VIPGIFTTOUSER,
+                                body: `YOU HAVE  SUPER VIP GIFT \n FROM : ${VIPGIFTFROMUSER} `,
+                                type: 'text'
+                            };
+                            socket.send(JSON.stringify(roomJoinSuccessMessage));
                             for (let ur of rooms) {
                                 sendMainImageMessage(ur, imageUrl);
                                 sendMainMessage(ur, `⚠️ ✨🇸‌🇺‌🇵‌🇪‌🇷‌🏅 🇻‌🇮‌🇵‌🏅✨ ⚠️\n 𝔽ℝ𝕆𝕄 : [${sender}] 𝕋𝕆 : [${VIPGIFTTOUSER}]`);
+                                
                             }
                         }
 
