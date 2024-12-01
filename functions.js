@@ -67,7 +67,32 @@ function writeBettingData(data) {
 }
 
 function formatPoints(points) {
-    if (points >= 1_000_000_000_000_000_000_000_000_000) {
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' JK8'; // Googol
+    }
+   else
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' JK'; // Googol
+    }
+   else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Q7'; // Googol
+    }
+   else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' WWE'; // Googol
+    }
+    else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' SUP'; // Googol
+    }
+   else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' WR'; // Googol
+    }
+   else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' ES'; // Googol
+    }
+   else if (points >= 1_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' GP'; // Googol
+    }
+    else if (points >= 1_000_000_000_000_000_000_000_000_000) {
         return (points / 1_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' G'; // Googol
     } else if (points >= 1_000_000_000_000_000_000_000_000) {
         return (points / 1_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Dec'; // Decillion
@@ -136,7 +161,7 @@ function updateLastTimeGift(username, currentTime) {
                 // حذف `lasttimegift` بعد 30 ثانية
                 setTimeout(() => {
                     removeLastTimeGift(username);
-                }, 30000);  // 30000 ميلي ثانية (30 ثانية)
+                }, 300000);  // 30000 ميلي ثانية (30 ثانية)
             } else {
             }
         } else {
@@ -182,8 +207,8 @@ function canSendGift(username) {
             const lastGiftTime = moment(user.lasttimegift);
             const timeDifference = currentTime.diff(lastGiftTime, 'seconds');  // Difference in seconds
 
-            if (timeDifference < 120) {
-                const remainingTime = 120 - timeDifference;
+            if (timeDifference < 300) {
+                const remainingTime = 300 - timeDifference;
                 return `Please wait\n${username} ${remainingTime} seconds to send another gift.`; // User must wait
             }
         }
