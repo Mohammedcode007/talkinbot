@@ -1,0 +1,35 @@
+{
+    "images": [
+      {
+        "name": "التنين الناري",
+        "url": "https://www.tebot.online/image1.jpg",
+        "points": 10
+      },
+      {
+        "name": "الفرس المجنح",
+        "url": "https://i.pinimg.com/736x/cf/ec/20/cfec203b353d2741e8970f71800bfa4a.jpg",
+        "points": 20
+      },
+      {
+        "name": "الغيلان المظلمة",
+        "url": "https://i.pinimg.com/736x/cf/ec/20/cfec203b353d2741e8970f71800bfa4a.jpg",
+        "points": 30
+      },
+      {
+        "name": "الوحش العملاق",
+        "url": "https://www.example.com/giant.jpg",
+        "points": 50
+      },
+      {
+        "name": "الطائر الفينيقي",
+        "url": "https://www.example.com/phoenician-bird.jpg",
+        "points": 40
+      },
+      {
+        "name": "العنقاء",
+        "url": "https://www.example.com/phoenix.jpg",
+        "points": 60
+      }
+    ]
+  }
+  

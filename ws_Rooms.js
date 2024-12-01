@@ -15,9 +15,11 @@ const {
     startSendingSpecMessage,
     deleteRoomName,
     saveRoomName,
+    getRandomImageShot,
     readLoginDataTeBot,
     getRandomEmoji,
     isUserInMasterBot,
+    writeImageToFile,
     readLoginDataRooms,
     removeUserFromMasterBot,
     addBlockedUser,
@@ -737,10 +739,45 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         console.log(`Error fetching image: ${error}`);
                     });
             }
-
+            if (parsedData.body === 'shot' && parsedData.room === 'egypt') {
+                // جلب صورة عشوائية
+                const randomImage = getRandomImageShot();  // جلب الصورة العشوائية
+                
+                if (randomImage) {
+                    // إرسال اسم الصورة، الرابط، والنقاط إلى الغرفة
+                    console.log(`Sending image: ${randomImage.name}, Points: ${randomImage.points}, URL: ${randomImage.url}`);
+                    sendMainImageMessage(parsedData.room, randomImage.url);
+            
+                    // إرسال النصوص المتعلقة بالصورة (اسم الصورة والنقاط)
+                    sendMainMessage(parsedData.room, `Name: ${randomImage.name}`);
+                    sendMainMessage(parsedData.room, `Points: ${randomImage.points}`);
+            
+                    // كتابة الصورة العشوائية إلى ملف باستخدام writeFileSync
+                    writeImageToFile(randomImage);  // كتابة البيانات إلى ملف
+                } else {
+                    console.log('No image found');
+                }
+            }
+            
+            
 
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
-                sendMainMessage(parsedData.name, `♔ 𝔀𝓮𝓵𝓬𝓸𝓶𝓮 ♔ \n ${parsedData.username}`);
+                let vipUsers = readVipFile();
+
+                const isVip = vipUsers.some(user => user.username === parsedData.username);
+                if (isVip) {
+                    // إذا كان المستخدم ليس في قائمة VIP، أرسل رسالة له
+                    sendMainMessage(
+                        parsedData.name, 
+                        `👑 𝒲𝑒𝓁𝒸𝑜𝓂𝑒, 🇻‌🇮‌🇵‌  ${parsedData.username}! ✨`
+                    );
+                                        return;
+                }
+                if (!isVip) {
+                    // إذا كان المستخدم ليس في قائمة VIP، أرسل رسالة له
+                    sendMainMessage(parsedData.name, `♔ 𝔀𝓮𝓵𝓬𝓸𝓶𝓮 ♔ \n ${parsedData.username}`);
+                    return;
+                }
             }
 
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_left' && parsedData.username === 'tebot') {

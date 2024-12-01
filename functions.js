@@ -17,6 +17,33 @@ const filePathPlayers = './gameData.json'; // المسار إلى ملف JSON
 const {items,hikam} = require('./data');
 
 const bettingFile = './bettingPlayers.json';
+
+
+
+
+
+// دالة لاختيار صورة عشوائية
+function getRandomImageShot() {
+    const data = fs.readFileSync('shoting.json', 'utf8');  // قراءة البيانات من ملف JSON بشكل متزامن
+    const imagesData = JSON.parse(data);  // تحويل البيانات إلى كائن JSON
+    const randomIndex = Math.floor(Math.random() * imagesData.images.length);
+    return imagesData.images[randomIndex];  // إرجاع الصورة العشوائية
+  }
+  
+  // كتابة البيانات إلى ملف جديد باستخدام writeFileSync
+  function writeImageToFile(image) {
+    const outputPath = 'output_image.json';  // تحديد مسار الملف الذي سيتم الكتابة إليه
+    const imageData = {
+      name: image.name,
+      url: image.url,
+      points: image.points
+    };
+  
+    // كتابة البيانات إلى الملف بشكل متزامن
+    fs.writeFileSync(outputPath, JSON.stringify(imageData, null, 2));  // تحويل الكائن إلى JSON وكتابة إلى الملف
+    console.log('Image data written to file:', outputPath);
+  }
+
 function startSendingSpecMessage(socket, users, parsedData) {
     // Send the spec@ message every 2 minutes (120,000 milliseconds)
     const interval = setInterval(() => {
@@ -542,6 +569,7 @@ module.exports = {
     getPuzzles,
     startSendingSpecMessage,
     loadPuzzles,
+    writeImageToFile,
     writeBlockedUsers,
     readGameData,
     canSendGift,
@@ -551,6 +579,7 @@ module.exports = {
     loadImagesData,
     readBlockedUsers,
     deleteBlockedUser,
+    getRandomImageShot,
     saveGameData,
     users,
     getRandomNumber,
