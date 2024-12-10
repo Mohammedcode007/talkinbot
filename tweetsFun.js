@@ -28,6 +28,23 @@ function loadTweets() {
   }
 }
 
+// حذف تغريدة باستخدام المعرف (id)
+function deleteTweetById(tweetId) {
+  let tweets = loadTweets();
+
+  // البحث عن التغريدة وحذفها
+  const initialLength = tweets.length;
+  tweets = tweets.filter(tweet => tweet.id !== tweetId);
+
+  if (tweets.length < initialLength) {
+    saveTweets(tweets);
+    console.log(`Tweet with ID ${tweetId} has been deleted.`);
+  } else {
+    console.log(`Tweet with ID ${tweetId} not found.`);
+  }
+}
+
+
 
 // حفظ التغريدات في الملف
 function saveTweets(tweets) {
@@ -87,4 +104,5 @@ module.exports = {
   addTweet,
   getRandomTweet,
   startTweetInterval,
+  deleteTweetById
 };

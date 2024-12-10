@@ -1,15 +1,12 @@
 {
-  "lastUserWhoSentTreasure": "زهقان",
-  "lastPuzzle": {
-    "question": "ما هو اسم النظرية التي تفسر حركة الأجرام السماوية؟",
-    "answer": "نسبية"
-  },
+  "lastUserWhoSentTreasure": null,
+  "lastPuzzle": null,
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "3",
+  "selectedPath": null,
   "playerProgress": {
-    "correctAnswersCount": 3,
-    "totalPoints": 300
+    "correctAnswersCount": 0,
+    "totalPoints": 0
   },
   "correctAnswersCount": 0
 }

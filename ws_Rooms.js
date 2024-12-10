@@ -10,6 +10,7 @@ const {getRandomItem,getRandomItemBoy} = require('./randomItemGirls');
 const { loadTweets,
     saveTweets,
     addTweet,
+    deleteTweetById,
     getRandomTweet, } = require('./tweetsFun');
 
 const WebSocket = require('ws');
@@ -749,21 +750,66 @@ if (parsedData.body === 'دريس' || parsedData.body === 'dress') {
 *Tweet from ${tweet.user}* 
 id : "${tweet.id}"
 💬 "${tweet.text}"
-❤️ *Likes:* ${tweet.likes}
-👎 *Dislikes:* ${tweet.dislikes}
-⏳ *Created At:* ${new Date(tweet.createdAt).toLocaleString()}
+❤️ *Likes:* ${tweet.likedBy}
+👎 *Dislikes:* ${tweet.dislikedBy}
  ________________________
                         `;
-                        
+                        const roomJoinSuccessMessage = {
+                            handler: 'chat_message',
+                            id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                            to: parsedData.from,
+                            body: tweetDetails,
+                            type: 'text'
+                        };
+                        socket.send(JSON.stringify(roomJoinSuccessMessage));
                         socket.send(
                             JSON.stringify({
                                 handler: 'room_message',
-                                id: 'TweetDetails',
+                                id: 'ErrorMessage',
                                 type: 'text',
                                 room: parsedData.room,
                                 url: '',
                                 length: '',
-                                body: tweetDetails
+                                body: `details send PVT.`
+                            })
+                        );
+                      
+                    } else {
+                        // إذا لم يتم العثور على التغريدة، إرسال رسالة خطأ
+                        socket.send(
+                            JSON.stringify({
+                                handler: 'room_message',
+                                id: 'ErrorMessage',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: `Tweet with ID ${tweetId} not found. Please check the ID and try again.`
+                            })
+                        );
+                    }
+                }
+                if (parsedData.body && parsedData.body.startsWith('deltw@')  ) {
+                    // استخراج المعرف من الرسالة بعد "deltw@"
+                    const tweetId = parsedData.body.substring(parsedData.body.indexOf('@') + 1).trim();
+            
+                    // محاولة حذف التغريدة
+                    const tweets = loadTweets();
+                    const tweetExists = tweets.some(t => t.id === tweetId);
+            
+                    if (tweetExists) {
+                        deleteTweetById(tweetId);
+            
+                        // إرسال رسالة تأكيد الحذف
+                        socket.send(
+                            JSON.stringify({
+                                handler: 'room_message',
+                                id: 'DeleteMessage',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: `Tweet with ID ${tweetId} has been successfully deleted.`
                             })
                         );
                     } else {
@@ -944,7 +990,7 @@ id : "${tweet.id}"
                                 return;
                             }
                             // التحقق إذا كان الشخص قد أبدى عدم إعجابه بالتغريدة بالفعل
-                            if (tweet.dislikedBy && tweet.dislikedBy.includes(parsedData.from)) {
+                            if (tweet?.dislikedBy && tweet?.dislikedBy.includes(parsedData.from)) {
                                 console.log(`${parsedData.from} has already disliked this tweet.`);
                                 socket.send(
                                     JSON.stringify({
@@ -1304,7 +1350,7 @@ id : "${tweet.id}"
                 sendMainMessage(parsedData.room, storeMessage);
             }
 
-            if (parsedData.handler === 'room_event' && parsedData.body === 'vip') {
+            if (parsedData.handler === 'room_event' && parsedData.body === 'vipss') {
                 // تحقق مما إذا كان المستخدم موجودًا في ملف masterbot
                 if (!isUserInMasterBot(parsedData.from)) {
                     console.log(`User ${parsedData.from} not found in masterbot, verification skipped.`);
@@ -1313,7 +1359,7 @@ id : "${tweet.id}"
 
                 const outputPath = 'C:/ImagesServers/111.png';
                 const backgroundImagePath = './images/moon.jpg';  // مسار صورة القمر
-                const overlayImageUrl = 'https://www.tebot.online/image1.jpg';  // رابط الصورة الثانية
+                const overlayImageUrl = 'https://www.tebot.online/147.jpg';  // رابط الصورة الثانية
                 sendMainImageMessage(`egypt`, overlayImageUrl);
                 // التحقق مما إذا كانت الصورة موجودة عبر رابط URL
                 fetch(overlayImageUrl)
@@ -1391,7 +1437,6 @@ id : "${tweet.id}"
             
                     if (!respondingUser.lastShotTime || currentTime - respondingUser.lastShotTime >= tenMinutesInMillis) {
                         if (randomImage) {
-                            console.log(`Sending image: ${randomImage.name}, Points: ${randomImage.points}, URL: ${randomImage.url}`);
                             sendMainImageMessage(parsedData.room, randomImage.url);
                             respondingUser.points += randomImage.points; // إضافة النقاط
                             respondingUser.lastShotTime = currentTime; // تحديث وقت آخر Shot
