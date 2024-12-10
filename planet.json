@@ -1,0 +1,74 @@
+{
+    "images": [
+      {
+        "name": "Mercury",
+        "url": "https://i.pinimg.com/originals/56/ae/3e/56ae3e91f3c66072c5156e8f9fa8db26.jpg",
+        "points": 10000
+      },
+      {
+        "name": "Venus",
+        "url": "https://i.pinimg.com/originals/6a/4e/4b/6a4e4bcf8f44031dfd9c85a9d925f3d3.jpg",
+        "points": 20000
+      },
+      {
+        "name": "Earth",
+        "url": "https://i.pinimg.com/originals/99/ed/70/99ed709463da23208c61c1ef43e71d68.jpg",
+        "points": 2500
+      },
+      {
+        "name": "Mars",
+        "url": "https://i.pinimg.com/originals/4d/38/6f/4d386fdbb79545b8c1b870e2e974f1ae.jpg",
+        "points": 1500
+      },
+      {
+        "name": "Jupiter",
+        "url": "https://i.pinimg.com/originals/65/7e/8b/657e8b8f885f85774684fa5fa8ae7591.jpg",
+        "points": 4500
+      },
+      {
+        "name": "Saturn",
+        "url": "https://i.pinimg.com/originals/ea/23/23/ea23238b50531bc77d035288a88a4ea1.jpg",
+        "points": 6700
+      },
+      {
+        "name": "Uranus",
+        "url": "https://i.pinimg.com/originals/29/7c/92/297c920d45ec0107b0ff8fe9f1b0978b.jpg",
+        "points": 4000
+      },
+      {
+        "name": "Neptune",
+        "url": "https://i.pinimg.com/originals/61/eb/d6/61ebd66ac5b44aefdd935ad0171b6a8d.jpg",
+        "points": 9000
+      },
+      {
+        "name": "Pluto",
+        "url": "https://i.pinimg.com/originals/cf/d2/f1/cfd2f18a084ae12d68a7e926d8188d5b.jpg",
+        "points": 3600
+      },
+      {
+        "name": "Sirius",
+        "url": "https://i.pinimg.com/originals/a0/2c/ea/a02cea74cd40253c27e7db67edce2444.jpg",
+        "points": 18000
+      },
+      {
+        "name": "Andromeda Galaxy",
+        "url": "https://i.pinimg.com/originals/a1/88/60/a1886003e0e50bcd7c16c1b2f81e087b.jpg",
+        "points": 25000
+      },
+      {
+        "name": "Betelgeuse",
+        "url": "https://i.pinimg.com/originals/ed/63/16/ed63166f38c58c8f29f84c15ab8083d3.jpg",
+        "points": 22000
+      },
+      {
+        "name": "Milky Way Galaxy",
+        "url": "https://i.pinimg.com/originals/f9/0b/ff/f90bff8d6d5e6c43b517b9e3aab29d6d.jpg",
+        "points": 30000
+      },
+      {
+        "name": "Alpha Centauri",
+        "url": "https://i.pinimg.com/originals/ed/67/29/ed672913084fdf1d6d2897cd3700326d.jpg",
+        "points": 15000
+      }
+    ]
+  }

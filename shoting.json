@@ -1,35 +1,53 @@
 {
     "images": [
       {
-        "name": "التنين الناري",
-        "url": "https://www.tebot.online/image1.jpg",
-        "points": 10
+        "name": "Wraith",
+        "url": "https://i.pinimg.com/736x/23/00/57/23005795f3fb160fbb1a59e1d8920fb3.jpg",
+        "points": 10000
       },
       {
-        "name": "الفرس المجنح",
-        "url": "https://i.pinimg.com/736x/cf/ec/20/cfec203b353d2741e8970f71800bfa4a.jpg",
-        "points": 20
+        "name": "Griffin",
+        "url": "https://i.pinimg.com/736x/d5/0d/43/d50d43616db5a5d70b37062079366574.jpg",
+        "points": 20000
       },
       {
-        "name": "الغيلان المظلمة",
-        "url": "https://i.pinimg.com/736x/cf/ec/20/cfec203b353d2741e8970f71800bfa4a.jpg",
-        "points": 30
+        "name": "Hydra",
+        "url": "https://i.pinimg.com/736x/d1/0c/52/d10c525cab57e20344d14a590a06a186.jpg",
+        "points": 2500
       },
       {
-        "name": "الوحش العملاق",
-        "url": "https://www.example.com/giant.jpg",
-        "points": 50
+        "name": "Behemoth",
+        "url": "https://i.pinimg.com/736x/26/a7/cd/26a7cde4a378a5e6f51dae544fcc5587.jpg",
+        "points": 1500
       },
       {
-        "name": "الطائر الفينيقي",
-        "url": "https://www.example.com/phoenician-bird.jpg",
-        "points": 40
+        "name": "Chimera",
+        "url": "https://i.pinimg.com/736x/c2/e1/cd/c2e1cdb1e65ab7ebe3dd1288daedce53.jpg",
+        "points": 4500
       },
       {
-        "name": "العنقاء",
-        "url": "https://www.example.com/phoenix.jpg",
-        "points": 60
+        "name": "Medusa",
+        "url": "https://i.pinimg.com/736x/6b/65/5d/6b655d92daa549fa24d8e25e079044fc.jpg",
+        "points": 6700
+      },
+      {
+        "name": "Ahriman",
+        "url": "https://i.pinimg.com/736x/bf/76/25/bf7625e6513a7302da705443740d27ca.jpg",
+        "points": 4000
+      },
+      {
+        "name": "Lilith",
+        "url": "https://i.pinimg.com/736x/3c/b2/07/3cb20733ede5d9993125420fdf9e0f2c.jpg",
+        "points": 9000
+      },
+      {
+        "name": "Hecate",
+        "url": "https://i.pinimg.com/736x/9e/2b/d2/9e2bd21573b5117e43deb909b619fe08.jpg",
+        "points": 3600
       }
+
+
+       
     ]
   }
   

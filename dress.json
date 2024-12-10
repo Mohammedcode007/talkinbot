@@ -1,0 +1,112 @@
+[
+    {
+        "name": "Vera Wang",
+        "image": "https://i.pinimg.com/736x/1b/20/f0/1b20f012ab1b155652f457086e79fd20.jpg",
+        "points": 1000
+    },
+    {
+        "name": "Dolce & Gabbana",
+        "image": "https://i.pinimg.com/736x/98/38/75/983875bf2bd31f26c9c5d604707b0b13.jpg",
+        "points": 900
+    },
+    {
+        "name": "Chanel",
+        "image": "https://i.pinimg.com/736x/5e/ae/3d/5eae3da3508018e7892d564d4eac4c5d.jpg",
+        "points": 800
+    },
+    {
+        "name": "Elie Saab",
+        "image": "https://i.pinimg.com/736x/23/b9/68/23b968aa1b5ffbef98f531fc01c97ef7.jpg",
+        "points": 700
+    },
+    {
+        "name": "Oscar de la Renta",
+        "image": "https://i.pinimg.com/736x/d7/e0/c3/d7e0c329086db3c9746bfbfe278ae6a8.jpg",
+        "points": 950
+    },
+    {
+        "name": "Zuhair Murad",
+        "image": "https://i.pinimg.com/736x/93/22/f6/9322f61ab39d5fc26fb6081667d79039.jpg",
+        "points": 850
+    },
+    {
+        "name": "Marchesa",
+        "image": "https://i.pinimg.com/736x/bf/fb/c7/bffbc7d1572e8a7c58fed6f1220a95ca.jpg",
+        "points": 600
+    },
+    {
+        "name": "Carolina Herrera",
+        "image": "https://i.pinimg.com/736x/ce/7d/8e/ce7d8eba07d5e065aa6f4f8ad147ae10.jpg",
+        "points": 1200
+    },
+    {
+        "name": "Stella McCartney",
+        "image": "https://i.pinimg.com/736x/45/1e/f9/451ef9d68e717e0b114e7f7dc3686537.jpg",
+        "points": 1100
+    },
+    {
+        "name": "Givenchy",
+        "image": "https://i.pinimg.com/736x/57/3e/77/573e774ac4106964c52b00056d6deef4.jpg",
+        "points": 1050
+    },
+    {
+        "name": "Fendi",
+        "image": "https://i.pinimg.com/736x/2d/a6/0e/2da60e77049a08f3490bf18323f0aedc.jpg",
+        "points": 950
+    },
+    {
+        "name": "Alexander McQueen",
+        "image": "https://i.pinimg.com/736x/39/5e/17/395e17f2d3f6ec9de70d503fb202c156.jpg",
+        "points": 1050
+    },
+    {
+        "name": "Prada",
+        "image": "https://i.pinimg.com/736x/ad/9e/dc/ad9edc423d21c577d8e6d56e8d2deded.jpg",
+        "points": 1100
+    },
+    {
+        "name": "Balenciaga",
+        "image": "https://i.pinimg.com/736x/11/87/80/1187807d5955d7e3422bdd5759f6bef0.jpg",
+        "points": 950
+    },
+    {
+        "name": "Louis Vuitton",
+        "image": "https://i.pinimg.com/736x/02/3d/38/023d38094a368ebdfbb182e59c4e3bea.jpg",
+        "points": 1150
+    },
+    {
+        "name": "Christian Dior",
+        "image": "https://i.pinimg.com/736x/3a/e9/25/3ae92561aa91a222e77f49eb2ecf7826.jpg",
+        "points": 1200
+    },
+    {
+        "name": "Fendi",
+        "image": "https://i.pinimg.com/736x/9f/7e/3b/9f7e3b520f8caac8e1460bf6a4681bc4.jpg",
+        "points": 950
+    },
+    {
+        "name": "Alexander McQueen",
+        "image": "https://i.pinimg.com/736x/8d/7d/86/8d7d860c94a3555d6af31d26827e2dc0.jpg",
+        "points": 1050
+    },
+    {
+        "name": "Prada",
+        "image": "https://i.pinimg.com/736x/e2/6f/d0/e26fd0d97b53f876def8149385796a1c.jpg",
+        "points": 1100
+    },
+    {
+        "name": "Balenciaga",
+        "image": "https://i.pinimg.com/736x/ec/9a/0b/ec9a0b0f0347aee52fa5998bf71211f6.jpg",
+        "points": 950
+    },
+    {
+        "name": "Louis Vuitton",
+        "image": "https://i.pinimg.com/736x/6a/17/de/6a17de029acf31794f1d86f04727c42d.jpg",
+        "points": 1150
+    },
+    {
+        "name": "Christian Dior",
+        "image": "https://i.pinimg.com/736x/3a/e9/25/3ae92561aa91a222e77f49eb2ecf7826.jpg",
+        "points": 1200
+    }
+]

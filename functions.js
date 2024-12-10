@@ -94,73 +94,81 @@ function writeBettingData(data) {
 }
 
 function formatPoints(points) {
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+      return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' NA'; // Googol
+  }
+  else
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' AS7'; // Googol
+    }
+    else
     if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
         return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' JK8'; // Googol
     }
-   else
-    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' JK'; // Googol
-    }
-   else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Q7'; // Googol
-    }
-   else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' WWE'; // Googol
-    }
-    else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' SUP'; // Googol
-    }
-   else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' WR'; // Googol
-    }
-   else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' ES'; // Googol
-    }
-   else if (points >= 1_000_000_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' GP'; // Googol
-    }
-    else if (points >= 1_000_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' G'; // Googol
-    } else if (points >= 1_000_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Dec'; // Decillion
-    } else if (points >= 1_000_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Undec'; // Undecillion
-    } else if (points >= 1_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Duodec'; // Duodecillion
-    } else if (points >= 1_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Tredec'; // Tredecillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quattuordec'; // Quattuordecillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quindec'; // Quindecillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Sexdec'; // Sexdecillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Septemdec'; // Septemdecillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Octodec'; // Octodecillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Novemdec'; // Novemdecillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Vigintillion'; // Vigintillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Googol'; // Googol
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quintillion'; // Quintillion
-    } else if (points >= 1_000_000_000_000_000_000) {
-        return (points / 1_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Qa'; // Quadrillion
-    } else if (points >= 1_000_000_000_000) {
-        return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' T'; // Trillion
-    } else if (points >= 1_000_000_000) {
-        return (points / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + ' B'; // Billion
-    } else if (points >= 1_000_000) {
-        return (points / 1_000_000).toFixed(1).replace(/\.0$/, '') + ' M'; // Million
-    } else if (points >= 1_000) {
-        return (points / 1_000).toFixed(1).replace(/\.0$/, '') + ' K'; // Thousand
-    } else {
-        return points // Less than 1000
-    }
-}
+    else
+        if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' JK'; // Googol
+        }
+        else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Q7'; // Googol
+        }
+        else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' WWE'; // Googol
+        }
+        else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' SUP'; // Googol
+        }
+        else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' WR'; // Googol
+        }
+        else if (points >= 1_000_000_000_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' ES'; // Googol
+        }
+        else if (points >= 1_000_000_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' GP'; // Googol
+        }
+        else if (points >= 1_000_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' G'; // Googol
+        } else if (points >= 1_000_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Dec'; // Decillion
+        } else if (points >= 1_000_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Undec'; // Undecillion
+        } else if (points >= 1_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Duodec'; // Duodecillion
+        } else if (points >= 1_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Tredec'; // Tredecillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quattuordec'; // Quattuordecillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quindec'; // Quindecillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Sexdec'; // Sexdecillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Septemdec'; // Septemdecillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Octodec'; // Octodecillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Novemdec'; // Novemdecillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Vigintillion'; // Vigintillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Googol'; // Googol
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Quintillion'; // Quintillion
+        } else if (points >= 1_000_000_000_000_000_000) {
+            return (points / 1_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' Qa'; // Quadrillion
+        } else if (points >= 1_000_000_000_000) {
+            return (points / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' T'; // Trillion
+        } else if (points >= 1_000_000_000) {
+            return (points / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + ' B'; // Billion
+        } else if (points >= 1_000_000) {
+            return (points / 1_000_000).toFixed(1).replace(/\.0$/, '') + ' M'; // Million
+        } else if (points >= 1_000) {
+            return (points / 1_000).toFixed(1).replace(/\.0$/, '') + ' K'; // Thousand
+        } else {
+            return points // Less than 1000
+        }
+  }
 
 
 

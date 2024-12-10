@@ -1,9 +1,16 @@
 const fs = require('fs');
 const path = require('path');
+const { getRandomInstruction } = require('./getRandomText');
+const getRandomItemDress = require('./dress'); // استيراد دالة اختيار الفستان العشوائي
 
 const moment = require('moment');  // التأكد من استيراد moment
 const createCanvasWithBackground = require('./createImage');
 const {resetPointsAndAssets,getArrayLength} = require('./resetPoints');
+const {getRandomItem,getRandomItemBoy} = require('./randomItemGirls');
+const { loadTweets,
+    saveTweets,
+    addTweet,
+    getRandomTweet, } = require('./tweetsFun');
 
 const WebSocket = require('ws');
 const {
@@ -56,13 +63,17 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     let revealedLayers = 5; // Number of parts to reveal gradually
     const pendingSvipRequests = new Map(); // لتتبع طلبات svip
     const lastSpecTime = new Map();
+    const activeUsers = new Map(); // تخزين المؤقتات لكل مستخدم باستخدام Map
+    const userLastTweetTime = new Map();
+    const activeUsersdress = new Map(); // تخزين المستخدمين الذين قاموا بطلب فستان في دقيقتين الأخيرة
 
     const storedImages = new Map(); // لتخزين الصور المرسلة لكل مستخدم
     const lastSvipRequestTime = new Map(); // لتتبع توقيت آخر طلب لكل مستخدم
     const THIRTY_SECONDS = 30 * 1000; // 30 ثانية بالمللي ثانية
     const lastSendTime = new Map(); // لتتبع توقيت الإرسال الأخير لكل مستخدم
     const SEND_COOLDOWN = 10 * 60 * 1000; // فترة التهدئة: 10 دقائق
-    
+    let pikachuAlive = true; // حالة بيكاتشو (حي عند البداية)
+
     let VIPGIFTTOUSER = null
     let VIPGIFTFROMUSER = null
     const FIVE_MINUTES = 10 * 60 * 1000; // بالمللي ثانية
@@ -89,8 +100,24 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     let userChoiceTimeout; // مؤقت لرسالة تحفيزية
     let canChoosePath = false; // لمنع اللاعب من اختيار الطريق قبل كلمة "ابدأ"
     let puzzleTimeout;
-
+    let tweetIndex = 0; // لتتبع التغريدة الحالية
+    let lastTweetId = null; // معرف التغريدة الأخيرة المرسلة
+    const tweets = loadTweets(); // تحميل التغريدات من ملف JSON
     // دالة لإيقاف اللعبة بعد 30 ثانية
+
+    function sendDressImageMessage(room, image) {
+        const message = {
+            handler: 'room_message',
+            id: 'TclBVHgBzPGTMRTNpgWV',
+            type: 'image',
+            room: room,
+            url: image,
+            length: '',
+            body: ''
+        };
+        socket.send(JSON.stringify(message));
+    }
+    
     function stopGameAfterChoiceTimeout(parsedData) {
         choiceTimeout = setTimeout(() => {
             // إذا لم يتم إرسال اختيار الطريق في الوقت المحدد، يتم إرسال رسالة "انتهاء اللعبة"
@@ -166,6 +193,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         socket.send(JSON.stringify(loginMessage));
         const data = fs.readFileSync('rooms.json', 'utf8');
         const rooms = JSON.parse(data);
+
         // بدء المؤقت العام لإرسال نفس الإيموجي لجميع الغرف
         emojiTimer = setInterval(() => {
             const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
@@ -189,7 +217,107 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                 socket.send(JSON.stringify(emojiMessage));
             }
         }, 300000);
+        const emojisPIK = ['⚡', '🐭', '✨', '🔥', '🌟']; // قائمة بالإيموجي
+        emojiTimer = setInterval(() => {
+            const randomEmoji = emojisPIK[Math.floor(Math.random() * emojisPIK.length)]; // اختيار إيموجي عشوائي
+            console.log(`Sending message: 'Pikachu is back ${randomEmoji}' to all rooms`);
+            pikachuAlive = true;
+            // إرسال الرسالة لكل الغرف
+            for (let ur of rooms) {
+                const message = {
+                    handler: 'room_message',
+                    id: 'TclBVHgBzPGTMRTNpgWV',
+                    type: 'text',
+                    room: ur, // إرسال إلى الغرفة الحالية
+                    url: '',
+                    length: '',
+                    body: ` Pikachu is back ${randomEmoji} send fire or فاير`,
+                };
+        
+                socket.send(JSON.stringify(message));
+            }
+        }, 720000); // يكرر الإرسال كل 5 دقائق (300000 مللي ثانية)
+        const tweetTimer = setInterval(() => {
+            const tweets = loadTweets();  // تحميل التغريدات من الملف مع كل تكرار
 
+            if (tweetIndex < tweets.length) {
+                let currentTweet = tweets[tweetIndex];
+                
+                // تحقق إذا كانت التغريدة قديمة أكثر من 48 ساعة
+                const currentTime = new Date();
+                const tweetTime = new Date(currentTweet.createdAt);
+                const timeDiff = (currentTime - tweetTime) / (1000 * 60 * 60); // الفرق بالساعة
+                
+                // إذا مر أكثر من 48 ساعة على إضافة التغريدة، قم بحذفها
+                if (timeDiff > 48) {
+                    console.log(`Tweet from ${currentTweet.user} is older than 48 hours. Deleting it.`);
+                    tweets.splice(tweetIndex, 1); // حذف التغريدة
+                    saveTweets(tweets); // حفظ التحديثات
+                    return; // الانتقال إلى التغريدة التالية دون إرسال هذه
+                }
+        
+                lastTweetId = tweetIndex; // حفظ معرف التغريدة الحالية
+                
+                const tweetMessage = `
+______________________
+*Tweet from ${currentTweet.user}** 
+id "${currentTweet.id}"
+💬 "${currentTweet.text}"
+❤️ *Likes:* ${currentTweet.likes}  
+👎 *Dislikes:* ${currentTweet.dislikes}
+🔗 *Send like or dislike to action tweet and post@tweet to create or tw@id to see details.
+______________________
+             `;
+        
+                // إرسال التغريدة لكل الغرف
+                for (let room of rooms) {
+                    const message = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: room, // إرسال إلى الغرفة الحالية
+                        url: '',
+                        length: '',
+                        body: tweetMessage,
+                    };
+        
+                    socket.send(JSON.stringify(message));
+                }
+        
+                tweetIndex++; // الانتقال إلى التغريدة التالية
+            } else {
+                // عند الوصول إلى آخر تغريدة، نعيد التكرار من البداية
+                tweetIndex = 0; // إعادة تعيين الفهرس للبداية
+                console.log('All tweets have been sent. Restarting...');
+            }
+        }, 3 * 60 * 1000); // إرسال التغريدات كل دقيقة
+        
+
+        textTimer = setInterval(() => {
+            // index.js
+           
+            
+          
+            // بدء عملية جلب النص العشوائي كل نصف ساعة
+          let text =  getRandomInstruction();
+
+            // يمكنك إضافة المزيد من الكود هنا حسب حاجتك، مثل إضافة خادم HTTP أو وظائف أخرى
+            // إرسال الرسالة لكل الغرف
+            for (let ur of rooms) {
+                const message = {
+                    handler: 'room_message',
+                    id: 'TclBVHgBzPGTMRTNpgWV',
+                    type: 'text',
+                    room: ur, // إرسال إلى الغرفة الحالية
+                    url: '',
+                    length: '',
+                    body: `  ${text}`,
+                };
+        
+                socket.send(JSON.stringify(message));
+            }
+        }, 1800000); // يكرر الإرسال كل 5 دقائق (300000 مللي ثانية)
+        
 
         rooms.forEach(room => {
             setInterval(() => {
@@ -355,6 +483,22 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     }
                 }
                 if (parsedData.body === '.s') {
+
+                    let user = users.find(user => user.username === parsedData.from);
+                    if (!user) {
+                        user = {
+                            username: parsedData.from, verified: true, lasttimegift: null, points: null, name: null,
+                            nickname: null
+                        };
+                        users.push(user);
+                    } else {
+                        user.verified = true;
+                    }
+
+                    writeUsersToFile(users);
+
+
+
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // Additional actions if needed when user is unverified
@@ -372,8 +516,27 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     };
 
                     socket.send(JSON.stringify(youget));
+              
+                }
+
+                if (parsedData.body === 'shot') {
+              
+
+                    let user = users.find(user => user.username === parsedData.from);
+                    if (!user) {
+                        user = {
+                            username: parsedData.from, verified: true, lasttimegift: null, points: null, name: null,
+                            nickname: null
+                        };
+                        users.push(user);
+                    } else {
+                        user.verified = true;
+                    }
+
+                    writeUsersToFile(users);
 
                 }
+
                 if (parsedData.body === 'حكمه') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
@@ -395,6 +558,437 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                 }
 
+
+
+
+                if (parsedData.body === 'عروستي' || parsedData.body ===  `عروستى`|| parsedData.body ===  "My Bride" ) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // تنفيذ إجراءات إضافية إذا كان المستخدم غير موثّق
+                        return;
+                    }
+                
+                    const userId = parsedData.from; // معرّف المستخدم المرسل
+                
+                    // التحقق مما إذا كان هناك مؤقت نشط لهذا المستخدم
+                    if (activeUsers.has(userId)) {
+                        // إذا كان لدى المستخدم مؤقت نشط، إبلاغه أنه يجب الانتظار
+                        socket.send(
+                            JSON.stringify({
+                                handler: 'room_message',
+                                id: 'TclBVHgBzPGTMRTNpgWV',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: parsedData.body === "My Bride" 
+                                ? "You can request 'My Bride' again after the timer ends."
+                                : "يمكنك طلب 'عروستي' مرة أخرى بعد انتهاء المؤقت."                            })
+                        );
+                        return;
+                    }
+                
+                    // فورًا عند طلب "عروستي"، إرسال الرد مع العروس العشوائي
+                    const randomItem = getRandomItem();
+                    console.log(`العنصر العشوائي للمستخدم ${userId}:`, randomItem);
+                sendMainImageMessage(parsedData.room,randomItem.image)
+                    const youget = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room, // الغرفة التي سيتم إرسال الرسالة إليها
+                        url: '',
+                        length: '',
+                        body: parsedData.body === "My Bride" 
+                        ? `Your bride, ${userId}, is ${randomItem.username}` 
+                        : `عروستك يا ${userId} هي ${randomItem.username}`                    };
+                
+                    // إرسال الرسالة فوريًا إلى الغرفة
+                    socket.send(JSON.stringify(youget));
+
+                
+                    // تخزين المؤقت في Map بحيث لا يمكن للمستخدم طلب "عروستي" مرة أخرى إلا بعد دقيقتين
+                    const intervalId = setInterval(() => {
+                        activeUsers.delete(userId); // حذف المستخدم من Map بعد مرور دقيقتين
+                        clearInterval(intervalId);
+                    },  60 * 1000); // تأخير المؤقت لمدة دقيقتين
+                
+                    // تخزين المؤقت في Map
+                    activeUsers.set(userId, intervalId);
+                }
+                
+                if (parsedData.body === 'عريسي' || parsedData.body ===  `عريسى`|| parsedData.body ===  "My Groom" ) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // تنفيذ إجراءات إضافية إذا كان المستخدم غير موثّق
+                        return;
+                    }
+                
+                    const userId = parsedData.from; // معرّف المستخدم المرسل
+                
+                    // التحقق مما إذا كان هناك مؤقت نشط لهذا المستخدم
+                    if (activeUsers.has(userId)) {
+                        // إذا كان لدى المستخدم مؤقت نشط، إبلاغه أنه يجب الانتظار
+                        socket.send(
+                            JSON.stringify({
+                                handler: 'room_message',
+                                id: 'TclBVHgBzPGTMRTNpgWV',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: parsedData.body === "My Groom"
+                                ? "You can request 'My Groom' again after the timer ends. 😊"
+                                : "يمكنك طلب 'عريسك' مرة أخرى بعد انتهاء المؤقت. 😊"                            })
+                        );
+                        return;
+                    }
+                
+                    // فورًا عند طلب "عروستي"، إرسال الرد مع العروس العشوائي
+                    const randomItem = getRandomItemBoy();
+                    console.log(`العنصر العشوائي للمستخدم ${userId}:`, randomItem);
+                sendMainImageMessage(parsedData.room,randomItem.image)
+                    const youget = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room, // الغرفة التي سيتم إرسال الرسالة إليها
+                        url: '',
+                        length: '',
+                        body: parsedData.body === "My Groom" 
+                        ? `Your groom, ${userId}, is ${randomItem.username}` 
+                        : `عريسك يا ${userId} هو ${randomItem.username}`                    };
+                
+                    // إرسال الرسالة فوريًا إلى الغرفة
+                    socket.send(JSON.stringify(youget));
+
+                
+                    // تخزين المؤقت في Map بحيث لا يمكن للمستخدم طلب "عروستي" مرة أخرى إلا بعد دقيقتين
+                    const intervalId = setInterval(() => {
+                        activeUsers.delete(userId); // حذف المستخدم من Map بعد مرور دقيقتين
+                        clearInterval(intervalId);
+                    },  60 * 1000); // تأخير المؤقت لمدة دقيقتين
+                
+                    // تخزين المؤقت في Map
+                    activeUsers.set(userId, intervalId);
+                }
+             
+if (parsedData.body === 'دريس' || parsedData.body === 'dress') {
+    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+    if (isUnverified) {
+        // إجراءات إضافية إذا كان المستخدم غير موثّق
+        return;
+    }
+
+    const userId = parsedData.from;
+    
+    // التحقق مما إذا كان قد مر وقت كافٍ منذ آخر طلب
+    if (activeUsersdress.has(userId)) {
+        const lastRequestTime = activeUsersdress.get(userId);
+        const currentTime = Date.now();
+        
+        // إذا لم تمر دقيقتين (120000 مللي ثانية)، إبلاغ المستخدم أنه يجب الانتظار
+        if (currentTime - lastRequestTime < 2 * 60 * 1000) {
+            socket.send(
+                JSON.stringify({
+                    handler: 'room_message',
+                    id: 'TclBVHgBzPGTMRTNpgWV',
+                    type: 'text',
+                    room: parsedData.room,
+                    url: '',
+                    length: '',
+                    body: 'يمكنك طلب فستان آخر بعد دقيقتين من آخر طلب. 😊'
+                })
+            );
+            return;
+        }
+    }
+
+    const randomDress = getRandomItemDress(); // الحصول على فستان عشوائي
+    let respondingUser = users.find(user => user.username === userId);
+    
+    if (respondingUser) {
+        respondingUser.points += randomDress.points; // إضافة النقاط للمستخدم
+        sendDressImageMessage(parsedData.room, randomDress.image); // إرسال صورة الفستان العشوائي
+
+        const yougetDress = {
+            handler: 'room_message',
+            id: 'TclBVHgBzPGTMRTNpgWV',
+            type: 'text',
+            room: parsedData.room,
+            url: '',
+            length: '',
+            body: `من تصميم ${randomDress.name} وقد حصلت على ${randomDress.points} نقاط`
+        };
+
+        // إرسال الرسالة إلى الغرفة
+        socket.send(JSON.stringify(yougetDress));
+        
+        // تخزين وقت آخر طلب للمستخدم في الـMap
+        activeUsersdress.set(userId, Date.now());
+        writeUsersToFile(users); // كتابة المستخدمين إلى الملف
+    }
+}
+            
+
+                if (parsedData.body && parsedData.body.startsWith('tw@')) {
+                    // استخراج المعرف من الرسالة بعد "tw@"
+                    const tweetId = parsedData.body.substring(parsedData.body.indexOf('@') + 1).trim();
+                    
+                    // تحميل التغريدات الحالية
+                    const tweets = loadTweets(); 
+                    
+                    // البحث عن التغريدة التي تطابق المعرف
+                    const tweet = tweets.find(t => t.id === tweetId);
+                    
+                    // التحقق إذا كانت التغريدة موجودة
+                    if (tweet) {
+                        // إذا تم العثور على التغريدة، إرسال تفاصيلها
+                        const tweetDetails = `
+ ________________________
+*Tweet from ${tweet.user}* 
+id : "${tweet.id}"
+💬 "${tweet.text}"
+❤️ *Likes:* ${tweet.likes}
+👎 *Dislikes:* ${tweet.dislikes}
+⏳ *Created At:* ${new Date(tweet.createdAt).toLocaleString()}
+ ________________________
+                        `;
+                        
+                        socket.send(
+                            JSON.stringify({
+                                handler: 'room_message',
+                                id: 'TweetDetails',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: tweetDetails
+                            })
+                        );
+                    } else {
+                        // إذا لم يتم العثور على التغريدة، إرسال رسالة خطأ
+                        socket.send(
+                            JSON.stringify({
+                                handler: 'room_message',
+                                id: 'ErrorMessage',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: `Tweet with ID ${tweetId} not found. Please check the ID and try again.`
+                            })
+                        );
+                    }
+                }
+                
+                if (parsedData.body && parsedData.body.startsWith('post@')) {
+                    // استخراج المحتوى بعد "post@"
+                    const content = parsedData.body.substring(parsedData.body.indexOf('@') + 1).trim(); 
+                    
+                    // التحقق من طول التغريدة
+                    if (!content) {
+                        socket.send(
+                            JSON.stringify({
+                                handler: 'room_message',
+                                id: 'ErrorMessage',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: 'The post content cannot be empty. Please provide text after "post@".'
+                            })
+                        );
+                        return;
+                    }
+                
+                    if (content.length > 500) {
+                        socket.send(
+                            JSON.stringify({
+                                handler: 'room_message',
+                                id: 'ErrorMessage',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: 'The post content is too long. Please limit your post to 500 characters.'
+                            })
+                        );
+                        return;
+                    }
+                
+                    // استثناء المستخدم المعين
+                    const EXCLUDED_USER = "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا";  // استبدل هذا بالمعرف الفعلي للمستخدم الاستثنائي
+                
+                    // التحقق مما إذا كان المستخدم قد نشر تغريدة في الساعة الماضية
+                    if (parsedData.from !== EXCLUDED_USER) {
+                        const currentTime = new Date();
+                        const lastTweetTime = userLastTweetTime.get(parsedData.from);
+                
+                        // إذا كان قد مر أقل من ساعة على آخر تغريدة، نرسل رسالة تحذير
+                        if (lastTweetTime && (currentTime - lastTweetTime) < 60 * 60 * 1000) {
+                            socket.send(
+                                JSON.stringify({
+                                    handler: 'room_message',
+                                    id: 'ErrorMessage',
+                                    type: 'text',
+                                    room: parsedData.room,
+                                    url: '',
+                                    length: '',
+                                    body: 'You can only post one tweet per hour. Please wait before posting again.'
+                                })
+                            );
+                            return;
+                        }
+                    }
+                    const tweets = loadTweets();  // تحميل التغريدات الحالية
+
+                    // إذا كانت الشروط متوافقة، أضف التغريدة
+                    const currentTime = new Date();
+                    const tweetId = `tweet_${tweets.length + 1}`;  // معرّف سهل يتزايد مع كل تغريدة جديدة
+
+                    const newTweet = {
+                        id: tweetId,         // إضافة المعرف الفريد
+
+                        text: content,
+                        likes: 0,
+                        dislikes: 0,
+                        likedBy:[],
+                        user: parsedData.from,
+                        createdAt: currentTime,
+                        dislikedBy:[],
+                        likedBy:[]
+                    };
+                
+                    // إضافة التغريدة الجديدة إلى القائمة
+                    tweets.push(newTweet);        // إضافة التغريدة الجديدة إلى المصفوفة
+                    saveTweets(tweets);
+                
+                    // تحديث وقت آخر تغريدة لهذا المستخدم
+                    userLastTweetTime.set(parsedData.from, currentTime);
+                
+                    socket.send(
+                        JSON.stringify({
+                            handler: 'room_message',
+                            id: 'NewPostMessage',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `Your post has been successfully added: "${content}". 🎉`
+                        })
+                    );
+                }
+                
+
+                if (parsedData.body === 'like' || parsedData.body === 'dislike') {
+                    if (lastTweetId !== null) {
+                        const tweet = tweets[lastTweetId];
+                
+                        // التحقق إذا كان الشخص قد أعجب أو لم يعجب بالتغريدة بالفعل
+                        if (parsedData.body === 'like') {
+                            // التحقق من أن الشخص لم يقم بـ "dislike" بالفعل
+                            if (tweet.dislikedBy && tweet.dislikedBy.includes(parsedData.from)) {
+                                console.log(`${parsedData.from} has already disliked this tweet, cannot like it.`);
+                                socket.send(
+                                    JSON.stringify({
+                                        handler: 'room_message',
+                                        id: 'ErrorMessage',
+                                        type: 'text',
+                                        room: parsedData.room,
+                                        url: '',
+                                        length: '',
+                                        body: `You have already disliked this tweet, ${parsedData.from}. You cannot like it now.`
+                                    })
+                                );
+                                return;
+                            }
+                            // التحقق إذا كان الشخص قد أعجب بالتغريدة بالفعل
+                            if (tweet.likedBy && tweet.likedBy.includes(parsedData.from)) {
+                                console.log(`${parsedData.from} has already liked this tweet.`);
+                                socket.send(
+                                    JSON.stringify({
+                                        handler: 'room_message',
+                                        id: 'ErrorMessage',
+                                        type: 'text',
+                                        room: parsedData.room,
+                                        url: '',
+                                        length: '',
+                                        body: `You have already liked this tweet, ${parsedData.from}.`
+                                    })
+                                );
+                                return;
+                            }
+                
+                            // إضافة إعجاب للتغريدة
+                            tweet.likes += 1;
+                            tweet.likedBy = tweet.likedBy || [];  // إذا لم يكن هناك سجل للأشخاص الذين أعجبوا، قم بإنشائه
+                            tweet.likedBy.push(parsedData.from); // إضافة الشخص إلى قائمة من أعجبوا بالتغريدة
+                            console.log(`Like added to tweet: ${tweet.text}`);
+                
+                        } else if (parsedData.body === 'dislike') {
+                            // التحقق من أن الشخص لم يقم بـ "like" بالفعل
+                            if (tweet.likedBy && tweet.likedBy.includes(parsedData.from)) {
+                                console.log(`${parsedData.from} has already liked this tweet, cannot dislike it.`);
+                                socket.send(
+                                    JSON.stringify({
+                                        handler: 'room_message',
+                                        id: 'ErrorMessage',
+                                        type: 'text',
+                                        room: parsedData.room,
+                                        url: '',
+                                        length: '',
+                                        body: `You have already liked this tweet, ${parsedData.from}. You cannot dislike it now.`
+                                    })
+                                );
+                                return;
+                            }
+                            // التحقق إذا كان الشخص قد أبدى عدم إعجابه بالتغريدة بالفعل
+                            if (tweet.dislikedBy && tweet.dislikedBy.includes(parsedData.from)) {
+                                console.log(`${parsedData.from} has already disliked this tweet.`);
+                                socket.send(
+                                    JSON.stringify({
+                                        handler: 'room_message',
+                                        id: 'ErrorMessage',
+                                        type: 'text',
+                                        room: parsedData.room,
+                                        url: '',
+                                        length: '',
+                                        body: `You have already disliked this tweet, ${parsedData.from}.`
+                                    })
+                                );
+                                return;
+                            }
+                
+                            // إضافة عدم إعجاب للتغريدة
+                            tweet.dislikes += 1;
+                            tweet.dislikedBy = tweet.dislikedBy || [];  // إذا لم يكن هناك سجل للأشخاص الذين لم يعجبوا، قم بإنشائه
+                            tweet.dislikedBy.push(parsedData.from); // إضافة الشخص إلى قائمة من لم يعجبوا بالتغريدة
+                            console.log(`Dislike added to tweet: ${tweet.text}`);
+                        }
+                
+                        // إرسال التحديث بعدد الإعجابات وعدم الإعجابات لكل الغرف
+                        const updateMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `Tweet from ${tweet.user}: ${tweet.text} \nUpdated Likes: ${tweet.likes}, Updated Dislikes: ${tweet.dislikes}`,
+                        };
+                
+                        socket.send(JSON.stringify(updateMessage));
+                
+                        // حفظ التعديلات في الملف
+                        saveTweets(tweets);
+                
+                    } else {
+                        console.log('No tweet available to like or dislike.');
+                    }
+                }
+                
+                
                 // إذا كانت الرسالة هي "ابدأ"
                 if (parsedData.body === 'ابدأ') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -739,25 +1333,89 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                         console.log(`Error fetching image: ${error}`);
                     });
             }
-            if (parsedData.body === 'shot' && parsedData.room === 'egypt') {
-                // جلب صورة عشوائية
-                const randomImage = getRandomImageShot();  // جلب الصورة العشوائية
-                
-                if (randomImage) {
-                    // إرسال اسم الصورة، الرابط، والنقاط إلى الغرفة
-                    console.log(`Sending image: ${randomImage.name}, Points: ${randomImage.points}, URL: ${randomImage.url}`);
-                    sendMainImageMessage(parsedData.room, randomImage.url);
+            if ((parsedData.body === 'fire' || parsedData.body === 'فاير') && pikachuAlive === true) {
+                let respondingUser = users.find(user => user.username === parsedData.from);
+                if (respondingUser) {
+                    const currentTime = Date.now(); // الوقت الحالي بالمللي ثانية
+                    const tenMinutesInMillis = 10 * 60 * 1000; // 10 دقائق بالمللي ثانية
             
-                    // إرسال النصوص المتعلقة بالصورة (اسم الصورة والنقاط)
-                    sendMainMessage(parsedData.room, `Name: ${randomImage.name}`);
-                    sendMainMessage(parsedData.room, `Points: ${randomImage.points}`);
+                    // إذا لم يمر 10 دقائق منذ آخر Shot أو إذا لم يتم إرسال Shot من قبل
+                    if (!respondingUser.lastShotTime || currentTime - respondingUser.lastShotTime >= tenMinutesInMillis) {
+                        const data = fs.readFileSync('rooms.json', 'utf8');
+                        const rooms = JSON.parse(data);
+                        if (pikachuAlive) {
+                            for (let ur of rooms) {
+                                const message = {
+                                    handler: 'room_message',
+                                    id: 'TclBVHgBzPGTMRTNpgWV',
+                                    type: 'text',
+                                    room: ur,
+                                    url: '',
+                                    length: '',
+                                    body: `${parsedData.from} killed Pikachu! ⚡ 🐹 at ${parsedData.room}`,
+                                };
+                                socket.send(JSON.stringify(message));
+                                sendMainImageMessage(ur, 'https://i.pinimg.com/736x/da/f6/bd/daf6bd86a28d3d02bced993b64062a85.jpg');
+                               
+                            }
+                            const roomJoinSuccessMessage = {
+                                handler: 'chat_message',
+                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                                to: parsedData.from,
+                                body: `1000000000 points have been added to your account!`,
+                                type: 'text'
+                            };
+                            socket.send(JSON.stringify(roomJoinSuccessMessage));
             
-                    // كتابة الصورة العشوائية إلى ملف باستخدام writeFileSync
-                    writeImageToFile(randomImage);  // كتابة البيانات إلى ملف
-                } else {
-                    console.log('No image found');
+                            // تحديث حالة بيكاتشو
+                            pikachuAlive = false;
+                        } else {
+                            console.log('Pikachu is already dead!');
+                            sendMainMessage(parsedData.room, 'بوت: Pikachu مات بالفعل، لا يمكنك قتله مجددًا!');
+                        }
+                        respondingUser.points += 1000000000; // إضافة 100 نقطة
+                        respondingUser.lastShotTime = currentTime; // تحديث وقت آخر Shot
+                        writeUsersToFile(users);
+                    } else {
+                        const remainingTime = tenMinutesInMillis - (currentTime - respondingUser.lastShotTime);
+                        const remainingMinutes = Math.ceil(remainingTime / (60 * 1000));
+                        sendMainMessage(parsedData.room, ` ${parsedData.from}, you must wait ${remainingMinutes} minute(s) before you can send a fire again.`);
+                    }
+                }
+            } else if (parsedData.body === 'fire' || parsedData.body === 'فاير') {
+                const randomImage = getRandomImageShot();
+                let respondingUser = users.find(user => user.username === parsedData.from);
+                if (respondingUser) {
+                    const currentTime = Date.now(); // الوقت الحالي بالمللي ثانية
+                    const tenMinutesInMillis = 10 * 60 * 1000; // 10 دقائق بالمللي ثانية
+            
+                    if (!respondingUser.lastShotTime || currentTime - respondingUser.lastShotTime >= tenMinutesInMillis) {
+                        if (randomImage) {
+                            console.log(`Sending image: ${randomImage.name}, Points: ${randomImage.points}, URL: ${randomImage.url}`);
+                            sendMainImageMessage(parsedData.room, randomImage.url);
+                            respondingUser.points += randomImage.points; // إضافة النقاط
+                            respondingUser.lastShotTime = currentTime; // تحديث وقت آخر Shot
+                            writeUsersToFile(users);
+            
+                            sendMainMessage(parsedData.room, `You killed ${randomImage.name} and earned ${randomImage.points} points!`);
+                            writeImageToFile(randomImage);
+                            const roomJoinSuccessMessage = {
+                                handler: 'chat_message',
+                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                                to: parsedData.from,
+                                body: `${randomImage.points} points have been added to your account!`,
+                                type: 'text'
+                            };
+                            socket.send(JSON.stringify(roomJoinSuccessMessage));
+                        }
+                    } else {
+                        const remainingTime = tenMinutesInMillis - (currentTime - respondingUser.lastShotTime);
+                        const remainingMinutes = Math.ceil(remainingTime / (60 * 1000));
+                        sendMainMessage(parsedData.room, ` ${parsedData.from}, you must wait ${remainingMinutes} minute(s) before you can send a fire again.`);
+                    }
                 }
             }
+            
             
             
 
@@ -1304,7 +1962,6 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                         console.log(`User ${parsedData.from} not found in masterbot, verification skipped.`);
                         return;
                     }
-                    console.log(`454545`);
                     
                    let userlenghth =  getArrayLength(users);
                    sendVerificationMessage(parsedData.room, `Users: ${userlenghth}`);
@@ -1582,7 +2239,7 @@ else if (body.startsWith('spec@')) {
                     const rankEmojis = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '⭐', '✨', '🌟', '🔥'];
 
                     // بناء الرسالة التي تحتوي على قائمة اللاعبين مع إجبار الاتجاه من اليسار لليمين
-                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n "🎉 Congratulations to the winner of November! ["♥♪"] \n 🎉`;
+                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n "🎉 Congratulations to the winner ! ["آ̱لَ̠خ̣ـ̞𓃗ــ̭آل"] \n 🎉`;
 
                     topPlayers.forEach((player, index) => {
                         const emoji = rankEmojis[index] || '🔹'; // اختيار الإيموجي بناءً على الترتيب
@@ -2130,10 +2787,10 @@ to next .lg@3
                     // التحقق إذا كان يوجد أكثر من 2 @
                     if (atCount === 2) {
                         const username = body.split('@')[2].trim();
-                        const isUnverified = handleUnverifiedUser2(socket, users, username,parsedData.room);
-                        if (isUnverified) {
-                            return; // Game is not allowed for unverified users
-                        }
+                        // const isUnverified = handleUnverifiedUser2(socket, users, username,parsedData.room);
+                        // if (isUnverified) {
+                        //     return; // Game is not allowed for unverified users
+                        // }
                         const id = Number(body.split('@')[1].trim());
                         if (Number.isInteger(id)){
 
@@ -2227,10 +2884,10 @@ to next .lg@3
 
                         if (body.startsWith('agi@')) {
                             const username = body.split('@')[2].trim();
-                            const isUnverified = handleUnverifiedUser2(socket, users, username,parsedData.room);
-                            if (isUnverified) {
-                                return; // Game is not allowed for unverified users
-                            }
+                            // const isUnverified = handleUnverifiedUser2(socket, users, username,parsedData.room);
+                            // if (isUnverified) {
+                            //     return; // Game is not allowed for unverified users
+                            // }
         
                             const msg=body.split('@')[3].trim();
                             const id = Number(body.split('@')[1].trim());

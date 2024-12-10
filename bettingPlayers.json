@@ -1,4 +1,10 @@
 {
+  "2024": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
   "egypt": {
     "players": [],
     "active": false,
@@ -96,6 +102,42 @@
     "active": false
   },
   "قـــهوه_و_هــيل_🇸🇦": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "روح💞الصداقة": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "flowers": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "كريكيت🏏cricket": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "✫彡خواطر彡✫": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "قصـــة🤍عـشـق": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "كافية🍹الافندي": {
     "betAmount": null,
     "players": [],
     "startedBy": null,

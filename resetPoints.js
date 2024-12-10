@@ -15,7 +15,8 @@ function resetPointsAndAssets() {
         // تحديث النقاط والأصول لكل مستخدم
         users.forEach(user => {
             user.points = 0; // تصفير النقاط
-            
+            console.log(`User: ${user.name}, Points reset to: ${user.points}`);
+
             // التأكد من وجود الأصول (assets) وتحديثها
             if (user.assets && typeof user.assets === 'object') {
                 Object.keys(user.assets).forEach(asset => {
