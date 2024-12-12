@@ -2,11 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { getRandomInstruction } = require('./getRandomText');
 const getRandomItemDress = require('./dress'); // استيراد دالة اختيار الفستان العشوائي
+const createCanvasWithBackground = require('./createImage');
 
 const moment = require('moment');  // التأكد من استيراد moment
-const createCanvasWithBackground = require('./createImage');
-const {resetPointsAndAssets,getArrayLength} = require('./resetPoints');
-const {getRandomItem,getRandomItemBoy} = require('./randomItemGirls');
+const createGameBoard = require('./createImage');
+const { resetPointsAndAssets, getArrayLength } = require('./resetPoints');
+const { getRandomItem, getRandomItemBoy } = require('./randomItemGirls');
 const { loadTweets,
     saveTweets,
     addTweet,
@@ -56,6 +57,15 @@ const {
 
 const ws_Rooms = async ({ username, password, roomName }) => {
     const socket = new WebSocket('wss://chatp.net:5333/server');
+    let players = new Map();  // تخزين اللاعبين
+    let playerNumbers = new Map();  // تخزين الأرقام التي يرسلها اللاعبون
+    let playerSequences = new Map(); // حفظ تسلسل الأرقام لكل لاعب
+    let turn = 1;  // تحديد الدور (1 للاعب الأول، 2 للاعب الثاني)
+    const validNumbers = Array.from({ length: 16 }, (_, i) => i + 1);  // الأرقام من 1 إلى 16
+    let timeout;  // متغير لتخزين timeout
+    const timeoutDuration = 30000; // 30 ثانية
+    let selectedNumbers = [];  // لتخزين الأرقام المرسلة
+
     let answerTimeout;
     let reminderInterval;
     let timeLeft = 30; // 30 seconds
@@ -118,7 +128,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         };
         socket.send(JSON.stringify(message));
     }
-    
+
     function stopGameAfterChoiceTimeout(parsedData) {
         choiceTimeout = setTimeout(() => {
             // إذا لم يتم إرسال اختيار الطريق في الوقت المحدد، يتم إرسال رسالة "انتهاء اللعبة"
@@ -234,73 +244,19 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     length: '',
                     body: ` Pikachu is back ${randomEmoji} send fire or فاير`,
                 };
-        
+
                 socket.send(JSON.stringify(message));
             }
         }, 720000); // يكرر الإرسال كل 5 دقائق (300000 مللي ثانية)
-        const tweetTimer = setInterval(() => {
-            const tweets = loadTweets();  // تحميل التغريدات من الملف مع كل تكرار
-
-            if (tweetIndex < tweets.length) {
-                let currentTweet = tweets[tweetIndex];
-                
-                // تحقق إذا كانت التغريدة قديمة أكثر من 48 ساعة
-                const currentTime = new Date();
-                const tweetTime = new Date(currentTweet.createdAt);
-                const timeDiff = (currentTime - tweetTime) / (1000 * 60 * 60); // الفرق بالساعة
-                
-                // إذا مر أكثر من 48 ساعة على إضافة التغريدة، قم بحذفها
-                if (timeDiff > 48) {
-                    console.log(`Tweet from ${currentTweet.user} is older than 48 hours. Deleting it.`);
-                    tweets.splice(tweetIndex, 1); // حذف التغريدة
-                    saveTweets(tweets); // حفظ التحديثات
-                    return; // الانتقال إلى التغريدة التالية دون إرسال هذه
-                }
-        
-                lastTweetId = tweetIndex; // حفظ معرف التغريدة الحالية
-                
-                const tweetMessage = `
-______________________
-*Tweet from ${currentTweet.user}** 
-id "${currentTweet.id}"
-💬 "${currentTweet.text}"
-❤️ *Likes:* ${currentTweet.likes}  
-👎 *Dislikes:* ${currentTweet.dislikes}
-🔗 *Send like or dislike to action tweet and post@tweet to create or tw@id to see details.
-______________________
-             `;
-        
-                // إرسال التغريدة لكل الغرف
-                for (let room of rooms) {
-                    const message = {
-                        handler: 'room_message',
-                        id: 'TclBVHgBzPGTMRTNpgWV',
-                        type: 'text',
-                        room: room, // إرسال إلى الغرفة الحالية
-                        url: '',
-                        length: '',
-                        body: tweetMessage,
-                    };
-        
-                    socket.send(JSON.stringify(message));
-                }
-        
-                tweetIndex++; // الانتقال إلى التغريدة التالية
-            } else {
-                // عند الوصول إلى آخر تغريدة، نعيد التكرار من البداية
-                tweetIndex = 0; // إعادة تعيين الفهرس للبداية
-                console.log('All tweets have been sent. Restarting...');
-            }
-        }, 3 * 60 * 1000); // إرسال التغريدات كل دقيقة
-        
+       
 
         textTimer = setInterval(() => {
             // index.js
-           
-            
-          
+
+
+
             // بدء عملية جلب النص العشوائي كل نصف ساعة
-          let text =  getRandomInstruction();
+            let text = getRandomInstruction();
 
             // يمكنك إضافة المزيد من الكود هنا حسب حاجتك، مثل إضافة خادم HTTP أو وظائف أخرى
             // إرسال الرسالة لكل الغرف
@@ -314,11 +270,11 @@ ______________________
                     length: '',
                     body: `  ${text}`,
                 };
-        
+
                 socket.send(JSON.stringify(message));
             }
         }, 1800000); // يكرر الإرسال كل 5 دقائق (300000 مللي ثانية)
-        
+
 
         rooms.forEach(room => {
             setInterval(() => {
@@ -344,7 +300,7 @@ ______________________
 
 
     };
-    function handleUnverifiedUser2(socket, users, usery,room) {
+    function handleUnverifiedUser2(socket, users, usery, room) {
         console.log(usery)
         const respondingUser = users.find(user => user.username === usery);
         console.log(respondingUser)
@@ -517,11 +473,11 @@ ______________________
                     };
 
                     socket.send(JSON.stringify(youget));
-              
+
                 }
 
                 if (parsedData.body === 'shot') {
-              
+
 
                     let user = users.find(user => user.username === parsedData.from);
                     if (!user) {
@@ -562,15 +518,15 @@ ______________________
 
 
 
-                if (parsedData.body === 'عروستي' || parsedData.body ===  `عروستى`|| parsedData.body ===  "My Bride" ) {
+                if (parsedData.body === 'عروستي' || parsedData.body === `عروستى` || parsedData.body === "My Bride") {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // تنفيذ إجراءات إضافية إذا كان المستخدم غير موثّق
                         return;
                     }
-                
+
                     const userId = parsedData.from; // معرّف المستخدم المرسل
-                
+
                     // التحقق مما إذا كان هناك مؤقت نشط لهذا المستخدم
                     if (activeUsers.has(userId)) {
                         // إذا كان لدى المستخدم مؤقت نشط، إبلاغه أنه يجب الانتظار
@@ -582,17 +538,18 @@ ______________________
                                 room: parsedData.room,
                                 url: '',
                                 length: '',
-                                body: parsedData.body === "My Bride" 
-                                ? "You can request 'My Bride' again after the timer ends."
-                                : "يمكنك طلب 'عروستي' مرة أخرى بعد انتهاء المؤقت."                            })
+                                body: parsedData.body === "My Bride"
+                                    ? "You can request 'My Bride' again after the timer ends."
+                                    : "يمكنك طلب 'عروستي' مرة أخرى بعد انتهاء المؤقت."
+                            })
                         );
                         return;
                     }
-                
+
                     // فورًا عند طلب "عروستي"، إرسال الرد مع العروس العشوائي
                     const randomItem = getRandomItem();
                     console.log(`العنصر العشوائي للمستخدم ${userId}:`, randomItem);
-                sendMainImageMessage(parsedData.room,randomItem.image)
+                    sendMainImageMessage(parsedData.room, randomItem.image)
                     const youget = {
                         handler: 'room_message',
                         id: 'TclBVHgBzPGTMRTNpgWV',
@@ -600,33 +557,34 @@ ______________________
                         room: parsedData.room, // الغرفة التي سيتم إرسال الرسالة إليها
                         url: '',
                         length: '',
-                        body: parsedData.body === "My Bride" 
-                        ? `Your bride, ${userId}, is ${randomItem.username}` 
-                        : `عروستك يا ${userId} هي ${randomItem.username}`                    };
-                
+                        body: parsedData.body === "My Bride"
+                            ? `Your bride, ${userId}, is ${randomItem.username}`
+                            : `عروستك يا ${userId} هي ${randomItem.username}`
+                    };
+
                     // إرسال الرسالة فوريًا إلى الغرفة
                     socket.send(JSON.stringify(youget));
 
-                
+
                     // تخزين المؤقت في Map بحيث لا يمكن للمستخدم طلب "عروستي" مرة أخرى إلا بعد دقيقتين
                     const intervalId = setInterval(() => {
                         activeUsers.delete(userId); // حذف المستخدم من Map بعد مرور دقيقتين
                         clearInterval(intervalId);
-                    },  60 * 1000); // تأخير المؤقت لمدة دقيقتين
-                
+                    }, 60 * 1000); // تأخير المؤقت لمدة دقيقتين
+
                     // تخزين المؤقت في Map
                     activeUsers.set(userId, intervalId);
                 }
-                
-                if (parsedData.body === 'عريسي' || parsedData.body ===  `عريسى`|| parsedData.body ===  "My Groom" ) {
+
+                if (parsedData.body === 'عريسي' || parsedData.body === `عريسى` || parsedData.body === "My Groom") {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
                         // تنفيذ إجراءات إضافية إذا كان المستخدم غير موثّق
                         return;
                     }
-                
+
                     const userId = parsedData.from; // معرّف المستخدم المرسل
-                
+
                     // التحقق مما إذا كان هناك مؤقت نشط لهذا المستخدم
                     if (activeUsers.has(userId)) {
                         // إذا كان لدى المستخدم مؤقت نشط، إبلاغه أنه يجب الانتظار
@@ -639,16 +597,17 @@ ______________________
                                 url: '',
                                 length: '',
                                 body: parsedData.body === "My Groom"
-                                ? "You can request 'My Groom' again after the timer ends. 😊"
-                                : "يمكنك طلب 'عريسك' مرة أخرى بعد انتهاء المؤقت. 😊"                            })
+                                    ? "You can request 'My Groom' again after the timer ends. 😊"
+                                    : "يمكنك طلب 'عريسك' مرة أخرى بعد انتهاء المؤقت. 😊"
+                            })
                         );
                         return;
                     }
-                
+
                     // فورًا عند طلب "عروستي"، إرسال الرد مع العروس العشوائي
                     const randomItem = getRandomItemBoy();
                     console.log(`العنصر العشوائي للمستخدم ${userId}:`, randomItem);
-                sendMainImageMessage(parsedData.room,randomItem.image)
+                    sendMainImageMessage(parsedData.room, randomItem.image)
                     const youget = {
                         handler: 'room_message',
                         id: 'TclBVHgBzPGTMRTNpgWV',
@@ -656,92 +615,93 @@ ______________________
                         room: parsedData.room, // الغرفة التي سيتم إرسال الرسالة إليها
                         url: '',
                         length: '',
-                        body: parsedData.body === "My Groom" 
-                        ? `Your groom, ${userId}, is ${randomItem.username}` 
-                        : `عريسك يا ${userId} هو ${randomItem.username}`                    };
-                
+                        body: parsedData.body === "My Groom"
+                            ? `Your groom, ${userId}, is ${randomItem.username}`
+                            : `عريسك يا ${userId} هو ${randomItem.username}`
+                    };
+
                     // إرسال الرسالة فوريًا إلى الغرفة
                     socket.send(JSON.stringify(youget));
 
-                
+
                     // تخزين المؤقت في Map بحيث لا يمكن للمستخدم طلب "عروستي" مرة أخرى إلا بعد دقيقتين
                     const intervalId = setInterval(() => {
                         activeUsers.delete(userId); // حذف المستخدم من Map بعد مرور دقيقتين
                         clearInterval(intervalId);
-                    },  60 * 1000); // تأخير المؤقت لمدة دقيقتين
-                
+                    }, 60 * 1000); // تأخير المؤقت لمدة دقيقتين
+
                     // تخزين المؤقت في Map
                     activeUsers.set(userId, intervalId);
                 }
-             
-if (parsedData.body === 'دريس' || parsedData.body === 'dress') {
-    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
-    if (isUnverified) {
-        // إجراءات إضافية إذا كان المستخدم غير موثّق
-        return;
-    }
 
-    const userId = parsedData.from;
-    
-    // التحقق مما إذا كان قد مر وقت كافٍ منذ آخر طلب
-    if (activeUsersdress.has(userId)) {
-        const lastRequestTime = activeUsersdress.get(userId);
-        const currentTime = Date.now();
-        
-        // إذا لم تمر دقيقتين (120000 مللي ثانية)، إبلاغ المستخدم أنه يجب الانتظار
-        if (currentTime - lastRequestTime < 2 * 60 * 1000) {
-            socket.send(
-                JSON.stringify({
-                    handler: 'room_message',
-                    id: 'TclBVHgBzPGTMRTNpgWV',
-                    type: 'text',
-                    room: parsedData.room,
-                    url: '',
-                    length: '',
-                    body: 'يمكنك طلب فستان آخر بعد دقيقتين من آخر طلب. 😊'
-                })
-            );
-            return;
-        }
-    }
+                if (parsedData.body === 'دريس' || parsedData.body === 'dress') {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        // إجراءات إضافية إذا كان المستخدم غير موثّق
+                        return;
+                    }
 
-    const randomDress = getRandomItemDress(); // الحصول على فستان عشوائي
-    let respondingUser = users.find(user => user.username === userId);
-    
-    if (respondingUser) {
-        respondingUser.points += randomDress.points; // إضافة النقاط للمستخدم
-        sendDressImageMessage(parsedData.room, randomDress.image); // إرسال صورة الفستان العشوائي
+                    const userId = parsedData.from;
 
-        const yougetDress = {
-            handler: 'room_message',
-            id: 'TclBVHgBzPGTMRTNpgWV',
-            type: 'text',
-            room: parsedData.room,
-            url: '',
-            length: '',
-            body: `من تصميم ${randomDress.name} وقد حصلت على ${randomDress.points} نقاط`
-        };
+                    // التحقق مما إذا كان قد مر وقت كافٍ منذ آخر طلب
+                    if (activeUsersdress.has(userId)) {
+                        const lastRequestTime = activeUsersdress.get(userId);
+                        const currentTime = Date.now();
 
-        // إرسال الرسالة إلى الغرفة
-        socket.send(JSON.stringify(yougetDress));
-        
-        // تخزين وقت آخر طلب للمستخدم في الـMap
-        activeUsersdress.set(userId, Date.now());
-        writeUsersToFile(users); // كتابة المستخدمين إلى الملف
-    }
-}
-            
+                        // إذا لم تمر دقيقتين (120000 مللي ثانية)، إبلاغ المستخدم أنه يجب الانتظار
+                        if (currentTime - lastRequestTime < 2 * 60 * 1000) {
+                            socket.send(
+                                JSON.stringify({
+                                    handler: 'room_message',
+                                    id: 'TclBVHgBzPGTMRTNpgWV',
+                                    type: 'text',
+                                    room: parsedData.room,
+                                    url: '',
+                                    length: '',
+                                    body: 'يمكنك طلب فستان آخر بعد دقيقتين من آخر طلب. 😊'
+                                })
+                            );
+                            return;
+                        }
+                    }
+
+                    const randomDress = getRandomItemDress(); // الحصول على فستان عشوائي
+                    let respondingUser = users.find(user => user.username === userId);
+
+                    if (respondingUser) {
+                        respondingUser.points += randomDress.points; // إضافة النقاط للمستخدم
+                        sendDressImageMessage(parsedData.room, randomDress.image); // إرسال صورة الفستان العشوائي
+
+                        const yougetDress = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `من تصميم ${randomDress.name} وقد حصلت على ${randomDress.points} نقاط`
+                        };
+
+                        // إرسال الرسالة إلى الغرفة
+                        socket.send(JSON.stringify(yougetDress));
+
+                        // تخزين وقت آخر طلب للمستخدم في الـMap
+                        activeUsersdress.set(userId, Date.now());
+                        writeUsersToFile(users); // كتابة المستخدمين إلى الملف
+                    }
+                }
+
 
                 if (parsedData.body && parsedData.body.startsWith('tw@')) {
                     // استخراج المعرف من الرسالة بعد "tw@"
                     const tweetId = parsedData.body.substring(parsedData.body.indexOf('@') + 1).trim();
-                    
+
                     // تحميل التغريدات الحالية
-                    const tweets = loadTweets(); 
-                    
+                    const tweets = loadTweets();
+
                     // البحث عن التغريدة التي تطابق المعرف
                     const tweet = tweets.find(t => t.id === tweetId);
-                    
+
                     // التحقق إذا كانت التغريدة موجودة
                     if (tweet) {
                         // إذا تم العثور على التغريدة، إرسال تفاصيلها
@@ -773,7 +733,7 @@ id : "${tweet.id}"
                                 body: `details send PVT.`
                             })
                         );
-                      
+
                     } else {
                         // إذا لم يتم العثور على التغريدة، إرسال رسالة خطأ
                         socket.send(
@@ -789,17 +749,17 @@ id : "${tweet.id}"
                         );
                     }
                 }
-                if (parsedData.body && parsedData.body.startsWith('deltw@')  ) {
+                if (parsedData.body && parsedData.body.startsWith('deltw@')) {
                     // استخراج المعرف من الرسالة بعد "deltw@"
                     const tweetId = parsedData.body.substring(parsedData.body.indexOf('@') + 1).trim();
-            
+
                     // محاولة حذف التغريدة
                     const tweets = loadTweets();
                     const tweetExists = tweets.some(t => t.id === tweetId);
-            
+
                     if (tweetExists) {
                         deleteTweetById(tweetId);
-            
+
                         // إرسال رسالة تأكيد الحذف
                         socket.send(
                             JSON.stringify({
@@ -827,214 +787,10 @@ id : "${tweet.id}"
                         );
                     }
                 }
-                
-                if (parsedData.body && parsedData.body.startsWith('post@')) {
-                    // استخراج المحتوى بعد "post@"
-                    const content = parsedData.body.substring(parsedData.body.indexOf('@') + 1).trim(); 
-                    
-                    // التحقق من طول التغريدة
-                    if (!content) {
-                        socket.send(
-                            JSON.stringify({
-                                handler: 'room_message',
-                                id: 'ErrorMessage',
-                                type: 'text',
-                                room: parsedData.room,
-                                url: '',
-                                length: '',
-                                body: 'The post content cannot be empty. Please provide text after "post@".'
-                            })
-                        );
-                        return;
-                    }
-                
-                    if (content.length > 500) {
-                        socket.send(
-                            JSON.stringify({
-                                handler: 'room_message',
-                                id: 'ErrorMessage',
-                                type: 'text',
-                                room: parsedData.room,
-                                url: '',
-                                length: '',
-                                body: 'The post content is too long. Please limit your post to 500 characters.'
-                            })
-                        );
-                        return;
-                    }
-                
-                    // استثناء المستخدم المعين
-                    const EXCLUDED_USER = "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا";  // استبدل هذا بالمعرف الفعلي للمستخدم الاستثنائي
-                
-                    // التحقق مما إذا كان المستخدم قد نشر تغريدة في الساعة الماضية
-                    if (parsedData.from !== EXCLUDED_USER) {
-                        const currentTime = new Date();
-                        const lastTweetTime = userLastTweetTime.get(parsedData.from);
-                
-                        // إذا كان قد مر أقل من ساعة على آخر تغريدة، نرسل رسالة تحذير
-                        if (lastTweetTime && (currentTime - lastTweetTime) < 60 * 60 * 1000) {
-                            socket.send(
-                                JSON.stringify({
-                                    handler: 'room_message',
-                                    id: 'ErrorMessage',
-                                    type: 'text',
-                                    room: parsedData.room,
-                                    url: '',
-                                    length: '',
-                                    body: 'You can only post one tweet per hour. Please wait before posting again.'
-                                })
-                            );
-                            return;
-                        }
-                    }
-                    const tweets = loadTweets();  // تحميل التغريدات الحالية
 
-                    // إذا كانت الشروط متوافقة، أضف التغريدة
-                    const currentTime = new Date();
-                    const tweetId = `tweet_${tweets.length + 1}`;  // معرّف سهل يتزايد مع كل تغريدة جديدة
+            
 
-                    const newTweet = {
-                        id: tweetId,         // إضافة المعرف الفريد
 
-                        text: content,
-                        likes: 0,
-                        dislikes: 0,
-                        likedBy:[],
-                        user: parsedData.from,
-                        createdAt: currentTime,
-                        dislikedBy:[],
-                        likedBy:[]
-                    };
-                
-                    // إضافة التغريدة الجديدة إلى القائمة
-                    tweets.push(newTweet);        // إضافة التغريدة الجديدة إلى المصفوفة
-                    saveTweets(tweets);
-                
-                    // تحديث وقت آخر تغريدة لهذا المستخدم
-                    userLastTweetTime.set(parsedData.from, currentTime);
-                
-                    socket.send(
-                        JSON.stringify({
-                            handler: 'room_message',
-                            id: 'NewPostMessage',
-                            type: 'text',
-                            room: parsedData.room,
-                            url: '',
-                            length: '',
-                            body: `Your post has been successfully added: "${content}". 🎉`
-                        })
-                    );
-                }
-                
-
-                if (parsedData.body === 'like' || parsedData.body === 'dislike') {
-                    if (lastTweetId !== null) {
-                        const tweet = tweets[lastTweetId];
-                
-                        // التحقق إذا كان الشخص قد أعجب أو لم يعجب بالتغريدة بالفعل
-                        if (parsedData.body === 'like') {
-                            // التحقق من أن الشخص لم يقم بـ "dislike" بالفعل
-                            if (tweet.dislikedBy && tweet.dislikedBy.includes(parsedData.from)) {
-                                console.log(`${parsedData.from} has already disliked this tweet, cannot like it.`);
-                                socket.send(
-                                    JSON.stringify({
-                                        handler: 'room_message',
-                                        id: 'ErrorMessage',
-                                        type: 'text',
-                                        room: parsedData.room,
-                                        url: '',
-                                        length: '',
-                                        body: `You have already disliked this tweet, ${parsedData.from}. You cannot like it now.`
-                                    })
-                                );
-                                return;
-                            }
-                            // التحقق إذا كان الشخص قد أعجب بالتغريدة بالفعل
-                            if (tweet.likedBy && tweet.likedBy.includes(parsedData.from)) {
-                                console.log(`${parsedData.from} has already liked this tweet.`);
-                                socket.send(
-                                    JSON.stringify({
-                                        handler: 'room_message',
-                                        id: 'ErrorMessage',
-                                        type: 'text',
-                                        room: parsedData.room,
-                                        url: '',
-                                        length: '',
-                                        body: `You have already liked this tweet, ${parsedData.from}.`
-                                    })
-                                );
-                                return;
-                            }
-                
-                            // إضافة إعجاب للتغريدة
-                            tweet.likes += 1;
-                            tweet.likedBy = tweet.likedBy || [];  // إذا لم يكن هناك سجل للأشخاص الذين أعجبوا، قم بإنشائه
-                            tweet.likedBy.push(parsedData.from); // إضافة الشخص إلى قائمة من أعجبوا بالتغريدة
-                            console.log(`Like added to tweet: ${tweet.text}`);
-                
-                        } else if (parsedData.body === 'dislike') {
-                            // التحقق من أن الشخص لم يقم بـ "like" بالفعل
-                            if (tweet.likedBy && tweet.likedBy.includes(parsedData.from)) {
-                                console.log(`${parsedData.from} has already liked this tweet, cannot dislike it.`);
-                                socket.send(
-                                    JSON.stringify({
-                                        handler: 'room_message',
-                                        id: 'ErrorMessage',
-                                        type: 'text',
-                                        room: parsedData.room,
-                                        url: '',
-                                        length: '',
-                                        body: `You have already liked this tweet, ${parsedData.from}. You cannot dislike it now.`
-                                    })
-                                );
-                                return;
-                            }
-                            // التحقق إذا كان الشخص قد أبدى عدم إعجابه بالتغريدة بالفعل
-                            if (tweet?.dislikedBy && tweet?.dislikedBy.includes(parsedData.from)) {
-                                console.log(`${parsedData.from} has already disliked this tweet.`);
-                                socket.send(
-                                    JSON.stringify({
-                                        handler: 'room_message',
-                                        id: 'ErrorMessage',
-                                        type: 'text',
-                                        room: parsedData.room,
-                                        url: '',
-                                        length: '',
-                                        body: `You have already disliked this tweet, ${parsedData.from}.`
-                                    })
-                                );
-                                return;
-                            }
-                
-                            // إضافة عدم إعجاب للتغريدة
-                            tweet.dislikes += 1;
-                            tweet.dislikedBy = tweet.dislikedBy || [];  // إذا لم يكن هناك سجل للأشخاص الذين لم يعجبوا، قم بإنشائه
-                            tweet.dislikedBy.push(parsedData.from); // إضافة الشخص إلى قائمة من لم يعجبوا بالتغريدة
-                            console.log(`Dislike added to tweet: ${tweet.text}`);
-                        }
-                
-                        // إرسال التحديث بعدد الإعجابات وعدم الإعجابات لكل الغرف
-                        const updateMessage = {
-                            handler: 'room_message',
-                            id: 'TclBVHgBzPGTMRTNpgWV',
-                            type: 'text',
-                            room: parsedData.room,
-                            url: '',
-                            length: '',
-                            body: `Tweet from ${tweet.user}: ${tweet.text} \nUpdated Likes: ${tweet.likes}, Updated Dislikes: ${tweet.dislikes}`,
-                        };
-                
-                        socket.send(JSON.stringify(updateMessage));
-                
-                        // حفظ التعديلات في الملف
-                        saveTweets(tweets);
-                
-                    } else {
-                        console.log('No tweet available to like or dislike.');
-                    }
-                }
-                
-                
                 // إذا كانت الرسالة هي "ابدأ"
                 if (parsedData.body === 'ابدأ') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -1350,41 +1106,15 @@ id : "${tweet.id}"
                 sendMainMessage(parsedData.room, storeMessage);
             }
 
-            if (parsedData.handler === 'room_event' && parsedData.body === 'vipss') {
-                // تحقق مما إذا كان المستخدم موجودًا في ملف masterbot
-                if (!isUserInMasterBot(parsedData.from)) {
-                    console.log(`User ${parsedData.from} not found in masterbot, verification skipped.`);
-                    return;
-                }
 
-                const outputPath = 'C:/ImagesServers/111.png';
-                const backgroundImagePath = './images/moon.jpg';  // مسار صورة القمر
-                const overlayImageUrl = 'https://www.tebot.online/147.jpg';  // رابط الصورة الثانية
-                sendMainImageMessage(`egypt`, overlayImageUrl);
-                // التحقق مما إذا كانت الصورة موجودة عبر رابط URL
-                fetch(overlayImageUrl)
-                    .then(response => {
-                        if (response.ok) {
-                            console.log(response);
 
-                            // إذا كانت الصورة موجودة، قم بإنشاء الصورة
-                            console.log(`Image ${overlayImageUrl} is available. Proceeding with canvas creation.`);
-                            createCanvasWithBackground(backgroundImagePath, overlayImageUrl, outputPath);
-                            sendMainImageMessage(`egypt`, response.url);
-                        } else {
-                            console.log(`Image ${overlayImageUrl} not found. Cannot proceed.`);
-                        }
-                    })
-                    .catch(error => {
-                        console.log(`Error fetching image: ${error}`);
-                    });
-            }
+
             if ((parsedData.body === 'fire' || parsedData.body === 'فاير') && pikachuAlive === true) {
                 let respondingUser = users.find(user => user.username === parsedData.from);
                 if (respondingUser) {
                     const currentTime = Date.now(); // الوقت الحالي بالمللي ثانية
                     const tenMinutesInMillis = 10 * 60 * 1000; // 10 دقائق بالمللي ثانية
-            
+
                     // إذا لم يمر 10 دقائق منذ آخر Shot أو إذا لم يتم إرسال Shot من قبل
                     if (!respondingUser.lastShotTime || currentTime - respondingUser.lastShotTime >= tenMinutesInMillis) {
                         const data = fs.readFileSync('rooms.json', 'utf8');
@@ -1402,7 +1132,7 @@ id : "${tweet.id}"
                                 };
                                 socket.send(JSON.stringify(message));
                                 sendMainImageMessage(ur, 'https://i.pinimg.com/736x/da/f6/bd/daf6bd86a28d3d02bced993b64062a85.jpg');
-                               
+
                             }
                             const roomJoinSuccessMessage = {
                                 handler: 'chat_message',
@@ -1412,7 +1142,7 @@ id : "${tweet.id}"
                                 type: 'text'
                             };
                             socket.send(JSON.stringify(roomJoinSuccessMessage));
-            
+
                             // تحديث حالة بيكاتشو
                             pikachuAlive = false;
                         } else {
@@ -1434,14 +1164,14 @@ id : "${tweet.id}"
                 if (respondingUser) {
                     const currentTime = Date.now(); // الوقت الحالي بالمللي ثانية
                     const tenMinutesInMillis = 10 * 60 * 1000; // 10 دقائق بالمللي ثانية
-            
+
                     if (!respondingUser.lastShotTime || currentTime - respondingUser.lastShotTime >= tenMinutesInMillis) {
                         if (randomImage) {
                             sendMainImageMessage(parsedData.room, randomImage.url);
                             respondingUser.points += randomImage.points; // إضافة النقاط
                             respondingUser.lastShotTime = currentTime; // تحديث وقت آخر Shot
                             writeUsersToFile(users);
-            
+
                             sendMainMessage(parsedData.room, `You killed ${randomImage.name} and earned ${randomImage.points} points!`);
                             writeImageToFile(randomImage);
                             const roomJoinSuccessMessage = {
@@ -1460,9 +1190,14 @@ id : "${tweet.id}"
                     }
                 }
             }
-            
-            
-            
+
+
+
+
+
+
+
+
 
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
                 let vipUsers = readVipFile();
@@ -1482,9 +1217,8 @@ id : "${tweet.id}"
                     return;
                 }
             }
-
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_left' && parsedData.username === 'tebot') {
-               
+
                 const joinRoomMessage = {
                     handler: 'room_join',
                     id: 'QvyHpdnSQpEqJtVbHbFY',
@@ -1505,41 +1239,41 @@ id : "${tweet.id}"
                 BITCOIN: 6000000,  // سعر ابتدائي للبيتكوين
                 LITHIUM: 800000000000   // سعر ابتدائي للليثيوم
             };
-            
+
             // دالة لتحديث الأسعار
-         // دالة لتحديث الأسعار مع احتمالية زيادة أو نقصان
-const updatePrices = () => {
-    const updatedPrices = { ...basePrices };
+            // دالة لتحديث الأسعار مع احتمالية زيادة أو نقصان
+            const updatePrices = () => {
+                const updatedPrices = { ...basePrices };
 
-    // تحديث الأسعار بناءً على احتمالية الزيادة أو النقصان
-    for (const key in updatedPrices) {
-        // اختيار عشوائي بين الزيادة أو النقصان
-        const changeDirection = Math.random() > 0.5 ? 1 : -1; // 50% زيادة أو نقصان
-        const changePercentage = Math.random() * 0.05; // تغيير بنسبة تصل إلى ±5%
-        
-        updatedPrices[key] = updatedPrices[key] * (1 + changeDirection * changePercentage);
+                // تحديث الأسعار بناءً على احتمالية الزيادة أو النقصان
+                for (const key in updatedPrices) {
+                    // اختيار عشوائي بين الزيادة أو النقصان
+                    const changeDirection = Math.random() > 0.5 ? 1 : -1; // 50% زيادة أو نقصان
+                    const changePercentage = Math.random() * 0.05; // تغيير بنسبة تصل إلى ±5%
 
-        // التأكد من أن السعر لا يصبح سالبًا
-        if (updatedPrices[key] < 0) {
-            updatedPrices[key] = 0;
-        }
-    }
+                    updatedPrices[key] = updatedPrices[key] * (1 + changeDirection * changePercentage);
 
-    return updatedPrices;
-};
+                    // التأكد من أن السعر لا يصبح سالبًا
+                    if (updatedPrices[key] < 0) {
+                        updatedPrices[key] = 0;
+                    }
+                }
 
-            
+                return updatedPrices;
+            };
+
+
             // مثال على الاستخدام
-            
-            
+
+
             // تهيئة الأسعار باستخدام دالة updatePrices
             let prices = updatePrices();
-            
+
             // تحديث الأسعار بشكل دوري
             setInterval(() => {
                 prices = updatePrices(); // تحديث الأسعار كل 10 ثوانٍ
             }, 300000); // التحديث كل 10 ثوانٍ (10000 ميلي ثانية)
-            
+
 
             if (parsedData.body === '.po') {
                 const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -1548,7 +1282,7 @@ const updatePrices = () => {
                 }
                 const senderUsername = parsedData.from;
                 const user = users.find(user => user.username === senderUsername);
-            
+
                 if (!user) {
                     const noUserMessage = {
                         handler: 'room_message',
@@ -1562,30 +1296,30 @@ const updatePrices = () => {
                     socket.send(JSON.stringify(noUserMessage));
                     return;
                 }
-            
+
                 // Ensure assets are initialized
                 if (!user.assets) {
                     user.assets = { GOLD: 0, OIL: 0, TECH: 0, SILVER: 0, PLATINUM: 0, DIAMOND: 0, COPPER: 0, GAS: 0, BITCOIN: 0, LITHIUM: 0 }; // إضافة BITCOIN
                 }
-            
+
                 // Create the assets list, filtering only those with a count > 0
                 const userAssets = Object.entries(user.assets)
-    .filter(([_, count]) => count > 0) // Include only assets with count > 0
-    .map(([asset, count]) => {
-        const formattedCountPoints = formatPoints(count);
+                    .filter(([_, count]) => count > 0) // Include only assets with count > 0
+                    .map(([asset, count]) => {
+                        const formattedCountPoints = formatPoints(count);
 
-        const emojis = {
-            GOLD: '🟡', OIL: '🛢️', TECH: '💻', SILVER: '⚪', PLATINUM: '⚫',
-            DIAMOND: '💎', COPPER: '🟠', GAS: '🔥', BITCOIN: '₿', LITHIUM: '🔋'
-        };
-        const emoji = emojis[asset] || ''; // Default to empty if no emoji found
-        return `${emoji} ${asset}: ${formattedCountPoints}`;
-    })
-    .join('\n');
+                        const emojis = {
+                            GOLD: '🟡', OIL: '🛢️', TECH: '💻', SILVER: '⚪', PLATINUM: '⚫',
+                            DIAMOND: '💎', COPPER: '🟠', GAS: '🔥', BITCOIN: '₿', LITHIUM: '🔋'
+                        };
+                        const emoji = emojis[asset] || ''; // Default to empty if no emoji found
+                        return `${emoji} ${asset}: ${formattedCountPoints}`;
+                    })
+                    .join('\n');
 
-            
+
                 const formattedPoints = formatPoints(user?.points);
-            
+
                 const propertiesMessage = {
                     handler: 'room_message',
                     id: 'TclBVHgBzPGTMRTNpgWV',
@@ -1598,11 +1332,11 @@ const updatePrices = () => {
 🏠 Your assets:  
 ${userAssets || 'No assets yet.'}`
                 };
-            
+
                 socket.send(JSON.stringify(propertiesMessage));
             }
-            
-            
+
+
             if (parsedData.body === '.st') {
                 const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                 if (isUnverified) {
@@ -1610,7 +1344,7 @@ ${userAssets || 'No assets yet.'}`
                 }
                 const senderUsername = parsedData.from;
                 let user = users.find(user => user.username === senderUsername);
-            
+
                 if (!user) {
                     user = {
                         username: senderUsername,
@@ -1619,9 +1353,9 @@ ${userAssets || 'No assets yet.'}`
                     };
                     users.push(user);
                 }
-            
+
                 const formattedPoints = formatPoints(user?.points);
-            
+
                 // Format prices dynamically
                 const assetPrices = Object.entries(prices).map(([asset, price]) => {
                     const emojis = {
@@ -1631,7 +1365,7 @@ ${userAssets || 'No assets yet.'}`
                     const formattedPrice = formatPoints(price);
                     return `${emojis[asset]} ${asset}: ${formattedPrice}`;
                 }).join(' \n ');
-            
+
                 // Send a concise welcome message
                 const borsaMessage = {
                     handler: 'room_message',
@@ -1652,18 +1386,18 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 console.log('User initialized:', user);
                 return;
             }
-            
-            
-            
+
+
+
             if (parsedData.body && (parsedData.body.startsWith('buy') || parsedData.body.startsWith('sell'))) {
                 const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                 if (isUnverified) {
                     return;
                 }
-            
+
                 const [action, asset, quantityInput] = parsedData.body.split(' ');
                 const quantity = parseInt(quantityInput, 10); // Convert quantity directly here
-            
+
                 if (isNaN(quantity) || quantity <= 0) {
                     const invalidQuantityMessage = {
                         handler: 'room_message',
@@ -1677,10 +1411,10 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     socket.send(JSON.stringify(invalidQuantityMessage));
                     return;
                 }
-            
+
                 const senderUsername = parsedData.from;
                 const user = users.find(user => user.username === senderUsername);
-            
+
                 if (!user) {
                     const noUserMessage = {
                         handler: 'room_message',
@@ -1694,7 +1428,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     socket.send(JSON.stringify(noUserMessage));
                     return;
                 }
-            
+
                 if (!prices[asset]) {
                     const invalidAssetMessage = {
                         handler: 'room_message',
@@ -1708,18 +1442,18 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     socket.send(JSON.stringify(invalidAssetMessage));
                     return;
                 }
-            
+
                 if (action === 'buy') {
                     const totalPrice = prices[asset] * quantity;  // Calculate the total price
                     if (user.points >= totalPrice) {
                         user.points -= totalPrice;
                         user.assets[asset] = (user.assets[asset] || 0) + quantity; // Add the correct quantity
-            
+
                         // Save data to file
                         fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-            
+
                         const formattedPointsUSER = formatPoints(user.points);
-            
+
                         const successMessage = {
                             handler: 'room_message',
                             id: 'TclBVHgBzPGTMRTNpgWV',
@@ -1747,12 +1481,12 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                         const totalSellPrice = prices[asset] * quantity;
                         user.points += totalSellPrice;
                         user.assets[asset] -= quantity;
-            
+
                         // Save data to file
                         fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-            
+
                         const formattedPointsUSER = formatPoints(user.points);
-            
+
                         const successMessage = {
                             handler: 'room_message',
                             id: 'TclBVHgBzPGTMRTNpgWV',
@@ -1777,12 +1511,12 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     }
                 }
             }
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
 
             if (parsedData.handler === 'room_event' && parsedData.body === 'فزوره') {
                 const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -1989,7 +1723,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                         console.log(`User not found: ${usernameToDelete}`);
                     }
                 }
-                else if (body ==='.resetpoint'&& parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
+                else if (body === '.resetpoint' && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
 
                     // تحقق مما إذا كان المستخدم موجودًا في ملف masterbot
                     if (!isUserInMasterBot(parsedData.from)) {
@@ -1998,21 +1732,21 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     }
                     resetPointsAndAssets();
 
-                   
-                } 
-                else if (body ==='.list'&& parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
+
+                }
+                else if (body === '.list' && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
 
                     // تحقق مما إذا كان المستخدم موجودًا في ملف masterbot
                     if (!isUserInMasterBot(parsedData.from)) {
                         console.log(`User ${parsedData.from} not found in masterbot, verification skipped.`);
                         return;
                     }
-                    
-                   let userlenghth =  getArrayLength(users);
-                   sendVerificationMessage(parsedData.room, `Users: ${userlenghth}`);
 
-                   
-                }else if (body.startsWith('ms@') &&  (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
+                    let userlenghth = getArrayLength(users);
+                    sendVerificationMessage(parsedData.room, `Users: ${userlenghth}`);
+
+
+                } else if (body.startsWith('ms@') && (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
 
                     const usernameToAdd = body.split('@')[1].trim();
                     addUserToMasterBot(usernameToAdd);
@@ -2020,66 +1754,66 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
 
 
                     // تحقق من الرسائل التي تبدأ بـ delms@ لحذف المستخدم من masterbot
-                } else if (body.startsWith('delms@') &&  (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
+                } else if (body.startsWith('delms@') && (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
                     const usernameToRemove = body.split('@')[1].trim();
                     removeUserFromMasterBot(usernameToRemove);
                     sendVerificationMessage(parsedData.room, `User removed Master: ${usernameToRemove}`);
 
                 } // خريطة لتتبع آخر وقت لكل مستخدم أرسل spec@
-                
 
-else if (body.startsWith('spec@')) {
-    const currentTime = Date.now(); // الوقت الحالي بالمللي ثانية
-    const lastTime = lastSpecTime.get(parsedData.from) || 0;
 
-    // التحقق من مرور دقيقتين (120000 مللي ثانية)
-    if (currentTime - lastTime < 120000) {
-        sendMainMessage(parsedData.room, `❌ You can only use spec@ once every 2 minutes.`);
-        return;
-    }
+                else if (body.startsWith('spec@')) {
+                    const currentTime = Date.now(); // الوقت الحالي بالمللي ثانية
+                    const lastTime = lastSpecTime.get(parsedData.from) || 0;
 
-    // تحديث وقت الإرسال
-    lastSpecTime.set(parsedData.from, currentTime);
+                    // التحقق من مرور دقيقتين (120000 مللي ثانية)
+                    if (currentTime - lastTime < 120000) {
+                        sendMainMessage(parsedData.room, `❌ You can only use spec@ once every 2 minutes.`);
+                        return;
+                    }
 
-    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
-    if (isUnverified) {
-        return; // Betting is not allowed for unverified users
-    }
+                    // تحديث وقت الإرسال
+                    lastSpecTime.set(parsedData.from, currentTime);
 
-    let respondingUser = users.find(user => user.username === parsedData.from);
-    if (respondingUser) {
-        const betAmount = parseInt(body.split('@')[1], 10); // Extract the bet amount
-        if (isNaN(betAmount) || betAmount <= 0) {
-            sendMainMessage(parsedData.room, `❌ Invalid bet amount! Please enter a positive number.`);
-            return;
-        }
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        return; // Betting is not allowed for unverified users
+                    }
 
-        if (respondingUser.points < betAmount) {
-            sendMainMessage(parsedData.room, `❌ User ${parsedData.from} does not have enough points to bet ${betAmount}.`);
-            return;
-        }
+                    let respondingUser = users.find(user => user.username === parsedData.from);
+                    if (respondingUser) {
+                        const betAmount = parseInt(body.split('@')[1], 10); // Extract the bet amount
+                        if (isNaN(betAmount) || betAmount <= 0) {
+                            sendMainMessage(parsedData.room, `❌ Invalid bet amount! Please enter a positive number.`);
+                            return;
+                        }
 
-        // Determine the bet result
-        const win = Math.random() < 0.5; // 50% chance to win
-        const changeAmount = Math.floor(betAmount * (Math.random() * 0.5 + 0.5)); // Random change between 50% and 100%
+                        if (respondingUser.points < betAmount) {
+                            sendMainMessage(parsedData.room, `❌ User ${parsedData.from} does not have enough points to bet ${betAmount}.`);
+                            return;
+                        }
 
-        if (win) {
-            respondingUser.points += changeAmount;
-            sendMainMessage(
-                parsedData.room,
-                `🎉 User ${parsedData.from} won ${changeAmount} points! New balance: ${formatPoints(respondingUser.points)}.`
-            );
-        } else {
-            respondingUser.points -= changeAmount;
-            sendMainMessage(
-                parsedData.room,
-                `😢 User ${parsedData.from} lost ${changeAmount} points. New balance: ${formatPoints(respondingUser.points)}.`
-            );
-        }
-    }
-}
+                        // Determine the bet result
+                        const win = Math.random() < 0.5; // 50% chance to win
+                        const changeAmount = Math.floor(betAmount * (Math.random() * 0.5 + 0.5)); // Random change between 50% and 100%
 
-                
+                        if (win) {
+                            respondingUser.points += changeAmount;
+                            sendMainMessage(
+                                parsedData.room,
+                                `🎉 User ${parsedData.from} won ${changeAmount} points! New balance: ${formatPoints(respondingUser.points)}.`
+                            );
+                        } else {
+                            respondingUser.points -= changeAmount;
+                            sendMainMessage(
+                                parsedData.room,
+                                `😢 User ${parsedData.from} lost ${changeAmount} points. New balance: ${formatPoints(respondingUser.points)}.`
+                            );
+                        }
+                    }
+                }
+
+
                 else if (body.startsWith('bet@')) {
                     const betAmount = parseInt(body.split('@')[1]);  // استخراج المبلغ المراهن عليه
                     const bettingData = readBettingData();
@@ -2250,7 +1984,7 @@ else if (body.startsWith('spec@')) {
                         socket.send(JSON.stringify(roomJoinSuccessMessage));
                         writeVipFile(vipUsers);
                     }
-                } else if (body.startsWith('uvip@') &&  (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
+                } else if (body.startsWith('uvip@') && (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
                     const usernameToRemove = body.split('@')[1].trim();
 
                     let vipUsers = readVipFile();
@@ -2365,45 +2099,45 @@ else if (body.startsWith('spec@')) {
                     }
                 }
 
-              
+
                 else if (body === '.send') {
                     const sender = parsedData.from; // المرسل الحقيقي للطلب
                     const vipUsers = readVipFile(); // افترض أن هذه الدالة تقرأ قائمة VIP من ملف vip.json
-                
+
                     // تحقق إذا كان المستخدم في قائمة VIP
                     const isVip = vipUsers.some(user => user.username === sender);
-                
+
                     if (!isVip) {
                         console.log(`User ${sender} is not a VIP.`);
                         sendMainMessage(parsedData.room, `You are not subscribed to the SuperVIP service.`);
                         return;
                     }
-                
+
                     // تحقق من أن المرسل هو نفسه الذي أرسل طلب svip@
                     if (VIPGIFTFROMUSER !== sender) {
                         console.log(`User ${sender} is not the one who made the svip@ request.`);
                         sendMainMessage(parsedData.room, `You are not allowed to send this image. Please ensure you are the one who made the svip@ request.`);
                         return;
                     }
-                
+
                     // التحقق من وقت الإرسال الأخير
                     const currentTime = Date.now();
                     if (lastSendTime.has(sender)) {
                         const lastTime = lastSendTime.get(sender);
                         const timeSinceLastSend = currentTime - lastTime;
-                
+
                         if (timeSinceLastSend < SEND_COOLDOWN) {
                             const remainingTime = Math.ceil((SEND_COOLDOWN - timeSinceLastSend) / 1000);
                             sendMainMessage(parsedData.room, `You can only send this image once every 10 minutes. Please wait ${remainingTime} seconds.`);
                             return;
                         }
                     }
-                
+
                     if (storedImages.has(sender)) {
                         const imageUrl = storedImages.get(sender);
                         const data = fs.readFileSync('rooms.json', 'utf8');
                         const rooms = JSON.parse(data);
-                
+
                         if (imageUrl) {
                             const roomJoinSuccessMessage = {
                                 handler: 'chat_message',
@@ -2413,21 +2147,21 @@ else if (body.startsWith('spec@')) {
                                 type: 'text'
                             };
                             socket.send(JSON.stringify(roomJoinSuccessMessage));
-                
+
                             for (let ur of rooms) {
                                 sendMainImageMessage(ur, imageUrl);
                                 sendMainMessage(ur, `⚠️ ✨🇸‌🇺‌🇵‌🇪‌🇷‌🏅 🇻‌🇮‌🇵‌🏅✨ ⚠️\n 𝔽ℝ𝕆𝕄 : [${sender}] 𝕋𝕆 : [${VIPGIFTTOUSER}]`);
                             }
                         }
-                
+
                         // تحديث توقيت الإرسال الأخير
                         lastSendTime.set(sender, currentTime);
-                
+
                     } else {
                         sendMainMessage(parsedData.room, `No stored image found for you.`);
                     }
                 }
-                
+
 
 
 
@@ -2677,7 +2411,7 @@ else if (body.startsWith('spec@')) {
                     sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}.`);
                 }
 
-                else if (body && body !== ".lg" && !body.startsWith('agi@') && body !== "help" && body !== ".lg@" && body !== ".lg@4" && body !== ".lg@2" && body !== ".lg@3"&& body !== ".resetpoint"&& body !== ".list"   && body !== ".lg@1" && body !== "فزوره" && !body.startsWith('help@1') && body !== "+tp@") {
+                else if (body && body !== ".lg" && !body.startsWith('agi@') && body !== "help" && body !== ".lg@" && body !== ".lg@4" && body !== ".lg@2" && body !== ".lg@3" && body !== ".resetpoint" && body !== ".list" && body !== ".lg@1" && body !== "فزوره" && !body.startsWith('help@1') && body !== "+tp@") {
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
 
@@ -2837,9 +2571,9 @@ to next .lg@3
                         //     return; // Game is not allowed for unverified users
                         // }
                         const id = Number(body.split('@')[1].trim());
-                        if (Number.isInteger(id)){
+                        if (Number.isInteger(id)) {
 
-                        }else{
+                        } else {
                             const gameActiveMessage = {
                                 handler: 'room_message',
                                 id: 'TclBVHgBzPGTMRTNpgWV',
@@ -2849,11 +2583,11 @@ to next .lg@3
                                 length: '',
                                 body: `❌ Alert: bad gift vaule".`
                             };
-                
+
                             socket.send(JSON.stringify(gameActiveMessage));
                             return;
 
-                        }                                
+                        }
 
 
                         if (body && parsedData.room && id === 1) {
@@ -2933,12 +2667,12 @@ to next .lg@3
                             // if (isUnverified) {
                             //     return; // Game is not allowed for unverified users
                             // }
-        
-                            const msg=body.split('@')[3].trim();
-                            const id = Number(body.split('@')[1].trim());
-                            if (Number.isInteger(id)){
 
-                            }else{
+                            const msg = body.split('@')[3].trim();
+                            const id = Number(body.split('@')[1].trim());
+                            if (Number.isInteger(id)) {
+
+                            } else {
                                 const gameActiveMessage = {
                                     handler: 'room_message',
                                     id: 'TclBVHgBzPGTMRTNpgWV',
@@ -2948,11 +2682,11 @@ to next .lg@3
                                     length: '',
                                     body: `❌ Alert: bad gift vaule".`
                                 };
-                    
+
                                 socket.send(JSON.stringify(gameActiveMessage));
                                 return;
-    
-                            }   
+
+                            }
                             if (msg.length > 50) {
                                 sendMainMessage(parsedData.room, ` Message max length 50 characters`);
 
@@ -4646,6 +4380,15 @@ to next .lg@3
         socket.send(JSON.stringify(verificationMessage));
     };
 
+    const sendUserProfileRequest = ( username) => {
+        const profileRequestMessage = {
+            handler: 'profile_other',
+            id: 'ztPMLHZkxwfqDJdJeCvX', // يمكنك إنشاء ID مميز هنا
+            type: username, // اسم المستخدم كنوع
+           
+        };
+        socket.send(JSON.stringify(profileRequestMessage));
+    };
     const sendMainImageMessage = (room, imageURL) => {
         const revealMessage = {
             handler: 'room_message',
