@@ -1,15 +1,15 @@
 {
-  "lastUserWhoSentTreasure": "مـ❣ـہولَآنـ❣ـہآ",
+  "lastUserWhoSentTreasure": "ꪜ͇̿𝓲͇̿ρ͇̿شَـطٓــْـبنَاٰ",
   "lastPuzzle": {
-    "question": "ما الشيء الذي يرفع أثقالًا ولا يقدر يرفع مسمارًا؟",
-    "answer": "البحر"
+    "question": "ما هي عاصمة باكستان؟",
+    "answer": "إسلام آباد"
   },
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "1",
+  "selectedPath": "3",
   "playerProgress": {
-    "correctAnswersCount": 0,
-    "totalPoints": 0
+    "correctAnswersCount": 1,
+    "totalPoints": 100
   },
   "correctAnswersCount": 0
 }

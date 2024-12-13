@@ -1815,14 +1815,24 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
 
 
                 else if (body.startsWith('bet@')) {
-                    const betAmount = parseInt(body.split('@')[1]);  // استخراج المبلغ المراهن عليه
+                    const betAmount = parseInt(body.split('@')[1]); // استخراج المبلغ المراهن عليه
                     const bettingData = readBettingData();
                     const player = users.find(user => user.username === parsedData.from);
+                    
+                    // التحقق من وجود اللاعب ونقاطه
                     if (!player || player.points < betAmount) {
                         sendMainMessage(parsedData.room, `❌ You don't have enough points to start a bet. You currently have ${player ? player.points : 0} points.`);
                         return;
                     }
-
+                
+                    // التحقق من آخر وقت للمراهنة
+                    const now = Date.now();
+                    if (!player.lastBetTime) player.lastBetTime = 0; // تهيئة الوقت إذا لم يكن موجودًا
+                    if (now - player.lastBetTime < 600000) { // 300,000 ms = 5 دقائق
+                        sendMainMessage(parsedData.room, `❌ You can only start or join a bet once every 10 minutes.`);
+                        return;
+                    }
+                
                     // التحقق من وجود بيانات الغرفة
                     if (!bettingData[parsedData.room]) {
                         bettingData[parsedData.room] = {
@@ -1832,15 +1842,15 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                             active: false
                         };
                     }
-
+                
                     const roomData = bettingData[parsedData.room];
-
+                
                     // تحقق إذا كانت هناك لعبة جارية في الغرفة
                     if (roomData.active) {
                         sendMainMessage(parsedData.room, `❌ A game is already in progress. Please wait until it finishes.`);
                         return;
                     }
-
+                
                     // إعداد بيانات اللعبة الجديدة
                     roomData.betAmount = betAmount;
                     roomData.players = [{
@@ -1849,19 +1859,38 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     }];
                     roomData.startedBy = parsedData.from;
                     roomData.active = true;
-
+                
+                    // تحديث وقت آخر مراهنة للمستخدم
+                    player.lastBetTime = now;
+                
                     // حفظ بيانات المراهنة
                     writeBettingData(bettingData);
-
-                    sendMainMessage(parsedData.room, `🎲 ${parsedData.from} has started a bet with ${betAmount} points!`);
-                    sendMainMessage(parsedData.room, `🎲 Other players can join by typing 'bet'.`);
-
+                
+                    // إرسال الرسالة الموحدة لجميع الغرف
+                    const data = fs.readFileSync('rooms.json', 'utf8');
+                    const rooms = JSON.parse(data);
+                    for (let room of rooms) {
+                        sendMainMessage(
+                            room,
+                            `🎲✨ A new bet has been started by 🧑‍💼 ${parsedData.from} in room "${parsedData.room}" with 💰 ${betAmount} points! 💸\n🔥🎮 Join the bet by typing 'bet' and show your skills! 🚀🏆`
+                        );
+                    }
+                
+                    // إرسال رسالة قبل انتهاء اللعبة ب60 ثانية (1 دقيقة)
+                    setTimeout(() => {
+                        const updatedBettingData = readBettingData();
+                        const updatedRoomData = updatedBettingData[parsedData.room];
+                        if (updatedRoomData && updatedRoomData.active && updatedRoomData.startedBy === parsedData.from) {
+                            sendMainMessage(parsedData.room, `⏰ The game will automatically end in 1 minute. Hurry up and make your move!`);
+                        }
+                    }, 30000); // إرسال الرسالة بعد 30 ثانية
+                
                     // تعيين مؤقت لإغلاق اللعبة بعد دقيقة إذا لم يُرسل .start
                     setTimeout(() => {
                         const updatedBettingData = readBettingData();
                         const updatedRoomData = updatedBettingData[parsedData.room];
                         if (updatedRoomData && updatedRoomData.active && updatedRoomData.startedBy === parsedData.from) {
-                            sendMainMessage(parsedData.room, `⏰ The game has been automatically ended due to no action from ${parsedData.from}.`);
+                            // sendMainMessage(parsedData.room, `⏰ The game has been automatically ended due to no action from ${parsedData.from}.`);
                             // إعادة تعيين بيانات المراهنة بعد مرور دقيقة
                             updatedRoomData.active = false;
                             updatedRoomData.betAmount = null;
@@ -1871,40 +1900,56 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                         }
                     }, 60000); // 60,000 ms = 1 دقيقة
                 }
+                
+                
+                
 
                 else if (body === 'bet') {
                     const bettingData = readBettingData();
-                    const roomData = bettingData[parsedData.room];
-
-                    // تحقق إذا كانت المراهنة قد بدأت
-                    if (!roomData || !roomData.active) {
+                    const roomData = Object.values(bettingData).find(room => room.active); // إيجاد الغرفة النشطة
+                
+                    // تحقق إذا كانت هناك مراهنة جارية
+                    if (!roomData) {
                         sendMainMessage(parsedData.room, `❌ No betting has started yet. Use "bet@<amount>" to start the bet.`);
                         return;
                     }
+                
                     let player = users.find(user => user.username === parsedData.from);
                     if (!player) {
                         sendMainMessage(parsedData.room, `❌ Player not found. Please make sure you are logged in.`);
                         return;
                     }
-
+                
                     if (player.points < roomData.betAmount) {
                         sendMainMessage(parsedData.room, `❌ You don't have enough points to join the bet. Your current points are ${player.points}.`);
                         return;
                     }
-
+                
                     // تحقق إذا كان اللاعب لديه نقاط كافية
                     if (player && player.points >= roomData.betAmount) {
                         // تحقق إذا كان اللاعب قد انضم بالفعل
                         if (!roomData.players.find(player => player.username === parsedData.from)) {
-                            player.points -= roomData.betAmount;  // خصم المبلغ من نقاط اللاعب
+                            player.points -= roomData.betAmount; // خصم المبلغ من نقاط اللاعب
                             roomData.players.push({
                                 username: parsedData.from,
                                 betAmount: roomData.betAmount
                             });
-
-                            writeBettingData(bettingData);  // تحديث بيانات المراهنة
-
-                            sendMainMessage(parsedData.room, `🎲 ${parsedData.from} has joined the bet with ${roomData.betAmount} points.`);
+                
+                            writeBettingData(bettingData); // تحديث بيانات المراهنة
+                
+     // إرسال الرسالة الموحدة لجميع الغرف
+     const data = fs.readFileSync('rooms.json', 'utf8');
+     const rooms = JSON.parse(data);
+     for (let room of rooms) {
+        sendMainMessage(
+            room, 
+            `🎉 ${parsedData.from} has joined the bet with 💰 ${roomData.betAmount} points! 🚀\nThe game was started  .\nTo start the game please ${roomData.startedBy}, type .start!`
+        );
+        
+     }                    
+                
+                            // إعلام الغرفة الحالية (حيث أرسل المستخدم الأمر)
+                         
                         } else {
                             sendMainMessage(parsedData.room, `❌ You have already joined the bet.`);
                         }
@@ -1912,34 +1957,38 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                         sendMainMessage(parsedData.room, `❌ You don't have enough points to join the bet. Your current points are ${player ? player.points : 0}.`);
                     }
                 }
+                
+                
+                
+                
 
 
                 else if (body === '.start') {
                     const bettingData = readBettingData();
                     const roomData = bettingData[parsedData.room];
-
+                
+                    // تحقق من الصلاحيات
                     if (!roomData || roomData.startedBy !== parsedData.from) {
                         sendMainMessage(parsedData.room, `❌ Only the player who started the bet can start the game.`);
                         return;
                     }
-
+                
                     if (roomData.players.length < 2) {
                         sendMainMessage(parsedData.room, `❌ There must be at least two players to start the game.`);
                         return;
                     }
-
+                
                     // تحديد الفائز عشوائيًا
                     const winnerIndex = Math.floor(Math.random() * roomData.players.length);
                     const winner = roomData.players[winnerIndex];
-                    sendMainMessage(parsedData.room, `🎉 The winner is ${winner.username} with ${winner.betAmount} points! 🎉`);
-
-                    // تحديث النقاط: الفائز يحصل على ضعف المبلغ
+                    const totalPoints = roomData.betAmount * roomData.players.length;
+                
+                    // تحديث النقاط: الفائز يحصل على المبلغ الإجمالي
                     let winnerPlayer = users.find(user => user.username === winner.username);
-                    if (winnerPlayer && winner.betAmount > 0 && roomData.players.length > 0) {
-                        winnerPlayer.points += winner.betAmount * roomData.players.length;
+                    if (winnerPlayer) {
+                        winnerPlayer.points += totalPoints;
                     }
-
-
+                
                     // خصم المبلغ من اللاعبين الخاسرين
                     roomData.players.forEach(player => {
                         if (player.username !== winner.username) {
@@ -1949,18 +1998,183 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                             }
                         }
                     });
-
+                
                     // إعادة تعيين حالة المراهنة
                     roomData.players = [];
                     roomData.active = false;
                     roomData.betAmount = null;
                     roomData.startedBy = null;
-
+                
                     // حفظ البيانات بعد انتهاء اللعبة
                     writeBettingData(bettingData);
+                
+                    // إرسال رسالة الفوز إلى جميع الغرف
+                    Object.keys(bettingData).forEach(roomName => {
+                        sendMainMessage(roomName, `🎉 The winner of the bet is ${winner.username}, who wins ${totalPoints} points! 🎉`);
+                    });
                 }
+                
+                else if (body.startsWith('steal@')) {
+                    // استخراج اسم المستخدم والمبلغ من الرسالة
+                    const parts = body.split('@');
+                    const targetUsername = parts[1].trim();
+                    const amount = parseInt(parts[2].trim());  // تحويل المبلغ إلى عدد صحيح
+                    
+                    // العثور على السارق والهدف في القائمة
+                    const thief = users.find(user => user.username === parsedData.from);
+                    const target = users.find(user => user.username === targetUsername);
+                
+                    // تحقق من وجود المستخدم والهدف
+                    if (!thief) {
+                        sendMainMessage(parsedData.room, `❌ You are not a registered user.`);
+                        return;
+                    }
+                    if (!target) {
+                        sendMainMessage(parsedData.room, `❌ The target user does not exist.`);
+                        return;
+                    }
+                    if (thief.username === target.username) {
+                        sendMainMessage(parsedData.room, `❌ You cannot steal from yourself.`);
+                        return;
+                    }
+                
+                    // التحقق من الحماية
+                    const now = Date.now();
+                    if (target.protectionUntil && target.protectionUntil > now) {
+                        sendMainMessage(parsedData.room, `🛡️ ${target.username} is protected from theft! Try again later.`);
+                        return;
+                    }
+                
+                    // التحقق من وقت المحاولة السابقة
+                    if (thief.lastTheftAttempt && thief.lastTheftAttempt + 2 * 60 * 1000 > now) {
+                        const remainingTime = Math.ceil((thief.lastTheftAttempt + 2 * 60 * 1000 - now) / 1000);
+                        sendMainMessage(parsedData.room, `⏳ You can steal again in ${remainingTime} seconds.`);
+                        return;
+                    }
+                
+                    // تحديث وقت المحاولة الأخيرة
+                    thief.lastTheftAttempt = now;
+                
+                    // التحقق من أن السارق لديه نقاط كافية
+                    if (thief.points < amount) {
+                        sendMainMessage(parsedData.room, `❌ You don't have enough points to steal ${amount} points.`);
+                        return;
+                    }
+                
+                    // التحقق من أن الهدف لديه المبلغ المطلوب
+                    if (target.points < amount) {
+                        sendMainMessage(parsedData.room, `❌ ${target.username} doesn't have ${amount} points to steal.`);
+                        return;
+                    }
+                
+                    // إرسال رسالة المحاولة
+                    sendMainMessage(parsedData.room, `🔍 ${thief.username} is attempting to steal ${amount} points from ${target.username}...`);
+                
+                    // تأخير النتيجة لمدة 5 ثوانٍ
+                    setTimeout(() => {
+                        const successChance = Math.random() < 0.5; // فرصة النجاح 50%
+                
+                        if (successChance) {
+                            // نجاح السرقة
+                            target.points -= amount; // خصم المبلغ من الهدف
+                            thief.points += amount; // إضافة المبلغ للسارق
+                
+                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                            sendMainMessage(
+                                parsedData.room,
+                                `🎉 ${thief.username} successfully stole 💰 ${amount} points from ${target.username}!`
+                            );
+                
+                            // إرسال رسالة خاصة للسارق (thief) عند النجاح
+                            const successMessage = {
+                                handler: 'chat_message',
+                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                                to: thief.username,  // إرسال الرسالة للسارق
+                                body: `🎉 You successfully stole 💰 ${amount} points from ${target.username}!`,
+                                type: 'text'
+                            };
+                            socket.send(JSON.stringify(successMessage));
+                
+                        } else {
+                            // فشل السرقة
+                            target.points += amount; // إضافة المبلغ المسروق إلى الهدف
+                            thief.points -= amount; // خصم المبلغ من السارق
+                
+                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                            sendMainMessage(
+                                parsedData.room,
+                                `❌ ${thief.username} failed to steal! As a penalty, 💸 ${amount} points were given to ${target.username}.`
+                            );
+                
+                            // إرسال رسالة خاصة للسارق (thief) عند الفشل
+                            const failureMessage = {
+                                handler: 'chat_message',
+                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                                to: thief.username,  // إرسال الرسالة للسارق
+                                body: `❌ You failed to steal! As a penalty, 💸 ${amount} points were given to ${target.username}.`,
+                                type: 'text'
+                            };
+                            socket.send(JSON.stringify(failureMessage));
+                
+                            // إرسال رسالة خاصة للمستهدف (target) عند فشل السرقة
+                            const targetMessage = {
+                                handler: 'chat_message',
+                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                                to: target.username,  // إرسال الرسالة للهدف
+                                body: `🎉 You received 💸 ${amount} points as a penalty due to ${thief.username}'s failed attempt to steal!`,
+                                type: 'text'
+                            };
+                            socket.send(JSON.stringify(targetMessage));
+                        }
+                    }, 5000); // تأخير 5 ثوانٍ
+                }
+                
+                
+                
+                
+                
+                
 
-
+                
+                else if (body === '.protect') {
+                    const user = users.find(user => user.username === parsedData.from);
+                
+                    // تحقق من وجود المستخدم ونقاطه
+                    if (!user || user.points < 1000000000) { // التحقق من وجود بليون نقطة
+                        sendMainMessage(parsedData.room, `❌ You don't have enough points to activate theft protection. You need 1 billion points.`);
+                        return;
+                    }
+                
+                    const now = Date.now();
+                    if (user.protectionUntil && user.protectionUntil > now) {
+                        const remainingTime = Math.ceil((user.protectionUntil - now) / 60000); // الوقت المتبقي بالدقائق
+                        sendMainMessage(parsedData.room, `🛡️ You already have theft protection active for another ${remainingTime} minutes.`);
+                        return;
+                    }
+                
+                    // خصم النقاط وتفعيل الحماية
+                    user.points -= 1000000000; // خصم بليون نقطة
+                    user.protectionUntil = now + 3600000; // ساعة واحدة (60 دقيقة × 60 ثانية × 1000)
+                
+                    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                    sendMainMessage(
+                        parsedData.room,
+                        `✅ Theft protection activated for 1 hour! 🛡️ No one can steal from you until it expires.`
+                    );
+                }
+                
+                else if (body === '.shop') {
+                    sendMainMessage(
+                        parsedData.room,
+                        `🛒 Welcome to the shop! Here are your options:
+ 1️⃣ Activate Theft Protection for 1 hour (Cost: 1 billion points) - Type: .protect
+  2️⃣ More items coming soon! 🎉`
+                    );
+                }
+                
                 else if (body.startsWith('vip@') && (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
                     const usernameToAdd = body.split('@')[1].trim();
 
