@@ -2017,13 +2017,20 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 else if (body.startsWith('steal@')) {
                     // استخراج اسم المستخدم والمبلغ من الرسالة
                     const parts = body.split('@');
+                    if (parts.length < 3) {
+                        sendMainMessage(parsedData.room, `❌ Invalid format! Please use the format 'steal@username@amount'.`);
+                        return;
+                    }
                     const targetUsername = parts[1].trim();
                     const amount = parseInt(parts[2].trim());  // تحويل المبلغ إلى عدد صحيح
                     
                     // العثور على السارق والهدف في القائمة
                     const thief = users.find(user => user.username === parsedData.from);
                     const target = users.find(user => user.username === targetUsername);
-                
+                    if (isNaN(amount) || amount <= 0) {
+                        sendMainMessage(parsedData.room, `❌ Invalid amount! Please enter a valid number greater than zero.`);
+                        return;
+                    }
                     // تحقق من وجود المستخدم والهدف
                     if (!thief) {
                         sendMainMessage(parsedData.room, `❌ You are not a registered user.`);
