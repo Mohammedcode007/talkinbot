@@ -41,7 +41,6 @@ function getRandomImageShot() {
   
     // كتابة البيانات إلى الملف بشكل متزامن
     fs.writeFileSync(outputPath, JSON.stringify(imageData, null, 2));  // تحويل الكائن إلى JSON وكتابة إلى الملف
-    console.log('Image data written to file:', outputPath);
   }
 
 function startSendingSpecMessage(socket, users, parsedData) {
@@ -94,6 +93,36 @@ function writeBettingData(data) {
 }
 
 function formatPoints(points) {
+
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' ENA'; // Googol
+    }
+    else
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+      return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' YNA'; // Googol
+  }
+  else
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' GNA'; // Googol
+    }
+    else
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+      return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' NAP'; // Googol
+  }
+  else
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' NAU'; // Googol
+    }
+    else
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+      return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' NAF'; // Googol
+  }
+  else
+
+    if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
+        return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' ND'; // Googol
+    }
+    else
     if (points >= 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000) {
       return (points / 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(1).replace(/\.0$/, '') + ' NA'; // Googol
   }
@@ -458,44 +487,53 @@ function readLoginDataRooms() {
 }
 
 
-function saveRoomName(roomName) {
+function saveRoom(room) {
     try {
         let existingRooms = [];
+
+        // Check if the file exists and read its content
         if (fs.existsSync(rooms)) {
             const rawData = fs.readFileSync(rooms, 'utf8');
             existingRooms = JSON.parse(rawData);
         }
 
-        // Check if the room name already exists
-        if (!existingRooms.includes(roomName)) {
-            existingRooms.push(roomName); // Add new room name
+        // Check if a room with the same name already exists
+        const roomExists = existingRooms.some(existingRoom => existingRoom.name === room.name);
+
+        if (!roomExists) {
+            existingRooms.push(room); // Add new room object
             fs.writeFileSync(rooms, JSON.stringify(existingRooms, null, 2));
-            console.log('Room name saved to loginData.json');
+            console.log('Room saved successfully to loginData.json');
         } else {
-            console.log('Duplicate room name found. Skipping save.');
+            console.log('Duplicate room found. Skipping save.');
         }
     } catch (error) {
-        console.error('Error writing room name to file:', error);
+        console.error('Error writing room to file:', error);
     }
 }
+
 
 
 function deleteRoomName(roomName) {
     try {
         let existingRooms = [];
+
+        // Check if the file exists
         if (fs.existsSync(rooms)) {
             const rawData = fs.readFileSync(rooms, 'utf8');
             existingRooms = JSON.parse(rawData);
         }
 
-        // Check if the room name exists
-        const roomIndex = existingRooms.indexOf(roomName);
+        // Find the index of the room object by its "name" property
+        const roomIndex = existingRooms.findIndex(room => room.name === roomName);
         if (roomIndex !== -1) {
-            existingRooms.splice(roomIndex, 1); // Remove the room name
+            // Remove the room object from the array
+            existingRooms.splice(roomIndex, 1);
+            // Save the updated rooms array back to the file
             fs.writeFileSync(rooms, JSON.stringify(existingRooms, null, 2));
-            console.log(`Room name "${roomName}" deleted from loginData.json`);
+            console.log(`Room with name "${roomName}" deleted from loginData.json`);
         } else {
-            console.log(`Room name "${roomName}" not found. No deletion performed.`);
+            console.log(`Room with name "${roomName}" not found. No deletion performed.`);
         }
     } catch (error) {
         console.error('Error deleting room name from file:', error);
@@ -567,7 +605,7 @@ module.exports = {
     deleteRoomName,
     readVipFile,
     writeVipFile,
-    saveRoomName,
+    saveRoom,
     readLoginDataTeBot,
     isUserInMasterBot,
     readLoginDataRooms,

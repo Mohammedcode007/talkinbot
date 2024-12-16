@@ -23,7 +23,7 @@ const {
     deleteUserFromFile,
     startSendingSpecMessage,
     deleteRoomName,
-    saveRoomName,
+    saveRoom,
     getRandomImageShot,
     readLoginDataTeBot,
     getRandomEmoji,
@@ -203,7 +203,8 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         };
         socket.send(JSON.stringify(loginMessage));
         const data = fs.readFileSync('rooms.json', 'utf8');
-        const rooms = JSON.parse(data);
+        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
         // بدء المؤقت العام لإرسال نفس الإيموجي لجميع الغرف
         emojiTimer = setInterval(() => {
@@ -231,7 +232,6 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         const emojisPIK = ['⚡', '🐭', '✨', '🔥', '🌟']; // قائمة بالإيموجي
         emojiTimer = setInterval(() => {
             const randomEmoji = emojisPIK[Math.floor(Math.random() * emojisPIK.length)]; // اختيار إيموجي عشوائي
-            console.log(`Sending message: 'Pikachu is back ${randomEmoji}' to all rooms`);
             pikachuAlive = true;
             // إرسال الرسالة لكل الغرف
             for (let ur of rooms) {
@@ -1049,8 +1049,8 @@ id : "${tweet.id}"
                         socket.send(JSON.stringify(autoMessage));
                         writeUsersToFile(users);
                         const data = fs.readFileSync('rooms.json', 'utf8');
-                        const rooms = JSON.parse(data);
-
+                        const roomsData = JSON.parse(data);
+                        const rooms = roomsData.map(room => room.name);
                         for (let ur of rooms) {
                             const autoMessage = {
                                 handler: 'room_message',
@@ -1118,8 +1118,9 @@ id : "${tweet.id}"
                     // إذا لم يمر 10 دقائق منذ آخر Shot أو إذا لم يتم إرسال Shot من قبل
                     if (!respondingUser.lastShotTime || currentTime - respondingUser.lastShotTime >= tenMinutesInMillis) {
                         const data = fs.readFileSync('rooms.json', 'utf8');
-                        const rooms = JSON.parse(data);
-                        if (pikachuAlive) {
+                        const roomsData = JSON.parse(data);
+                        const rooms = roomsData.map(room => room.name);
+                                                if (pikachuAlive) {
                             for (let ur of rooms) {
                                 const message = {
                                     handler: 'room_message',
@@ -1199,24 +1200,33 @@ id : "${tweet.id}"
 
 
 
-            if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
-                let vipUsers = readVipFile();
 
-                const isVip = vipUsers.some(user => user.username === parsedData.username);
-                if (isVip) {
-                    // إذا كان المستخدم ليس في قائمة VIP، أرسل رسالة له
-                    sendMainMessage(
-                        parsedData.name, 
-                        `👑 𝒲𝑒𝓁𝒸𝑜𝓂𝑒, 🇻‌🇮‌🇵‌  ${parsedData.username}! ✨`
-                    );
-                                        return;
-                }
-                if (!isVip) {
-                    // إذا كان المستخدم ليس في قائمة VIP، أرسل رسالة له
-                    sendMainMessage(parsedData.name, `♔ 𝔀𝓮𝓵𝓬𝓸𝓶𝓮 ♔ \n ${parsedData.username}`);
-                    return;
+            if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
+                const data = fs.readFileSync('rooms.json', 'utf8');
+                const roomsData = JSON.parse(data);
+            
+                // Loop through the rooms to find a room with 'welcome' set to true
+                const room = roomsData.find(room => room.name === parsedData.name && room.welcome);
+            
+                // If a room with welcome = true is found
+                if (room) {
+                    let vipUsers = readVipFile();
+            
+                    const isVip = vipUsers.some(user => user.username === parsedData.username);
+            
+                    if (isVip) {
+                        // إذا كان المستخدم في قائمة VIP، أرسل رسالة ترحيب VIP
+                        sendMainMessage(
+                            parsedData.name, 
+                            `👑 𝒲𝑒𝓁𝒸𝑜𝓂𝑒, 🇻‌🇮‌🇵‌  ${parsedData.username}! ✨`
+                        );
+                    } else {
+                        // إذا لم يكن المستخدم VIP، أرسل رسالة ترحيب عادية
+                        sendMainMessage(parsedData.name, `♔ 𝔀𝓮𝓁𝓬𝓸𝓶𝓮 ♔ \n ${parsedData.username}`);
+                    }
                 }
             }
+            
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_left' && parsedData.username === 'tebot') {
 
                 const joinRoomMessage = {
@@ -1868,10 +1878,14 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 
                     // إرسال الرسالة الموحدة لجميع الغرف
                     const data = fs.readFileSync('rooms.json', 'utf8');
-                    const rooms = JSON.parse(data);
-                    for (let room of rooms) {
+                    const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
+                                        for (let room of roomsData) {
+                                            if (!room.bet) {
+                                                continue; // تخطي هذه الغرفة
+                                            }
                         sendMainMessage(
-                            room,
+                            room.name,
                             `🎲✨ A new bet has been started by 🧑‍💼 ${parsedData.from} in room "${parsedData.room}" with 💰 ${betAmount} points! 💸\n🔥🎮 Join the bet by typing 'bet' and show your skills! 🚀🏆`
                         );
                     }
@@ -1880,7 +1894,11 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     setTimeout(() => {
                         const updatedBettingData = readBettingData();
                         const updatedRoomData = updatedBettingData[parsedData.room];
+                        if (!updatedRoomData.betAmount) {
+                            return; // إذا كانت betAmount تساوي null أو false، لا ترسل الرسالة
+                        }
                         if (updatedRoomData && updatedRoomData.active && updatedRoomData.startedBy === parsedData.from) {
+                            
                             sendMainMessage(parsedData.room, `⏰ The game will automatically end in 1 minute. Hurry up and make your move!`);
                         }
                     }, 30000); // إرسال الرسالة بعد 30 ثانية
@@ -1889,8 +1907,11 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     setTimeout(() => {
                         const updatedBettingData = readBettingData();
                         const updatedRoomData = updatedBettingData[parsedData.room];
+                        if (!updatedRoomData.betAmount) {
+                            return; // إذا كانت betAmount تساوي null أو false، لا ترسل الرسالة
+                        }
                         if (updatedRoomData && updatedRoomData.active && updatedRoomData.startedBy === parsedData.from) {
-                            // sendMainMessage(parsedData.room, `⏰ The game has been automatically ended due to no action from ${parsedData.from}.`);
+                            sendMainMessage(parsedData.room, `⏰ The game has been automatically ended due to no action from ${parsedData.from}.`);
                             // إعادة تعيين بيانات المراهنة بعد مرور دقيقة
                             updatedRoomData.active = false;
                             updatedRoomData.betAmount = null;
@@ -1901,6 +1922,46 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     }, 60000); // 60,000 ms = 1 دقيقة
                 }
                 
+                
+                else if (body.startsWith('+cp@') && (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
+                    // Extract the username and amount to be added
+                    const parts = body.split('@');
+                    const usernameToAddPoints = parts[1];
+                    const amountToAdd = parseInt(parts[2]);
+                    
+                    // Check if the amount is a valid number
+                    if (isNaN(amountToAdd) || amountToAdd <= 0) {
+                        sendMainMessage(parsedData.room, `❌ Invalid amount provided. Please enter a valid number greater than 0.`);
+                        return;
+                    }
+                
+                    // Find the player who sent the command (admin or authorized user)
+                    const admin = users.find(user => user.username === parsedData.from);
+                
+                    // Ensure the admin exists
+                    if (!admin) {
+                        sendMainMessage(parsedData.room, `❌ Admin ${parsedData.from} not found.`);
+                        return;
+                    }
+                
+                    // Find the target player by username
+                    const targetPlayer = users.find(user => user.username === usernameToAddPoints);
+                
+                    // Ensure the target player exists
+                    if (!targetPlayer) {
+                        sendMainMessage(parsedData.room, `❌ User ${usernameToAddPoints} not found.`);
+                        return;
+                    }
+                
+                    // Add the amount to the target player's points
+                    targetPlayer.points += amountToAdd;
+                
+                    // Save the updated users data to the file
+                    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                    // Notify the room that the points have been added
+                    sendMainMessage(parsedData.room, `✅ ${amountToAdd} points have been added to ${usernameToAddPoints}'s account by ${parsedData.from}. ${usernameToAddPoints} now has ${targetPlayer.points} points.`);
+                }
                 
                 
 
@@ -1939,10 +2000,14 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 
      // إرسال الرسالة الموحدة لجميع الغرف
      const data = fs.readFileSync('rooms.json', 'utf8');
-     const rooms = JSON.parse(data);
-     for (let room of rooms) {
+     const roomsData = JSON.parse(data);
+const rooms = roomsData.map(room => room.name);
+                         for (let room of roomsData) {
+                             if (!room.bet) {
+                                 continue; // تخطي هذه الغرفة
+                             }
         sendMainMessage(
-            room, 
+            room.name, 
             `🎉 ${parsedData.from} has joined the bet with 💰 ${roomData.betAmount} points! 🚀\nThe game was started  .\nTo start the game please ${roomData.startedBy}, type .start!`
         );
         
@@ -2009,9 +2074,15 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     writeBettingData(bettingData);
                 
                     // إرسال رسالة الفوز إلى جميع الغرف
-                    Object.keys(bettingData).forEach(roomName => {
-                        sendMainMessage(roomName, `🎉 The winner of the bet is ${winner.username}, who wins ${totalPoints} points! 🎉`);
+                    Object.keys(bettingData).forEach((roomName) => {
+                       
+                    
+                        sendMainMessage(
+                            roomName,
+                            `🎉 The winner of the bet is ${winner.username}, who wins ${totalPoints} points! 🎉`
+                        );
                     });
+                    
                 }
                 
                 else if (body.startsWith('steal@')) {
@@ -2098,10 +2169,19 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                                 handler: 'chat_message',
                                 id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
                                 to: thief.username,  // إرسال الرسالة للسارق
-                                body: `🎉 You successfully stole 💰 ${amount} points from ${target.username}!`,
+                                body: `🎉 You successfully stole 💰 ${amount} points from ${target.username}! \n You can steal more points using the command: 'steal@username@amount'.`,
                                 type: 'text'
                             };
                             socket.send(JSON.stringify(successMessage));
+                            const targetMessage = {
+                                handler: 'chat_message',
+                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                                to: target.username,  // إرسال الرسالة للهدف
+                                body: `😢💸 Oh no! You have been stolen ${amount} points by ${thief.username}! 😔 \n😓 You can try stealing more points using the command: 'steal@username@amount'.`,
+                                type: 'text'
+                            };
+                            socket.send(JSON.stringify(targetMessage));
+                            
                 
                         } else {
                             // فشل السرقة
@@ -2120,7 +2200,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                                 handler: 'chat_message',
                                 id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
                                 to: thief.username,  // إرسال الرسالة للسارق
-                                body: `❌ You failed to steal! As a penalty, 💸 ${amount} points were given to ${target.username}.`,
+                                body: `❌ You failed to steal! As a penalty, 💸 ${amount} points were given to ${target.username}.\n You can steal more points using the command: 'steal@username@amount'.`,
                                 type: 'text'
                             };
                             socket.send(JSON.stringify(failureMessage));
@@ -2130,7 +2210,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                                 handler: 'chat_message',
                                 id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
                                 to: target.username,  // إرسال الرسالة للهدف
-                                body: `🎉 You received 💸 ${amount} points as a penalty due to ${thief.username}'s failed attempt to steal!`,
+                                body: `🎉 You received 💸 ${amount} points as a penalty due to ${thief.username}'s failed attempt to steal! \n You can steal more points using the command: 'steal@username@amount'. `,
                                 type: 'text'
                             };
                             socket.send(JSON.stringify(targetMessage));
@@ -2173,12 +2253,142 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     );
                 }
                 
+                else if (body === '.stopwelcome') {
+                    const user = users.find(user => user.username === parsedData.from);
+                    const data = fs.readFileSync('rooms.json', 'utf8');
+                    const roomsData = JSON.parse(data);
+                    const rooms = roomsData.map(room => room.name);
+
+                    // تحقق من وجود المستخدم ونقاطه
+                    if (!user || user.points < 10000) { // التحقق من وجود 10000 نقطة
+                        sendMainMessage(parsedData.room, `❌ You don't have enough points to disable the welcome message. You need 10,000 points.`);
+                        return;
+                    }
+                console.log(parsedData.room,`78787546534654`);
+                
+                    // البحث عن الغرفة داخل roomsData
+                    const room = roomsData.find(room => room.name === parsedData.room);
+                    
+                    // تحقق من وجود الغرفة
+                    if (!room) {
+                        sendMainMessage(parsedData.room, `❌ The room ${parsedData.room} does not exist.`);
+                        return;
+                    }
+                    
+                    // خصم النقاط
+                    user.points -= 10000;
+                    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                    
+                    // إيقاف الترحيب
+                    room.welcome = false;
+                    
+                    // كتابة التغييرات إلى الملف
+                    fs.writeFileSync('rooms.json', JSON.stringify(roomsData, null, 2), 'utf8');
+                    
+                    sendMainMessage(parsedData.room, `❌ Welcome messages have been disabled for the room: ${parsedData.room}.`);
+                    
+                    // إعادة تفعيل الترحيب بعد ساعة
+                    setTimeout(() => {
+                        room.welcome = true; // إعادة تفعيل الترحيب
+                        fs.writeFileSync('rooms.json', JSON.stringify(roomsData, null, 2), 'utf8');
+                        sendMainMessage(parsedData.room, `✅ Welcome messages have been re-enabled for the room: ${parsedData.room}.`);
+                    }, 3600000); // 3600000 ميللي ثانية (ساعة واحدة)
+                }
+                
+                
+                else if (body === '.stopbet') {
+                    const user = users.find(user => user.username === parsedData.from);
+                    const data = fs.readFileSync('rooms.json', 'utf8');
+
+                    const roomsData = JSON.parse(data);
+                    const rooms = roomsData.map(room => room.name);
+                    // تحقق من وجود المستخدم ونقاطه
+                    if (!user || user.points < 10000) { // التحقق من وجود 10000 نقطة
+                        sendMainMessage(parsedData.room, `❌ You don't have enough points to disable the bet feature. You need 10,000 points.`);
+                        return;
+                    }
+                
+                    const room = roomsData.find(room => room.name === parsedData.room);
+                    
+                    // تحقق من وجود الغرفة
+                    if (!room) {
+                        sendMainMessage(parsedData.room, `❌ The room ${parsedData.room} does not exist.`);
+                        return;
+                    }
+                
+                    // خصم النقاط
+                    user.points -= 10000;
+                    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                    // إيقاف المراهنة
+                    room.bet = false;
+                
+                    // كتابة التغييرات إلى الملف
+                    fs.writeFileSync('rooms.json', JSON.stringify(roomsData, null, 2), 'utf8');
+                
+                    sendMainMessage(parsedData.room, `❌ Bet feature has been disabled for the room: ${parsedData.room}.`);
+                
+                    // إعادة تفعيل المراهنة بعد ساعة
+                    setTimeout(() => {
+                        room.bet = true;
+                        // كتابة التغييرات إلى الملف بعد إعادة التفعيل
+                        fs.writeFileSync('rooms.json', JSON.stringify(roomsData, null, 2), 'utf8');
+                        
+                        sendMainMessage(parsedData.room, `✅ Bet feature has been re-enabled for the room: ${parsedData.room}.`);
+                    }, 3600000); // 3600000 ميللي ثانية (ساعة واحدة)
+                }
+                
+                else if (body === '.stopgift') {
+                    const user = users.find(user => user.username === parsedData.from);
+                    const data = fs.readFileSync('rooms.json', 'utf8');
+
+                    const roomsData = JSON.parse(data);
+                    const rooms = roomsData.map(room => room.name);
+                    // تحقق من وجود المستخدم ونقاطه
+                    if (!user || user.points < 10000) { // التحقق من وجود 10000 نقطة
+                        sendMainMessage(parsedData.room, `❌ You don't have enough points to disable the gift feature. You need 10,000 points.`);
+                        return;
+                    }
+                
+                    const room = roomsData.find(room => room.name === parsedData.room);
+                    
+                    // تحقق من وجود الغرفة
+                    if (!room) {
+                        sendMainMessage(parsedData.room, `❌ The room ${parsedData.room} does not exist.`);
+                        return;
+                    }
+                
+                    // خصم النقاط
+                    user.points -= 10000;
+                    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                    // إيقاف الهدية
+                    room.gift = false;
+                
+                    // كتابة التغييرات إلى الملف
+                    fs.writeFileSync('rooms.json', JSON.stringify(roomsData, null, 2), 'utf8');
+                
+                    sendMainMessage(parsedData.room, `❌ Gift feature has been disabled for the room: ${parsedData.room}.`);
+                
+                    // إعادة تفعيل الهدية بعد ساعة
+                    setTimeout(() => {
+                        room.gift = true;
+                        // كتابة التغييرات إلى الملف بعد إعادة التفعيل
+                        fs.writeFileSync('rooms.json', JSON.stringify(roomsData, null, 2), 'utf8');
+                        
+                        sendMainMessage(parsedData.room, `✅ Gift feature has been re-enabled for the room: ${parsedData.room}.`);
+                    }, 3600000); // 3600000 ميللي ثانية (ساعة واحدة)
+                }
+                
                 else if (body === '.shop') {
                     sendMainMessage(
                         parsedData.room,
                         `🛒 Welcome to the shop! Here are your options:
  1️⃣ Activate Theft Protection for 1 hour (Cost: 1 billion points) - Type: .protect
-  2️⃣ More items coming soon! 🎉`
+ 2️⃣ Stop Welcome Message - Type: .stopwelcome
+3️⃣ Stop Bet - Type: .stopbet
+4️⃣ Stop Gift - Type: .stopgift
+5️⃣ More items coming soon! 🎉`
                     );
                 }
                 
@@ -2357,7 +2567,8 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     if (storedImages.has(sender)) {
                         const imageUrl = storedImages.get(sender);
                         const data = fs.readFileSync('rooms.json', 'utf8');
-                        const rooms = JSON.parse(data);
+                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                         if (imageUrl) {
                             const roomJoinSuccessMessage = {
@@ -2929,7 +3140,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
                                             if (message === true) {
@@ -2960,7 +3172,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType2);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
                                             if (message === true) {
@@ -2989,7 +3202,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType3);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
@@ -3020,7 +3234,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType4);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3053,7 +3268,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3086,7 +3302,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3119,7 +3336,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3152,7 +3370,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3185,7 +3404,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3218,7 +3438,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
 
                                         for (let ur of rooms) {
@@ -3250,7 +3471,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3283,7 +3505,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3316,7 +3539,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3349,7 +3573,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3382,7 +3607,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3415,7 +3641,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3448,7 +3675,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3481,7 +3709,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3514,7 +3743,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3547,7 +3777,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3580,7 +3811,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3613,7 +3845,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3646,7 +3879,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3679,7 +3913,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3712,7 +3947,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3744,7 +3980,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3776,7 +4013,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3808,7 +4046,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3840,7 +4079,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3872,7 +4112,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3904,7 +4145,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3936,7 +4178,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -3968,7 +4211,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -4000,7 +4244,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -4032,7 +4277,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -4064,7 +4310,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -4096,7 +4343,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -4128,7 +4376,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -4160,7 +4409,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -4192,7 +4442,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         console.log('Rooms loaded:', rooms); // تحقق من أن جميع الغرف تم تحميلها
 
@@ -4224,7 +4475,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
@@ -4255,7 +4507,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
@@ -4286,7 +4539,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
@@ -4317,7 +4571,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
@@ -4348,7 +4603,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
@@ -4378,7 +4634,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
@@ -4409,7 +4666,8 @@ to next .lg@3
                                     const imageUrl = getRandomImage(imageType5);
                                     if (imageUrl) {
                                         const data = fs.readFileSync('rooms.json', 'utf8');
-                                        const rooms = JSON.parse(data);
+                                        const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                                         for (let ur of rooms) {
                                             const message = canSendGift(parsedData.from);
@@ -4530,10 +4788,10 @@ to next .lg@3
                             // console.log('Received message:', message);
 
                             const data = fs.readFileSync('rooms.json', 'utf8');
-                            const rooms = JSON.parse(data);
+                            const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                             for (let ur of rooms) {
-                                console.log(`Sending message: "${message}" to room: ${ur}`);
 
                                 // Send the message to each room
                                 sendMainMessage(ur, message);
@@ -4649,7 +4907,6 @@ to next .lg@3
             body: `Correct answer was: ${correctAnswer}`
         };
         socket.send(JSON.stringify(correctAnswerMessage));
-        console.log('Correct answer message sent:', correctAnswer);
     };
 
 

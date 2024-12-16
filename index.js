@@ -138,7 +138,6 @@ function processMessage(message) {
                 const extractedUsername = parts[1];
                 deleteUserFromFile(extractedUsername);
             } else {
-                console.log('Invalid message format for login');
             }
         } else {
             console.log('Message does not contain @, ignoring...');

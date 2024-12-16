@@ -9,7 +9,7 @@ const {
     saveLoginData,
     deleteUserFromFile,
     deleteRoomName,
-    saveRoomName,
+    saveRoom,
     readLoginDataTeBot,
     isUserInMasterBot,
     readLoginDataRooms,
@@ -65,7 +65,6 @@ const ws_TeBot = async ({ username, password, roomName }) => {
                 body: `tebot`
             };
             socket.send(JSON.stringify(autoMessage));
-            console.log('تم إرسال الرسالة التلقائية:', autoMessage.body);
         }, 60000); // 60000 ملي ثانية = دقيقة واحدة
 
     };
@@ -82,8 +81,14 @@ const ws_TeBot = async ({ username, password, roomName }) => {
                 if (command === 'login' && roomName) {
 
                     // Save login data to the JSON file
-                    saveRoomName(roomName);
-
+                    const newRoom = {
+                        name: roomName,
+                        bet: true,
+                        gift: true,
+                        welcome: true
+                    };
+                    
+                    saveRoom(newRoom);
 
                     // Join the room
                     const joinRoomMessage = {
@@ -116,7 +121,8 @@ const ws_TeBot = async ({ username, password, roomName }) => {
 
                     const [command, message] = parsedData.body.split('@');
                     const data = fs.readFileSync('rooms.json', 'utf8');
-                    const rooms = JSON.parse(data);
+                    const roomsData = JSON.parse(data);
+        const rooms = roomsData.map(room => room.name);
 
                     for (let ur of rooms) {  // استخدام for...of بدلاً من forEach
                         console.log(message);
@@ -191,7 +197,6 @@ const ws_TeBot = async ({ username, password, roomName }) => {
                     socket.send(JSON.stringify(verificationMessage));
 
                 } else {
-                    console.log('Invalid message format for login');
                 }
             }
         }
