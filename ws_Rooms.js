@@ -57,6 +57,9 @@ const {
 
 const ws_Rooms = async ({ username, password, roomName }) => {
     const socket = new WebSocket('wss://chatp.net:5333/server');
+
+  
+
     let players = new Map();  // تخزين اللاعبين
     let playerNumbers = new Map();  // تخزين الأرقام التي يرسلها اللاعبون
     let playerSequences = new Map(); // حفظ تسلسل الأرقام لكل لاعب
@@ -442,17 +445,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                 if (parsedData.body === '.s') {
 
                     let user = users.find(user => user.username === parsedData.from);
-                    if (!user) {
-                        user = {
-                            username: parsedData.from, verified: true, lasttimegift: null, points: null, name: null,
-                            nickname: null
-                        };
-                        users.push(user);
-                    } else {
-                        user.verified = true;
-                    }
-
-                    writeUsersToFile(users);
+               
 
 
 
@@ -476,23 +469,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
 
                 }
 
-                if (parsedData.body === 'shot') {
-
-
-                    let user = users.find(user => user.username === parsedData.from);
-                    if (!user) {
-                        user = {
-                            username: parsedData.from, verified: true, lasttimegift: null, points: null, name: null,
-                            nickname: null
-                        };
-                        users.push(user);
-                    } else {
-                        user.verified = true;
-                    }
-
-                    writeUsersToFile(users);
-
-                }
+           
 
                 if (parsedData.body === 'حكمه') {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -1201,31 +1178,87 @@ id : "${tweet.id}"
 
 
 
+
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_joined') {
                 const data = fs.readFileSync('rooms.json', 'utf8');
                 const roomsData = JSON.parse(data);
             
-                // Loop through the rooms to find a room with 'welcome' set to true
+                // البحث عن الغرفة التي تحتوي على الترحيب مفعل
                 const room = roomsData.find(room => room.name === parsedData.name && room.welcome);
             
-                // If a room with welcome = true is found
+                // إذا تم العثور على الغرفة
                 if (room) {
-                    let vipUsers = readVipFile();
+                    let vipUsers = readVipFile();  // قراءة بيانات الـ VIP
             
+                    // قراءة بيانات المستخدمين وترتيب النقاط
+                    const usersData = fs.readFileSync('verifyusers.json', 'utf8'); 
+                    const users = JSON.parse(usersData);
+            
+                    // ترتيب المستخدمين حسب النقاط
+                    const leaderboard = [...users].sort((a, b) => b.points - a.points);
+            
+                    // تحديد أول 10 مستخدمين
+                    const topUsers = leaderboard.slice(0, 10);
+            
+                    // قائمة الألقاب لأول 10 مستخدمين
+                    const titles = [
+                        "The King 👑",         // الأول
+                        "The Legend 🏆",       // الثاني
+                        "The Champion ⚔️",     // الثالث
+                        "The Commander 🛡️",    // الرابع
+                        "The Genius 💡",       // الخامس
+                        "The Elite 🌟",        // السادس
+                        "The Pro 🎯",          // السابع
+                        "The Rocket 🚀",       // الثامن
+                        "The Scholar 📚",      // التاسع
+                        "The Creator ✨"        // العاشر
+                    ];
+            
+                    // التحقق إذا كان المستخدم VIP
                     const isVip = vipUsers.some(user => user.username === parsedData.username);
             
-                    if (isVip) {
-                        // إذا كان المستخدم في قائمة VIP، أرسل رسالة ترحيب VIP
+                    // التحقق إذا كان المستخدم من أول 10
+                    const userRank = topUsers.findIndex(user => user.username === parsedData.username);
+            
+                    if (userRank !== -1 && isVip) {
+                        // المستخدم VIP ومن أول 10
+                        const title = titles[userRank];  // اللقب المناسب للترتيب
+                        const rank = userRank + 1;       // ترتيب المستخدم
+                        const points = leaderboard[userRank].points; // نقاط المستخدم
+            
+                        // إرسال رسالة ترحيب مميزة
                         sendMainMessage(
-                            parsedData.name, 
-                            `👑 𝒲𝑒𝓁𝒸𝑜𝓂𝑒, 🇻‌🇮‌🇵‌  ${parsedData.username}! ✨`
+                            parsedData.name,
+                            `✨ Welcome to the Kingdom, 🇻‌🇮‌🇵‌ ${parsedData.username}! ${title} ✨`
+                        );
+                    } else if (isVip) {
+                        // المستخدم VIP ولكن ليس من أول 10
+                        sendMainMessage(
+                            parsedData.name,
+                            `👑 Welcome, 🇻‌🇮‌🇵 ${parsedData.username}! ✨`
+                        );
+                    } else if (userRank !== -1) {
+                        // المستخدم من أول 10 ولكن ليس VIP
+                        const title = titles[userRank];  // اللقب المناسب للترتيب
+                        const rank = userRank + 1;       // ترتيب المستخدم
+                        const points = leaderboard[userRank].points; // نقاط المستخدم
+            
+                        // إرسال رسالة ترحيب خاصة للمستخدمين الأوائل
+                        sendMainMessage(
+                            parsedData.name,
+                            `✨ Welcome to the Kingdom, ${title}! ✨`
                         );
                     } else {
-                        // إذا لم يكن المستخدم VIP، أرسل رسالة ترحيب عادية
-                        sendMainMessage(parsedData.name, `♔ 𝔀𝓮𝓁𝓬𝓸𝓶𝓮 ♔ \n ${parsedData.username}`);
+                        // المستخدم ليس VIP ولا من أول 10
+                        sendMainMessage(
+                            parsedData.name,
+                            `♔ Welcome to the Kingdom ♔\n${parsedData.username}`
+                        );
                     }
                 }
             }
+            
+            
             
             if (parsedData.handler === 'room_event' && parsedData.type === 'user_left' && parsedData.username === 'tebot') {
 
@@ -1283,7 +1316,8 @@ id : "${tweet.id}"
             setInterval(() => {
                 prices = updatePrices(); // تحديث الأسعار كل 10 ثوانٍ
             }, 300000); // التحديث كل 10 ثوانٍ (10000 ميلي ثانية)
-
+           
+            
 
             if (parsedData.body === '.po') {
                 const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -1345,7 +1379,70 @@ ${userAssets || 'No assets yet.'}`
 
                 socket.send(JSON.stringify(propertiesMessage));
             }
-
+            if (parsedData?.body?.startsWith('li@')) {
+                // Check if the user is unverified
+                const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                if (isUnverified) {
+                    return;
+                }
+            
+                // Extract the username after li@
+                const requestedUsername = parsedData.body.split('@')[1]?.trim();
+            
+                if (!requestedUsername) {
+                    const invalidCommandMessage = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room,
+                        url: '',
+                        length: '',
+                        body: '🚫 Please provide a username after "li@".'
+                    };
+                    socket.send(JSON.stringify(invalidCommandMessage));
+                    return;
+                }
+            
+                // Find the requested user
+                const user = users.find(user => user.username === requestedUsername);
+            
+                if (!user) {
+                    const noUserMessage = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room,
+                        url: '',
+                        length: '',
+                        body: `🚫 We couldn't find an account with the username '${requestedUsername}'.`
+                    };
+                    socket.send(JSON.stringify(noUserMessage));
+                    return;
+                }
+            
+                // Sort users by points in descending order
+                const leaderboard = [...users].sort((a, b) => b.points - a.points);
+            
+                // Find the rank of the requested user
+                const rank = leaderboard.findIndex(u => u.username === requestedUsername) + 1;
+            
+                // Format points for display
+                const formattedPoints = formatPoints(user.points);
+            
+                // Create a response message
+                const rankMessage = {
+                    handler: 'room_message',
+                    id: 'TclBVHgBzPGTMRTNpgWV',
+                    type: 'text',
+                    room: parsedData.room,
+                    url: '',
+                    length: '',
+                    body: `🏅 Username: ${requestedUsername}\n💰 Points: ${formattedPoints}\n📊 Rank: ${rank} / ${users.length}`
+                };
+            
+                socket.send(JSON.stringify(rankMessage));
+            }
+            
 
             if (parsedData.body === '.st') {
                 const isUnverified = handleUnverifiedUser(socket, users, parsedData);
@@ -1398,7 +1495,8 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
             }
 
 
-
+          
+           
             if (parsedData.body && (parsedData.body.startsWith('buy') || parsedData.body.startsWith('sell'))) {
                 const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                 if (isUnverified) {
@@ -1454,38 +1552,45 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 }
 
                 if (action === 'buy') {
-                    const totalPrice = prices[asset] * quantity;  // Calculate the total price
-                    if (user.points >= totalPrice) {
-                        user.points -= totalPrice;
-                        user.assets[asset] = (user.assets[asset] || 0) + quantity; // Add the correct quantity
+                    try {
+                        const totalPrice = prices[asset] * quantity;  // Calculate the total price
+                        if (user.points >= totalPrice) {
+                            user.points -= totalPrice;
+                            
+                            user.assets[asset] = (user.assets[asset] || 0) + quantity; // Add the correct quantity
+    
+                            // Save data to file
+                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+    
+                            const formattedPointsUSER = formatPoints(user.points);
+    
+                            const successMessage = {
+                                handler: 'room_message',
+                                id: 'TclBVHgBzPGTMRTNpgWV',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: `✅ Successfully bought ${quantity} of ${asset}! Your points now: ${formattedPointsUSER}.`
+                            };
+                            socket.send(JSON.stringify(successMessage));
+                        } else {
+                            const insufficientFundsMessage = {
+                                handler: 'room_message',
+                                id: 'TclBVHgBzPGTMRTNpgWV',
+                                type: 'text',
+                                room: parsedData.room,
+                                url: '',
+                                length: '',
+                                body: `❌ You don't have enough points to buy ${quantity} of ${asset}.`
+                            };
+                            socket.send(JSON.stringify(insufficientFundsMessage));
+                        }
+                      }
+                      catch(err) {
+                        
+                      }
 
-                        // Save data to file
-                        fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-
-                        const formattedPointsUSER = formatPoints(user.points);
-
-                        const successMessage = {
-                            handler: 'room_message',
-                            id: 'TclBVHgBzPGTMRTNpgWV',
-                            type: 'text',
-                            room: parsedData.room,
-                            url: '',
-                            length: '',
-                            body: `✅ Successfully bought ${quantity} of ${asset}! Your points now: ${formattedPointsUSER}.`
-                        };
-                        socket.send(JSON.stringify(successMessage));
-                    } else {
-                        const insufficientFundsMessage = {
-                            handler: 'room_message',
-                            id: 'TclBVHgBzPGTMRTNpgWV',
-                            type: 'text',
-                            room: parsedData.room,
-                            url: '',
-                            length: '',
-                            body: `❌ You don't have enough points to buy ${quantity} of ${asset}.`
-                        };
-                        socket.send(JSON.stringify(insufficientFundsMessage));
-                    }
                 } else if (action === 'sell') {
                     if (user.assets[asset] >= quantity) {
                         const totalSellPrice = prices[asset] * quantity;
@@ -2150,7 +2255,7 @@ const rooms = roomsData.map(room => room.name);
                 
                     // تأخير النتيجة لمدة 5 ثوانٍ
                     setTimeout(() => {
-                        const successChance = Math.random() < 0.5; // فرصة النجاح 50%
+                        const successChance = Math.random() < 0.4; // فرصة النجاح 50%
                 
                         if (successChance) {
                             // نجاح السرقة
@@ -2673,7 +2778,7 @@ const rooms = roomsData.map(room => room.name);
                         respondingUser.lastLuckyTime = currentTime;
 
                         // Determine the luck outcome
-                        const goodLuck = Math.random() < 0.5; // 50% chance of good luck
+                        const goodLuck = Math.random() < 0.4; // 50% chance of good luck
                         if (goodLuck) {
                             const gainedPoints = respondingUser.points * 2;
                             respondingUser.points += gainedPoints;
@@ -2992,16 +3097,37 @@ to next .lg@3
 
                 }
                 else if (body.startsWith('agi@')) {
+        const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                if (isUnverified) {
+                    // Additional actions if needed when user is unverified
+                    return;
+                }
+                const senderUsername = parsedData.from; // المستخدم الذي أرسل كلمة "فزوره"
 
+                const userblocked = usersblockes.find(user => user === senderUsername);
+
+                if (userblocked) {
+                    const notVerifiedMessage = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room,
+                        url: '',
+                        length: '',
+                        body: `User ${userblocked} is  blocked!.`
+                    };
+                    socket.send(JSON.stringify(notVerifiedMessage));
+                    return;
+                }
                     const atCount = (body.match(/@/g) || []).length; // عد عدد الرموز @ في النص
 
                     // التحقق إذا كان يوجد أكثر من 2 @
                     if (atCount === 2) {
                         const username = body.split('@')[2].trim();
-                        // const isUnverified = handleUnverifiedUser2(socket, users, username,parsedData.room);
-                        // if (isUnverified) {
-                        //     return; // Game is not allowed for unverified users
-                        // }
+                        const isUnverified = handleUnverifiedUser2(socket, users, username,parsedData.room);
+                        if (isUnverified) {
+                            return; // Game is not allowed for unverified users
+                        }
                         const id = Number(body.split('@')[1].trim());
                         if (Number.isInteger(id)) {
 
@@ -3095,10 +3221,32 @@ to next .lg@3
 
                         if (body.startsWith('agi@')) {
                             const username = body.split('@')[2].trim();
-                            // const isUnverified = handleUnverifiedUser2(socket, users, username,parsedData.room);
-                            // if (isUnverified) {
-                            //     return; // Game is not allowed for unverified users
-                            // }
+                            const isUnverified = handleUnverifiedUser2(socket, users, username,parsedData.room);
+                            if (isUnverified) {
+                                return; // Game is not allowed for unverified users
+                            }
+
+                if (isUnverified) {
+                    // Additional actions if needed when user is unverified
+                    return;
+                }
+                const senderUsername = parsedData.from; // المستخدم الذي أرسل كلمة "فزوره"
+
+                const userblocked = usersblockes.find(user => user === senderUsername);
+
+                if (userblocked) {
+                    const notVerifiedMessage = {
+                        handler: 'room_message',
+                        id: 'TclBVHgBzPGTMRTNpgWV',
+                        type: 'text',
+                        room: parsedData.room,
+                        url: '',
+                        length: '',
+                        body: `User ${userblocked} is  blocked!.`
+                    };
+                    socket.send(JSON.stringify(notVerifiedMessage));
+                    return;
+                }
 
                             const msg = body.split('@')[3].trim();
                             const id = Number(body.split('@')[1].trim());

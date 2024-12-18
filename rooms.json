@@ -13,7 +13,7 @@
   },
   {
     "name": "سوريا*فلسطين",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -37,8 +37,8 @@
   },
   {
     "name": "كوكاكولآ",
-    "bet": true,
-    "gift": true,
+    "bet": false,
+    "gift": false,
     "welcome": true
   },
   {
@@ -73,7 +73,7 @@
   },
   {
     "name": "كوكب♥المجانين",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -140,7 +140,7 @@
   {
     "name": "𝕋𝕙𝕖_𝕆𝕣𝕚𝕘𝕚𝕟𝕒𝕝𝕤_✨",
     "bet": true,
-    "gift": true,
+    "gift": false,
     "welcome": true
   },
   {
@@ -187,7 +187,7 @@
   },
   {
     "name": "ضحكة_مصري",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -265,7 +265,7 @@
   },
   {
     "name": "هواجيس🖤تجمعنا",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -733,7 +733,7 @@
   },
   {
     "name": "كتاب_وقهوة☕",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -871,6 +871,60 @@
   },
   {
     "name": "FiRE",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "englishworld",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "dreamworld",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "سوالف.اليمن2",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "libya",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "ليبيا",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "همس❤️القلوب",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "سوالف~اليمن",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "urdu",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "لـمه🫶زمـان",
     "bet": true,
     "gift": true,
     "welcome": true
