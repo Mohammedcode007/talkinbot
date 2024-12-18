@@ -2554,7 +2554,7 @@ const rooms = roomsData.map(room => room.name);
                     const rankEmojis = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '⭐', '✨', '🌟', '🔥'];
 
                     // بناء الرسالة التي تحتوي على قائمة اللاعبين مع إجبار الاتجاه من اليسار لليمين
-                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n "🎉 Congratulations to the winner ! ["آ̱لَ̠خ̣ـ̞𓃗ــ̭آل"] \n 🎉`;
+                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n "🎉 The winner will be announced on January 1, 2015, with one month of theft protection. \n 🎉`;
 
                     topPlayers.forEach((player, index) => {
                         const emoji = rankEmojis[index] || '🔹'; // اختيار الإيموجي بناءً على الترتيب

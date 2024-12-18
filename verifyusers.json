@@ -71,24 +71,6 @@
     "protectionUntil": 1734513929705
   },
   {
-    "username": "卂ْْْْْ",
-    "verified": true,
-    "lasttimegift": null,
-    "points": 1e+97,
-    "name": null,
-    "nickname": null,
-    "lastLuckyTime": 1734484104108,
-    "lastEmojiTime": 1734510139946,
-    "assets": {
-      "GOLD": 2.100000000000001e+87,
-      "OIL": 0,
-      "TECH": 1.1030350302649492e+136
-    },
-    "lastShotTime": 1734510128727,
-    "lastTheftAttempt": 1734483485014,
-    "protectionUntil": 1734490834941
-  },
-  {
     "username": "ş♔",
     "verified": true,
     "lasttimegift": null,
@@ -113,6 +95,24 @@
     "lastTheftAttempt": 1734364419263,
     "protectionUntil": 1734503414276,
     "lastBetTime": 0
+  },
+  {
+    "username": "卂ْْْْْ",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 5e+96,
+    "name": null,
+    "nickname": null,
+    "lastLuckyTime": 1734511278152,
+    "lastEmojiTime": 1734510139946,
+    "assets": {
+      "GOLD": 2.100000000000001e+87,
+      "OIL": 0,
+      "TECH": 1.1030350302649492e+136
+    },
+    "lastShotTime": 1734511289488,
+    "lastTheftAttempt": 1734483485014,
+    "protectionUntil": 1734490834941
   },
   {
     "username": "-coleslaw-",
@@ -147,7 +147,7 @@
   {
     "username": "آ̱لَ̠خ̣ـ̞𓃗ــ̭آل",
     "verified": true,
-    "points": 3.007388608513242e+86,
+    "points": 3.0073885995132423e+86,
     "lasttimegift": null,
     "name": null,
     "nickname": null,
@@ -165,10 +165,10 @@
     "username": "𝓜𝓪𝓻𝓼𝓱𝓶𝓪𝓵𝓵𝓸𝔀♡🦋",
     "verified": true,
     "lasttimegift": null,
-    "points": 3.3898614967181196e+82,
+    "points": 1.0169584490154358e+83,
     "name": null,
     "nickname": null,
-    "lastLuckyTime": 1734497455414,
+    "lastLuckyTime": 1734511241135,
     "lastEmojiTime": 1734481078978,
     "lastShotTime": 1734483674122,
     "lastBetTime": 1734356516904,
@@ -305,7 +305,7 @@
     "username": "࿐🦋࿐",
     "verified": true,
     "lasttimegift": null,
-    "points": 1.3765720759301009e+74,
+    "points": 9.00137657216683e+77,
     "name": null,
     "nickname": null,
     "lastEmojiTime": 1734469786128,
@@ -404,10 +404,10 @@
     "username": "_nefertari_",
     "verified": true,
     "lasttimegift": null,
-    "points": 1.2804109487447979e+71,
+    "points": 3.8412328462343936e+71,
     "name": null,
     "nickname": null,
-    "lastLuckyTime": 1734506174874,
+    "lastLuckyTime": 1734511156556,
     "lastEmojiTime": 1734497686620,
     "assets": {
       "GOLD": 0,
@@ -461,7 +461,7 @@
       "BITCOIN": 0,
       "LITHIUM": 0
     },
-    "lastShotTime": 1734433780470,
+    "lastShotTime": 1734511141608,
     "lastTheftAttempt": 1734362590517
   },
   {
@@ -2086,13 +2086,13 @@
     "username": "djoseer",
     "verified": true,
     "lasttimegift": null,
-    "points": 512577808632510,
+    "points": 512578808632510,
     "name": null,
     "nickname": null,
     "lastLuckyTime": 1734503147043,
     "protectionUntil": 1734446789612,
     "lastEmojiTime": 1734504114207,
-    "lastShotTime": 1734509233453,
+    "lastShotTime": 1734511589278,
     "assets": {
       "GOLD": 0,
       "OIL": 0,
@@ -2120,10 +2120,10 @@
     "username": "حتــ°ـى☆نـ°ـبض.◦°❥قلــبي❥°◦.لـ°ـہ☆مهـ°ـابہ",
     "verified": true,
     "lasttimegift": null,
-    "points": 404912003670955,
+    "points": 404912003680905,
     "name": null,
     "nickname": null,
-    "lastShotTime": 1734434501268,
+    "lastShotTime": 1734511628969,
     "lastEmojiTime": 1734432405026,
     "lastLuckyTime": 1734452943222
   },
@@ -2540,7 +2540,7 @@
     "username": "__________nickname__________",
     "verified": true,
     "lasttimegift": "2024-11-30 09:47:08",
-    "points": 723736664874,
+    "points": 723736684874,
     "name": null,
     "nickname": null,
     "lastLuckyTime": 1734509993953,
@@ -2550,7 +2550,7 @@
       "TECH": 0
     },
     "lastEmojiTime": 1734151203116,
-    "lastShotTime": 1734425860519,
+    "lastShotTime": 1734511590567,
     "lastTheftAttempt": 1734426309468,
     "protectionUntil": 1734415584299
   },
@@ -2739,11 +2739,11 @@
     "username": "kavísh",
     "verified": true,
     "lasttimegift": null,
-    "points": 81342862095,
+    "points": 82342862095,
     "name": null,
     "nickname": null,
     "assets": {},
-    "lastShotTime": 1734509212178,
+    "lastShotTime": 1734511539711,
     "lastBetTime": 1734508207084,
     "lastEmojiTime": 1734504155206,
     "lastTheftAttempt": 1734241586570,
@@ -2830,6 +2830,18 @@
       "BITCOIN": 0,
       "LITHIUM": 0
     }
+  },
+  {
+    "username": "trex",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 16466979439,
+    "name": null,
+    "nickname": null,
+    "assets": {},
+    "lastBetTime": 1734504942183,
+    "lastLuckyTime": 1734511601814,
+    "lastShotTime": 1734511597969
   },
   {
     "username": "مَـهـآ",
@@ -2945,7 +2957,7 @@
     "points": 14000430123,
     "name": null,
     "nickname": null,
-    "lastShotTime": 1734454599467,
+    "lastShotTime": 1734511142653,
     "lastLuckyTime": 1733637809795,
     "lastEmojiTime": 1734328861044,
     "assets": {
@@ -2960,7 +2972,7 @@
       "BITCOIN": 0,
       "LITHIUM": 0
     },
-    "lastBetTime": 1734439781283
+    "lastBetTime": 1734511216371
   },
   {
     "username": "noran.",
@@ -3021,18 +3033,6 @@
     "lastEmojiTime": 1734508937545,
     "assets": {},
     "lastShotTime": 1734505613053
-  },
-  {
-    "username": "trex",
-    "verified": true,
-    "lasttimegift": null,
-    "points": 32933954877,
-    "name": null,
-    "nickname": null,
-    "assets": {},
-    "lastBetTime": 1734504942183,
-    "lastLuckyTime": 1734510264076,
-    "lastShotTime": 1734508070274
   },
   {
     "username": "akuma",
@@ -3669,7 +3669,7 @@
     "username": "kataku",
     "verified": true,
     "lasttimegift": null,
-    "points": 1044580511.5288258,
+    "points": 522295256.52882576,
     "name": null,
     "nickname": "katak",
     "lastEmojiTime": 1734509538596,
@@ -3680,21 +3680,21 @@
       "BITCOIN": 8,
       "SILVER": 2
     },
-    "lastShotTime": 1734508493704,
-    "lastLuckyTime": 1734510140379,
+    "lastShotTime": 1734511599504,
+    "lastLuckyTime": 1734511614629,
     "lastBetTime": 1734506221791
   },
   {
     "username": "لـُـــۆگهہ",
     "verified": true,
     "lasttimegift": null,
-    "points": 1000486650,
+    "points": 1000489150,
     "name": null,
     "nickname": null,
     "lastEmojiTime": 1734475779455,
     "lastLuckyTime": 1733642936827,
     "assets": {},
-    "lastShotTime": 1734476715632
+    "lastShotTime": 1734511494671
   },
   {
     "username": "نــℕOℕᗩـۆنہه𓏲⃪",
@@ -4014,12 +4014,12 @@
     "username": ".twist.",
     "verified": true,
     "lasttimegift": null,
-    "points": 843167225,
+    "points": 843170825,
     "name": null,
     "nickname": null,
     "assets": {},
     "lastEmojiTime": 1734507721395,
-    "lastShotTime": 1734506390066,
+    "lastShotTime": 1734511337010,
     "lastBetTime": 1734504338173
   },
   {
@@ -4810,10 +4810,10 @@
     "username": "✿яι∂α✿",
     "verified": true,
     "lasttimegift": null,
-    "points": 239113,
+    "points": 240613,
     "name": null,
     "nickname": null,
-    "lastShotTime": 1734461619092,
+    "lastShotTime": 1734511549315,
     "lastLuckyTime": 1734460175064,
     "lastEmojiTime": 1734443519190,
     "assets": {
@@ -5196,6 +5196,16 @@
     "lastShotTime": 1734106696802
   },
   {
+    "username": "-pirate",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 128100,
+    "name": null,
+    "nickname": null,
+    "assets": {},
+    "lastShotTime": 1734511276840
+  },
+  {
     "username": "الاقـــ♔ـــوى",
     "verified": true,
     "lasttimegift": null,
@@ -5233,16 +5243,6 @@
       "TECH": 0
     },
     "lastShotTime": 1733934532612
-  },
-  {
-    "username": "-pirate",
-    "verified": true,
-    "lasttimegift": null,
-    "points": 108100,
-    "name": null,
-    "nickname": null,
-    "assets": {},
-    "lastShotTime": 1734479054477
   },
   {
     "username": "..4kryat..",
@@ -5799,10 +5799,10 @@
     "username": "𝗔𝗹𝗶",
     "verified": true,
     "lasttimegift": null,
-    "points": 53700,
+    "points": 73700,
     "name": null,
     "nickname": null,
-    "lastShotTime": 1734157020428,
+    "lastShotTime": 1734511631587,
     "assets": {
       "GOLD": 0,
       "OIL": 0,
@@ -6163,17 +6163,6 @@
     "lastShotTime": 1734392368800
   },
   {
-    "username": "^s^",
-    "verified": true,
-    "lasttimegift": null,
-    "points": 18500,
-    "name": null,
-    "nickname": null,
-    "assets": {},
-    "lastShotTime": 1734508514815,
-    "lastLuckyTime": 1734510305854
-  },
-  {
     "username": "يــافـ𓂆ـا",
     "verified": true,
     "lasttimegift": null,
@@ -6451,6 +6440,17 @@
     "lastEmojiTime": 1734390782050
   },
   {
+    "username": "^s^",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 14250,
+    "name": null,
+    "nickname": null,
+    "assets": {},
+    "lastShotTime": 1734511145839,
+    "lastLuckyTime": 1734511676646
+  },
+  {
     "username": "rudy",
     "verified": true,
     "lasttimegift": null,
@@ -6719,7 +6719,7 @@
     "username": "❥❀لـــوٌاحــ❁ཻ͜͡ـــظہ❥❀",
     "verified": true,
     "lasttimegift": null,
-    "points": 21575,
+    "points": 21725,
     "name": null,
     "nickname": null,
     "assets": {},
@@ -6957,6 +6957,28 @@
     "lastLuckyTime": 1734039721238,
     "lastShotTime": 1734277579601,
     "lastTheftAttempt": 1734289543170
+  },
+  {
+    "username": "⭒",
+    "verified": true,
+    "lasttimegift": null,
+    "points": 14300,
+    "name": null,
+    "nickname": null,
+    "lastLuckyTime": 1734317372096,
+    "assets": {
+      "GOLD": 0,
+      "OIL": 0,
+      "TECH": 0,
+      "SILVER": 0,
+      "PLATINUM": 0,
+      "DIAMOND": 0,
+      "COPPER": 0,
+      "GAS": 0,
+      "BITCOIN": 0,
+      "LITHIUM": 0
+    },
+    "lastShotTime": 1734511278999
   },
   {
     "username": "ْ؏ِ٘۫ــيــوﻧـــيۦ𐦍ۦﮫَِ۪ٛــﺰَِ۪ٛتﮧ𐎓𐇵ڪـيـاﻧڪ",
@@ -7622,28 +7644,6 @@
     "assets": {},
     "lastShotTime": 1734465834513,
     "lastLuckyTime": 1734466926686
-  },
-  {
-    "username": "⭒",
-    "verified": true,
-    "lasttimegift": null,
-    "points": 7600,
-    "name": null,
-    "nickname": null,
-    "lastLuckyTime": 1734317372096,
-    "assets": {
-      "GOLD": 0,
-      "OIL": 0,
-      "TECH": 0,
-      "SILVER": 0,
-      "PLATINUM": 0,
-      "DIAMOND": 0,
-      "COPPER": 0,
-      "GAS": 0,
-      "BITCOIN": 0,
-      "LITHIUM": 0
-    },
-    "lastShotTime": 1734434166475
   },
   {
     "username": "ۦ•فـُـ✿⑅⃝ـﹻﹻﹻريـدهہۦ❥",
@@ -18081,9 +18081,10 @@
     "username": "ρяιуα",
     "verified": true,
     "lasttimegift": null,
-    "points": null,
+    "points": 20000,
     "name": null,
-    "nickname": null
+    "nickname": null,
+    "lastShotTime": 1734511553553
   },
   {
     "username": "l.eo.",
