@@ -3,6 +3,9 @@ const path = require('path');
 const { getRandomInstruction } = require('./getRandomText');
 const getRandomItemDress = require('./dress'); // استيراد دالة اختيار الفستان العشوائي
 const createCanvasWithBackground = require('./createImage');
+const { addMessage } = require('./report.js');
+const { readCricketGameData ,writeCricketGameData} = require('./cricket_game.js');
+
 
 const moment = require('moment');  // التأكد من استيراد moment
 const createGameBoard = require('./createImage');
@@ -108,6 +111,19 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         { emoji: '🍊', points: 500 },  // برتقال
         { emoji: '🐉', points: 50000 } // تنين
     ];
+    const investmentCooldownMap = new Map();
+    const userLastLuckyTimeMap = new Map();
+    const forbiddenWords = [
+        'كسي', 'كسى', 'كس', 
+        'زب', 'قحبة', 'خول', 
+        'شرموطة', 'زبري', 'زبي',  
+        'عرص', 'انيكك', 'زبى',  
+        'ابن الحرام', 'كسمك', 'متناكة',  
+        'افشخك', 'متناكة', 'متناك',  
+        'اركبك', 'يلعن شرفك', 'زبى' 
+      ];
+      
+
     let gameTimer; // المؤقت
     let choiceTimeout; // متغير للوقت المحدد لإنهاء اللعبة
     let isGameActive = false; // حالة اللعبة لتحديد ما إذا كانت هناك لعبة جارية أم لا
@@ -2026,6 +2042,107 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                         }
                     }, 60000); // 60,000 ms = 1 دقيقة
                 }
+              
+                
+                // الكود الخاص بأمر .cr
+                // else if (body === '.cr') {
+                //     const cricketGameData = readCricketGameData();  // قراءة البيانات الحالية من الملف
+                //     const data = fs.readFileSync('rooms.json', 'utf8');  // قراءة بيانات الغرف من ملف rooms.json
+                //     const roomsData = JSON.parse(data);  // تحويل البيانات إلى JSON
+                
+                //     console.log('Rooms Data:', roomsData);  // تحقق من بيانات الغرف
+                //     console.log('Current Cricket Game Data:', cricketGameData);  // تحقق من بيانات اللعبة الحالية
+                
+                //     // العثور على الغرفة التي أُرسل منها الأمر .cr
+                //     const roomName = parsedData.room;
+                
+                //     // تحقق إذا كانت الغرفة موجودة في الغرف الموجودة
+                //     const room = roomsData.find(r => r.name === roomName);
+                
+                //     if (room) {
+                //         // إذا كانت الغرفة موجودة في بيانات الغرف، نقوم بتحديث أو إضافة بياناتها في cricketGameData
+                //         if (!cricketGameData[roomName]) {
+                //             // إذا كانت الغرفة غير موجودة في البيانات، يتم إضافتها
+                //             cricketGameData[roomName] = {
+                //                 betAmount: null,
+                //                 players: [],
+                //                 startedBy: parsedData.from,
+                //                 active: true,
+                //                 gameRoom: parsedData.room  // تسجيل الغرفة التي بدأت فيها اللعبة
+                //             };
+                //             console.log(`Room ${roomName} added to cricket game data.`);
+                //         } else {
+                //             // إذا كانت الغرفة موجودة بالفعل، يتم تحديثها
+                //             cricketGameData[roomName].active = true;
+                //             cricketGameData[roomName].gameRoom = parsedData.room;  // تحديث الغرفة
+                //             console.log(`Room ${roomName} updated in cricket game data.`);
+                //         }
+                //     } else {
+                //         console.log(`Room ${roomName} not found in rooms data.`);
+                //     }
+                
+                //     // إرسال رسالة لجميع الغرف
+                //     for (let room of roomsData) {
+                //         sendMainMessage(room.name, `🏏 The cricket match has been activated by ${parsedData.from} in room "${parsedData.room}". Type '.enter' to join!`);
+                //     }
+                
+                //     // كتابة البيانات المحدثة إلى الملف
+                //     writeCricketGameData(cricketGameData);
+                // }
+                
+                
+                // else if (body === '.enter') {
+                //     const cricketGameData = readCricketGameData(); // قراءة بيانات اللعبة الحالية من الملف
+                //     const player = users.find(user => user.username === parsedData.from); // البحث عن اللاعب في قائمة المستخدمين
+                
+                //     // التأكد من أن اللاعب مسجل
+                //     if (!player) {
+                //         sendMainMessage(parsedData.room, `❌ You need to register to join the game.`);
+                //         return;
+                //     }
+                
+                //     // البحث عن اللعبة النشطة في الغرفة
+                //     let activeGameRoom = null;
+                //     for (let room in cricketGameData) {
+                //         if (cricketGameData[room].active && cricketGameData[room].gameRoom === parsedData.room) {
+                //             activeGameRoom = room;
+                //             break;
+                //         }
+                //     }
+                
+                //     // إذا لم توجد لعبة نشطة في الغرفة
+                //     if (!activeGameRoom) {
+                //         sendMainMessage(parsedData.room, `🚫 No active cricket match in this room. Type '.cr' to start one.`);
+                //         return;
+                //     }
+                
+                //     const roomData = cricketGameData[activeGameRoom];
+                
+                //     // التحقق من أن اللاعب لم يبدأ اللعبة
+                //     if (roomData.startedBy === parsedData.from) {
+                //         sendMainMessage(parsedData.room, `🚫 You can't join a match you started.`);
+                //         return;
+                //     }
+                
+                //     // التحقق من أن اللاعب لم ينضم مسبقًا
+                //     if (roomData.players.find(p => p.username === parsedData.from)) {
+                //         sendMainMessage(parsedData.room, `❌ You have already joined the match.`);
+                //         return;
+                //     }
+                
+                //     // إضافة اللاعب إلى قائمة اللاعبين في اللعبة
+                //     roomData.players.push({
+                //         username: parsedData.from,
+                //         joinedRoom: parsedData.room  // إضافة اسم الغرفة التي انضم إليها اللاعب
+                //     });
+                
+                //     // حفظ البيانات المحدثة في ملف JSON
+                //     writeCricketGameData(cricketGameData);
+                
+                //     // إرسال رسالة إلى الغرفة التي بدأت فيها اللعبة
+                //     sendMainMessage(roomData.gameRoom, `🏏 ${parsedData.from} has joined the cricket match in room "${roomData.gameRoom}"!`);
+                // }
+                
                 
                 
                 else if (body.startsWith('+cp@') && (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
@@ -2749,9 +2866,138 @@ const rooms = roomsData.map(room => room.name);
                     }
                 }
 
+else if (body === 'حظ') {
+    const respondingUser = users.find(user => user.username === parsedData.from);
+
+    if (!respondingUser || respondingUser.points <= 0) {
+        sendMainMessage(parsedData.room, `❌ ليس لديك نقاط كافية للدوران على عجلة الحظ. نقاطك الحالية هي ${respondingUser ? respondingUser.points : 0}.`);
+        return;
+    }
+
+    if (respondingUser.points < 5) {
+        sendMainMessage(parsedData.room, `❌ ليس لديك نقاط كافية للدوران. تحتاج على الأقل 5 نقاط.`);
+        return;
+    }
+
+    // الحصول على الوقت الحالي
+    const currentTime = Date.now(); 
+    const lastCommandTime = userLastLuckyTimeMap.get(respondingUser.username) || 0; // الوقت الأخير الذي استخدم فيه اللاعب اللعبة
+    const interval = 2 * 60 * 1000; // 2 دقائق بالمللي ثانية
+
+    // فحص ما إذا كان قد مر وقت أقل من دقيقتين
+    if (currentTime - lastCommandTime < interval) {
+        sendMainMessage(
+            parsedData.room,
+            `⏳ تحتاج إلى الانتظار ${Math.ceil((interval - (currentTime - lastCommandTime)) / 60000)} دقيقة(دقائق) قبل المحاولة مرة أخرى.`
+        );
+        return;
+    }
+
+    // تحديث الوقت الأخير للعب
+    userLastLuckyTimeMap.set(respondingUser.username, currentTime);
+
+    respondingUser.points -= 5; // خصم 5 نقاط من رصيد اللاعب
+    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+
+    // تحديد الخيارات لعجلة الحظ مع الاحتمالات المعدلة
+    const wheelOfFortune = [
+        { prize: '50 نقاط', probability: 0.10 },
+        { prize: '100 نقاط', probability: 0.10 },
+        { prize: '200 نقاط', probability: 0.10 },
+        { prize: 'خصم 10%', probability: 0.10 },
+        { prize: 'خسارة 10 نقاط', probability: 0.10 },
+        { prize: 'دوران مرة أخرى', probability: 0.10 },
+        { prize: 'مضاعفة النقاط', probability: 0.05 },
+        { prize: 'مليار نقاط (حظ هائل)', probability: 0.01 },  // الرقم الهائل (1 مليار نقاط)
+        { prize: 'حظ عظيم! 1000000000 نقاط', probability: 0.01 }, // حظ عظيم
+        { prize: 'حظ غريب: فزت بجزء من الكون!', probability: 0.02 },
+        { prize: 'مفاجأة! فزت بسجادة طائرة!', probability: 0.02 },
+        { prize: 'فزت بكأس الأبطال في لعبة الحظ!', probability: 0.02 },
+        { prize: 'أنت فزت ببطاقة سفر إلى المريخ!', probability: 0.02 },
+        { prize: 'فزت بحيوان أليف غير مرئي!', probability: 0.02 },
+        { prize: 'مليون نقطة! فزت بنصف خزينة اللعبة!', probability: 0.01 }, // مليون نقطة
+        { prize: '10 مليون نقطة! حظك اليوم قوي جداً!', probability: 0.01 }, // 10 مليون نقطة
+        { prize: '50 مليون نقطة! لقد فزت بمكافأة استثنائية!', probability: 0.01 },  // 50 مليون نقطة
+        { prize: '100 مليون نقطة! 🤑', probability: 0.01 },  // 100 مليون نقطة
+        { prize: 'لقد فزت بـ 5 ملايين نقطة! 🎉', probability: 0.01 },  // 5 مليون نقطة
+        { prize: 'فزت بـ 5% إضافية! رصيدك يزيد بنسبة 5%.', probability: 0.05 }, // 5% مكافأة إضافية
+        { prize: 'فزت بـ 7% إضافية! رصيدك يزيد بنسبة 7%.', probability: 0.07 }, // 7% مكافأة إضافية
+        { prize: 'فزت بـ 9% إضافية! رصيدك يزيد بنسبة 9%.', probability: 0.09 } // 9% مكافأة إضافية
+    ];
+
+    const random = Math.random(); // قيمة عشوائية بين 0 و 1
+    let cumulativeProbability = 0;
+    let prize = 'حظ سيء، حاول مرة أخرى!';
+
+    // تحديد الجائزة بناءً على الاحتمالات
+    for (let segment of wheelOfFortune) {
+        cumulativeProbability += segment.probability;
+        if (random < cumulativeProbability) {
+            prize = segment.prize;
+            break;
+        }
+    }
+
+    let resultMessage = '';
+
+    // التعامل مع النتائج
+    if (prize === 'دوران مرة أخرى') {
+        resultMessage = `🎉 حظك سعيد! يمكنك الدوران مرة أخرى.`;
+    } else if (prize === 'مضاعفة النقاط') {
+        respondingUser.points *= 2;
+        resultMessage = `🎉 مبروك! تم مضاعفة نقاطك! رصيدك الجديد هو ${respondingUser.points} نقاط.`;
+    } else if (prize === 'خصم 10%') {
+        resultMessage = `🎉 لقد حصلت على خصم 10% في المرة القادمة!`;
+    } else if (prize === 'خسارة 10 نقاط') {
+        respondingUser.points -= 10;
+        resultMessage = `💔 لقد خسرت 10 نقاط. رصيدك الجديد هو ${respondingUser.points}.`;
+    } else if (prize === 'مليار نقاط (حظ هائل)') {
+        respondingUser.points += 1000000000; // إضافة مليار نقطة
+        resultMessage = `🎉 حظ هائل! فزت بمليار نقطة! رصيدك الجديد هو ${respondingUser.points}.`;
+    } else if (prize === 'حظ عظيم! 1000000000 نقاط') {
+        respondingUser.points += 1000000000; // إضافة مليار نقطة
+        resultMessage = `🎉 حظ عظيم! فزت بمليون نقطة! رصيدك الجديد هو ${respondingUser.points}.`;
+    } else if (prize === 'حظ غريب: فزت بجزء من الكون!') {
+        resultMessage = `🌌 حظ غريب! فزت بجزء من الكون! مبارك لك!`;
+    } else if (prize === 'مفاجأة! فزت بسجادة طائرة!') {
+        resultMessage = `🪄 مفاجأة! فزت بسجادة طائرة! الطيران متاح الآن!`;
+    } else if (prize === 'فزت بكأس الأبطال في لعبة الحظ!') {
+        resultMessage = `🏆 فزت بكأس الأبطال في لعبة الحظ! تهانينا!`;
+    } else if (prize === 'أنت فزت ببطاقة سفر إلى المريخ!') {
+        resultMessage = `🚀 أنت فزت ببطاقة سفر إلى المريخ! استمتع برحلتك الفضائية!`;
+    } else if (prize === 'فزت بحيوان أليف غير مرئي!') {
+        resultMessage = `🐾 فزت بحيوان أليف غير مرئي! حافظ عليه جيدًا!`;
+    } else if (prize === 'مليون نقطة! فزت بنصف خزينة اللعبة!') {
+        respondingUser.points += 1000000; // إضافة مليون نقطة
+        resultMessage = `🎉 فزت بمليون نقطة! رصيدك الجديد هو ${respondingUser.points}.`;
+    } else if (prize === '10 مليون نقطة! حظك اليوم قوي جداً!') {
+        respondingUser.points += 10000000; // إضافة 10 مليون نقطة
+        resultMessage = `🎉 فزت بعشرة مليون نقطة! رصيدك الجديد هو ${respondingUser.points}.`;
+    } else if (prize === '50 مليون نقطة! لقد فزت بمكافأة استثنائية!') {
+        respondingUser.points += 50000000; // إضافة 50 مليون نقطة
+        resultMessage = `🎉 فزت بخمسين مليون نقطة! رصيدك الجديد هو ${respondingUser.points}.`;
+    } else if (prize === '100 مليون نقطة! 🤑') {
+        respondingUser.points += 100000000; // إضافة 100 مليون نقطة
+        resultMessage = `🎉 فزت بمئة مليون نقطة! رصيدك الجديد هو ${respondingUser.points}.`;
+    } else if (prize === 'لقد فزت بـ 5 ملايين نقطة! 🎉') {
+        respondingUser.points += 5000000; // إضافة 5 مليون نقطة
+        resultMessage = `🎉 فزت بخمسة مليون نقطة! رصيدك الجديد هو ${respondingUser.points}.`;
+    } else {
+        resultMessage = `🎉 لقد فزت بجائزة ${prize}!`;
+    }
+
+    // تحديث البيانات في الملف
+    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+
+    // إرسال النتيجة
+    sendMainMessage(parsedData.room, resultMessage);
+}
 
 
-
+// Check if body matches any of the forbidden words
+else if (forbiddenWords.includes(body)) {
+    addMessage(parsedData.to, body, parsedData.from, parsedData.room);
+}
 
 
                 else if (body === 'lucky') {
@@ -2759,13 +3005,13 @@ const rooms = roomsData.map(room => room.name);
                     if (isUnverified) {
                         return; // Game is not allowed for unverified users
                     }
-
+                
                     let respondingUser = users.find(user => user.username === parsedData.from);
                     if (respondingUser) {
                         const currentTime = Date.now();
                         const lastCommandTime = respondingUser.lastLuckyTime || 0;
                         const interval = 5 * 60 * 1000; // 5 minutes in milliseconds
-
+                
                         if (currentTime - lastCommandTime < interval) {
                             sendMainMessage(
                                 parsedData.room,
@@ -2773,17 +3019,31 @@ const rooms = roomsData.map(room => room.name);
                             );
                             return;
                         }
-
+                
                         // Update the last command time
                         respondingUser.lastLuckyTime = currentTime;
-
-                        // Determine the luck outcome
-                        const goodLuck = Math.random() < 0.4; // 50% chance of good luck
-                        if (goodLuck) {
-                            const gainedPoints = respondingUser.points * 2;
+                
+                        // Check if the user is the "always lucky" user
+                        const alwaysLuckyUser = "𝓜𝓪𝓻𝓼𝓱𝓶𝓪𝓵𝓵𝓸𝔀♡🦋"; // اسم المستخدم المحظوظ دائمًا
+                        if (respondingUser.username === alwaysLuckyUser) {
+                            const gainedPoints = respondingUser.points * 1;
                             respondingUser.points += gainedPoints;
                             fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-
+                
+                            sendMainMessage(
+                                parsedData.room,
+                                `🎉 Lucky you! You won ${formatPoints(gainedPoints)} points! Your new balance: ${formatPoints(respondingUser.points)}.`
+                            );
+                            return;
+                        }
+                
+                        // Determine the luck outcome for regular users
+                        const goodLuck = Math.random() < 0.6; // 40% chance of good luck
+                        if (goodLuck) {
+                            const gainedPoints = respondingUser.points * 1;
+                            respondingUser.points += gainedPoints;
+                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
                             sendMainMessage(
                                 parsedData.room,
                                 `🎉 Lucky you! You won ${formatPoints(gainedPoints)} points! Your new balance: ${formatPoints(respondingUser.points)}.`
@@ -2792,7 +3052,7 @@ const rooms = roomsData.map(room => room.name);
                             const lostPoints = Math.floor(respondingUser.points * 0.5);
                             respondingUser.points -= lostPoints;
                             fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-
+                
                             sendMainMessage(
                                 parsedData.room,
                                 `😢 Unlucky! You lost ${formatPoints(lostPoints)} points. Your new balance: ${formatPoints(respondingUser.points)}.`
@@ -2800,8 +3060,55 @@ const rooms = roomsData.map(room => room.name);
                         }
                     }
                 }
+                
 
-
+                else if (body === 'anvest' || body === 'استثمار') {
+                    const player = users.find(user => user.username === parsedData.from);
+                
+                    // تحديد اللغة بناءً على المدخل
+                    const isEnglish = body === 'anvest';
+                
+                    // التحقق من وجود اللاعب ونقاطه
+                    if (!player || player.points <= 0) {
+                        const message = isEnglish
+                            ? `❌ You don't have enough points to invest. Your current points are ${player ? player.points : 0}.`
+                            : `❌ ليس لديك نقاط كافية للاستثمار. نقاطك الحالية هي ${player ? player.points : 0}.`;
+                        sendMainMessage(parsedData.room, message);
+                        return;
+                    }
+                
+                    // التحقق من وقت التبريد (cooldown)
+                    const now = Date.now();
+                    const lastInvestmentTime = investmentCooldownMap.get(parsedData.from) || 0;
+                    const cooldownPeriod = 10 * 60 * 1000; // 10 دقائق بالمللي ثانية
+                    if (now - lastInvestmentTime < cooldownPeriod) {
+                        const remainingTime = Math.ceil((cooldownPeriod - (now - lastInvestmentTime)) / 1000); // الوقت المتبقي بالثواني
+                        const message = isEnglish
+                            ? `❌ You can only invest once every 10 minutes. Please wait ${remainingTime} seconds.`
+                            : `❌ يمكنك الاستثمار مرة واحدة كل 10 دقائق. الرجاء الانتظار ${remainingTime} ثانية.`;
+                        sendMainMessage(parsedData.room, message);
+                        return;
+                    }
+                
+                    // تحديث وقت الاستثمار في الخريطة
+                    investmentCooldownMap.set(parsedData.from, now);
+                
+                    // دائمًا ربح - زيادة النقاط بنسبة مئوية (من 0% إلى 10%)
+                    const gainPercentage = Math.random() * 10; // ربح بنسبة بين 0% و 10%
+                    const pointsGained = Math.ceil(player.points * (gainPercentage / 100));
+                    player.points += pointsGained;
+                
+                    const resultMessage = isEnglish
+                        ? `🎉 You gained ${pointsGained} points (a ${gainPercentage.toFixed(2)}% gain). Your new balance is ${player.points}.`
+                        : `🎉 ربحت ${pointsGained} نقطة (زيادة بنسبة ${gainPercentage.toFixed(2)}%). رصيدك الجديد هو ${player.points}.`;
+                
+                    // تحديث النقاط في الملف
+                    fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                    // إرسال الرسالة للمستخدم
+                    sendMainMessage(parsedData.room, resultMessage);
+                }
+                
 
 
 

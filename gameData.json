@@ -1,15 +1,12 @@
 {
-  "lastUserWhoSentTreasure": "𝓜𝓪𝓻𝓼𝓱𝓶𝓪𝓵𝓵𝓸𝔀♡🦋",
-  "lastPuzzle": {
-    "question": "ما هي الأداة التي تستخدم لقياس شدة الزلازل؟",
-    "answer": "سيزموغراف"
-  },
+  "lastUserWhoSentTreasure": null,
+  "lastPuzzle": null,
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "1",
+  "selectedPath": null,
   "playerProgress": {
-    "correctAnswersCount": 1,
-    "totalPoints": 100
+    "correctAnswersCount": 0,
+    "totalPoints": 0
   },
   "correctAnswersCount": 0
 }

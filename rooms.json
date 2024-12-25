@@ -13,7 +13,7 @@
   },
   {
     "name": "سوريا*فلسطين",
-    "bet": false,
+    "bet": true,
     "gift": true,
     "welcome": true
   },
@@ -31,14 +31,14 @@
   },
   {
     "name": "كـافيـه♨️رآقـي",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
   {
     "name": "كوكاكولآ",
-    "bet": false,
-    "gift": false,
+    "bet": true,
+    "gift": true,
     "welcome": true
   },
   {
@@ -73,7 +73,7 @@
   },
   {
     "name": "كوكب♥المجانين",
-    "bet": false,
+    "bet": true,
     "gift": true,
     "welcome": true
   },
@@ -140,7 +140,7 @@
   {
     "name": "𝕋𝕙𝕖_𝕆𝕣𝕚𝕘𝕚𝕟𝕒𝕝𝕤_✨",
     "bet": true,
-    "gift": false,
+    "gift": true,
     "welcome": true
   },
   {
@@ -187,7 +187,7 @@
   },
   {
     "name": "ضحكة_مصري",
-    "bet": false,
+    "bet": true,
     "gift": true,
     "welcome": true
   },
@@ -265,7 +265,7 @@
   },
   {
     "name": "هواجيس🖤تجمعنا",
-    "bet": false,
+    "bet": true,
     "gift": true,
     "welcome": true
   },
@@ -733,7 +733,7 @@
   },
   {
     "name": "كتاب_وقهوة☕",
-    "bet": false,
+    "bet": true,
     "gift": true,
     "welcome": true
   },
@@ -925,6 +925,60 @@
   },
   {
     "name": "لـمه🫶زمـان",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "magic",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "𝐍𝐈𝐂𝐎𝐓𝐄𝐄𝐍⁸⁰",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "friends🌸",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "رحيق❥الحب",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "مريم",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "ليبيا²",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "pathaan",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "رقـــــــ🦋ـــــــهہ",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "عدن𐩲𐩵𐩬صنعاء𐩲𐩵𐩬اليمن",
     "bet": true,
     "gift": true,
     "welcome": true

@@ -47,7 +47,6 @@ function resetPointsAndAssets() {
 }
 
 // تشغيل الدالة لإعادة تعيين النقاط والأصول
-resetPointsAndAssets();
 
 // Function to get the length of an array
 function getArrayLength(array) {
