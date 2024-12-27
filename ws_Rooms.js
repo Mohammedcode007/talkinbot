@@ -4,7 +4,7 @@ const { getRandomInstruction } = require('./getRandomText');
 const getRandomItemDress = require('./dress'); // استيراد دالة اختيار الفستان العشوائي
 const createCanvasWithBackground = require('./createImage');
 const { addMessage } = require('./report.js');
-const { readCricketGameData ,writeCricketGameData} = require('./cricket_game.js');
+const { readCricketGameData ,writeCricketGameData,deleteCricketGameData,writeCricketGameDataTime } = require('./cricket_game.js');
 
 
 const moment = require('moment');  // التأكد من استيراد moment
@@ -62,6 +62,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     const socket = new WebSocket('wss://chatp.net:5333/server');
 
   
+    const cricketGameTimeouts = new Map();
 
     let players = new Map();  // تخزين اللاعبين
     let playerNumbers = new Map();  // تخزين الأرقام التي يرسلها اللاعبون
@@ -134,6 +135,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     let lastTweetId = null; // معرف التغريدة الأخيرة المرسلة
     const tweets = loadTweets(); // تحميل التغريدات من ملف JSON
     // دالة لإيقاف اللعبة بعد 30 ثانية
+    let roundTimeout;
 
     function sendDressImageMessage(room, image) {
         const message = {
@@ -314,6 +316,38 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                 name: room
             };
             socket.send(JSON.stringify(joinRoomMessage));
+            const cricketGameData = readCricketGameData();
+
+            if (cricketGameData[room] === undefined) {
+                console.log(room,"cricketGameData[room]");
+                
+                cricketGameData[room] = {
+                    betAmount: null,
+                    players: [{
+                        username: '',
+                        role: 'attacker',
+                        status: 'waiting'
+                    }],
+                    startedBy: '',
+                    active: false,
+                    gameRoom: '',
+                    rounds: 0  // تتبع عدد الجولات
+                };
+            } else {
+                if (!cricketGameData[room].active) {
+                    cricketGameData[room].active = false;
+                    cricketGameData[room].players = [{
+                        username: '',
+                        role: 'attacker',
+                        status: 'waiting'
+                    }];
+                    cricketGameData[room].rounds = 0;  // إعادة تعيين الجولات
+                } else {
+                    return;
+                }
+            }
+            writeCricketGameData(cricketGameData);
+
             console.log(`Joined room: ${room}`);
         })
 
@@ -2044,104 +2078,456 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 }
               
                 
-                // الكود الخاص بأمر .cr
+
+                // تخزين المهلات لكل غرفة
+                
+            
+                if (parsedData.body === 'shot' || parsedData.body === '.s') {
+                    const senderUsername = parsedData.from;
+                    const userblocked = usersblockes.find(user => user === senderUsername);
+
+                    if (userblocked) {
+                       
+                        return;
+                    }
+                    let user = users.find(user => user.username === senderUsername);
+                if (!user) {
+                    user = {
+                        username: usernameToVerify, verified: true, lasttimegift: null, points: null, name: null,
+                        nickname: null
+                    };
+                    users.push(user);
+                    console.log(`New user added: ${usernameToVerify}`);
+                } else {
+                    user.verified = true;
+                }
+
+                writeUsersToFile(users);
+            
+             
+            
+                  
+                } 
+              
+                
+                
+                    if (parsedData.body === '.cr') {
+                        const senderUsername = parsedData.from;
+                        let user = users.find(user => user.username === senderUsername);
+                    if (!user) {
+                        user = {
+                            username: usernameToVerify, verified: true, lasttimegift: null, points: null, name: null,
+                            nickname: null
+                        };
+                        users.push(user);
+                    } else {
+                        user.verified = true;
+                    }
+
+                    writeUsersToFile(users);
+                
+                        // إذا لم يكن المستخدم موثقًا
+                        if (!user || !user.verified) {
+                            const notVerifiedMessage = {
+                                handler: 'room_message',
+                                id: 'TclBVHgBzPGTMRTNpgWV',
+                                type: 'text',
+                                room: parsedData.room,
+                                body: `User ${senderUsername} is not verified! Please verify first. Contact: i_gamd_i`
+                            };
+                            socket.send(JSON.stringify(notVerifiedMessage));
+                            return;
+                        }
+                
+                        const cricketGameData = readCricketGameData();
+                        const data = fs.readFileSync('rooms.json', 'utf8');
+                        const roomsData = JSON.parse(data);
+                        const activeGame = Object.values(cricketGameData).some(game => game.active);
+                
+                        if (activeGame) {
+                            sendMainMessage(parsedData.room, `🚫 A game is already in progress in one of the rooms. Wait until the current match ends.`);
+                            return;
+                        }
+                
+                        const roomName = parsedData.room;
+                        const room = roomsData.find(r => r.name === roomName);
+                
+                        if (room) {
+                            if (cricketGameData[roomName] && cricketGameData[roomName].active && cricketGameData[roomName].players.length > 0) {
+                                sendMainMessage(parsedData.room, `🚫 A game is already in progress in this room. Wait until the current match ends.`);
+                                return;
+                            }
+                
+                            if (!cricketGameData[roomName]) {
+                                cricketGameData[roomName] = {
+                                    betAmount: null,
+                                    players: [{
+                                        username: parsedData.from,
+                                        role: 'attacker',
+                                        status: 'waiting'
+                                    }],
+                                    startedBy: parsedData.from,
+                                    active: true,
+                                    gameRoom: parsedData.room,
+                                    rounds: 0
+                                };
+                
+                                // تعيين مهلة إيقاف اللعبة بعد دقيقة
+                                cricketGameTimeouts.set(roomName, setTimeout(() => {
+                                    if (cricketGameData[roomName] && cricketGameData[roomName].players.length === 1) {
+                                        sendMainMessage(parsedData.room, `🚫 Game cancelled. No one joined within 1 minute.`);
+                                        cricketGameData[roomName].active = false;  // تعطيل اللعبة
+                                        writeCricketGameData(cricketGameData);
+                                    }
+                                    cricketGameTimeouts.delete(roomName);  // إزالة المهلة من الذاكرة
+                                }, 90000));  // دقيقة واحدة
+                
+                                console.log(`Room ${roomName} added to cricket game data with ${parsedData.from} as attacker.`);
+                            } else {
+                                if (!cricketGameData[roomName].active) {
+                                    cricketGameData[roomName].gameRoom = parsedData.room;
+                                    cricketGameData[roomName].active = true;
+                                    cricketGameData[roomName].players = [{
+                                        username: parsedData.from,
+                                        role: 'attacker',
+                                        status: 'waiting'
+                                    }];
+                                    cricketGameData[roomName].rounds = 0;
+                                     // تعيين مهلة إيقاف اللعبة بعد دقيقة
+                                cricketGameTimeouts.set(roomName, setTimeout(() => {
+                                    if (cricketGameData[roomName] && cricketGameData[roomName].players.length === 1) {
+                                        sendMainMessage(parsedData.room, `🚫 Game cancelled. No one joined within 1 minute.`);
+                                        cricketGameData[roomName].active = false;  // تعطيل اللعبة
+                                        writeCricketGameData(cricketGameData);
+                                    }
+                                    cricketGameTimeouts.delete(roomName);  // إزالة المهلة من الذاكرة
+                                }, 90000));  // دقيقة واحدة
+                                    console.log(`Room ${roomName} reactivated for a new game with ${parsedData.from} as attacker.`);
+                                } else {
+                                    sendMainMessage(parsedData.room, `🚫 A game is already in progress in this room. Wait until the current match ends.`);
+                                    return;
+                                }
+                            }
+                
+                            // إرسال رسالة لجميع الغرف لإعلامهم ببدء اللعبة
+                            for (let room of roomsData) {
+                                sendMainMessage(room.name, `🏏 The cricket match has been activated by ${parsedData.from} in room "${parsedData.room}". Type '.enter' to join!`);
+                            }
+                
+                            writeCricketGameData(cricketGameData);
+                        } else {
+                            console.log(`Room ${roomName} not found in rooms data.`);
+                        }
+                    } 
+                
+                               
+                
                 // else if (body === '.cr') {
-                //     const cricketGameData = readCricketGameData();  // قراءة البيانات الحالية من الملف
-                //     const data = fs.readFileSync('rooms.json', 'utf8');  // قراءة بيانات الغرف من ملف rooms.json
-                //     const roomsData = JSON.parse(data);  // تحويل البيانات إلى JSON
-                
-                //     console.log('Rooms Data:', roomsData);  // تحقق من بيانات الغرف
-                //     console.log('Current Cricket Game Data:', cricketGameData);  // تحقق من بيانات اللعبة الحالية
-                
-                //     // العثور على الغرفة التي أُرسل منها الأمر .cr
+                //     const senderUsername =parsedData.from
+
+                //     let user = users.find(user => user.username === senderUsername);
+
+                //     // إذا لم يكن المستخدم موثقًا
+                //     if (!user || !user.verified) {
+                //         const notVerifiedMessage = {
+                //             handler: 'room_message',
+                //             id: 'TclBVHgBzPGTMRTNpgWV',
+                //             type: 'text',
+                //             room: parsedData.room,
+                //             url: '',
+                //             length: '',
+                //             body: `User ${senderUsername} is not verified! Please verify first. Contact: i_gamd_i`
+                //         };
+                //         socket.send(JSON.stringify(notVerifiedMessage));
+                //         return; // إيقاف الكود إذا كان المستخدم غير موثق
+                //     }
+                //     const cricketGameData = readCricketGameData();
+                //     const data = fs.readFileSync('rooms.json', 'utf8');
+                //     const roomsData = JSON.parse(data);
+                //     const activeGame = Object.values(cricketGameData).some(game => game.active);
+
+                //     if (activeGame) {
+                //         sendMainMessage(parsedData.room, `🚫 A game is already in progress in one of the rooms. Wait until the current match ends.`);
+                //         return;
+                //     }
                 //     const roomName = parsedData.room;
-                
-                //     // تحقق إذا كانت الغرفة موجودة في الغرف الموجودة
                 //     const room = roomsData.find(r => r.name === roomName);
                 
                 //     if (room) {
-                //         // إذا كانت الغرفة موجودة في بيانات الغرف، نقوم بتحديث أو إضافة بياناتها في cricketGameData
+                //         if (cricketGameData[roomName] && cricketGameData[roomName].active && cricketGameData[roomName].players.length > 0) {
+                //             sendMainMessage(parsedData.room, `🚫 A game is already in progress in this room. Wait until the current match ends.`);
+                //             return;
+                //         }
+                
                 //         if (!cricketGameData[roomName]) {
-                //             // إذا كانت الغرفة غير موجودة في البيانات، يتم إضافتها
                 //             cricketGameData[roomName] = {
                 //                 betAmount: null,
-                //                 players: [],
+                //                 players: [{
+                //                     username: parsedData.from,
+                //                     role: 'attacker',
+                //                     status: 'waiting'
+                //                 }],
                 //                 startedBy: parsedData.from,
                 //                 active: true,
-                //                 gameRoom: parsedData.room  // تسجيل الغرفة التي بدأت فيها اللعبة
+                //                 gameRoom: parsedData.room,
+                //                 rounds: 0  // تتبع عدد الجولات
                 //             };
-                //             console.log(`Room ${roomName} added to cricket game data.`);
+                            
+                //             console.log(`Room ${roomName} added to cricket game data with ${parsedData.from} as attacker.`);
                 //         } else {
-                //             // إذا كانت الغرفة موجودة بالفعل، يتم تحديثها
-                //             cricketGameData[roomName].active = true;
-                //             cricketGameData[roomName].gameRoom = parsedData.room;  // تحديث الغرفة
-                //             console.log(`Room ${roomName} updated in cricket game data.`);
+                //             if (!cricketGameData[roomName].active) {
+                //                 cricketGameData[roomName].gameRoom = parsedData.room;
+
+                //                 cricketGameData[roomName].active = true;
+                //                 cricketGameData[roomName].players = [{
+                //                     username: parsedData.from,
+                //                     role: 'attacker',
+                //                     status: 'waiting'
+                //                 }];
+                //                 cricketGameData[roomName].rounds = 0;  // إعادة تعيين الجولات
+
+                                
+                //                 console.log(`Room ${roomName} reactivated for a new game with ${parsedData.from} as attacker.`);
+                //             } else {
+                //                 sendMainMessage(parsedData.room, `🚫 A game is already in progress in this room. Wait until the current match ends.`);
+                //                 return;
+                //             }
                 //         }
+                
+                //         for (let room of roomsData) {
+                //             sendMainMessage(room.name, `🏏 The cricket match has been activated by ${parsedData.from} in room "${parsedData.room}". Type '.enter' to join!`);
+                //         }
+                        
+
+                //         writeCricketGameData(cricketGameData);
                 //     } else {
                 //         console.log(`Room ${roomName} not found in rooms data.`);
                 //     }
-                
-                //     // إرسال رسالة لجميع الغرف
-                //     for (let room of roomsData) {
-                //         sendMainMessage(room.name, `🏏 The cricket match has been activated by ${parsedData.from} in room "${parsedData.room}". Type '.enter' to join!`);
-                //     }
-                
-                //     // كتابة البيانات المحدثة إلى الملف
-                //     writeCricketGameData(cricketGameData);
                 // }
                 
+                else if (body === '.enter') {
+                    const senderUsername =parsedData.from
+
+                    let user = users.find(user => user.username === senderUsername);
+
+                    // إذا لم يكن المستخدم موثقًا
+                    if (!user || !user.verified) {
+                        const notVerifiedMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: parsedData.room,
+                            url: '',
+                            length: '',
+                            body: `User ${senderUsername} is not verified! Please verify first. Contact: i_gamd_i`
+                        };
+                        socket.send(JSON.stringify(notVerifiedMessage));
+                        return; // إيقاف الكود إذا كان المستخدم غير موثق
+                    }
+                    const cricketGameData = readCricketGameData();
+                    const data = fs.readFileSync('rooms.json', 'utf8');
+                    const roomsData = JSON.parse(data);
+                    const roomName = parsedData.room;
                 
-                // else if (body === '.enter') {
-                //     const cricketGameData = readCricketGameData(); // قراءة بيانات اللعبة الحالية من الملف
-                //     const player = users.find(user => user.username === parsedData.from); // البحث عن اللاعب في قائمة المستخدمين
+                    let activeRoomData = null;
                 
-                //     // التأكد من أن اللاعب مسجل
-                //     if (!player) {
-                //         sendMainMessage(parsedData.room, `❌ You need to register to join the game.`);
-                //         return;
-                //     }
+                    for (const roomName in cricketGameData) {
+                        if (cricketGameData[roomName].active) {
+                            activeRoomData = cricketGameData[roomName];
+                            break;
+                        }
+                    }
+                    const attacker = activeRoomData?.players?.find(player => player.role === 'attacker');
+
+        if (attacker && attacker.username === senderUsername) {
+            sendMainMessage(parsedData.room, `🚫 You cannot join as a defender. The attacker must be in a different room.`);
+            return;
+        }
+                    if (activeRoomData) {
+                        if (activeRoomData.players.length === 1) {
+                            activeRoomData.players.push({
+                                username: parsedData.from,
+                                role: 'defender',
+                                status: 'waiting',
+                                joinedFromRoom: roomName
+                            });
+                            sendMainMessage(activeRoomData.gameRoom, `🏏 ${parsedData.from} has joined the game as defender! The game is now starting.`);
+                            sendMainMessage(parsedData.room, `🏏 ${parsedData.from} has joined the game as defender! The game is now starting.`);
+
+                            sendMainMessage(activeRoomData.gameRoom, `🏏 The game has started in room "${activeRoomData.gameRoom}". ${activeRoomData.players[0].username} is the attacker, and ${parsedData.from} is the defender.`);
+                            sendMainMessage(activeRoomData.gameRoom, `🎯 Please ${activeRoomData.players[0].username} send a number between 1 and 6 to start your turn.`);
                 
-                //     // البحث عن اللعبة النشطة في الغرفة
-                //     let activeGameRoom = null;
-                //     for (let room in cricketGameData) {
-                //         if (cricketGameData[room].active && cricketGameData[room].gameRoom === parsedData.room) {
-                //             activeGameRoom = room;
-                //             break;
-                //         }
-                //     }
+                            activeRoomData.awaitingNumber = true;
+                            activeRoomData.awaitingDefenderGuess = false;
+
+                            writeCricketGameData(cricketGameData);
+                            sendMainMessage(activeRoomData.players[0].joinedFromRoom, `🏏 ${parsedData.from} has joined the game as defender. The game has started!`);
+                            sendMainMessage(activeRoomData.gameRoom, `🏏 ${parsedData.from} has joined the game as defender. The game has started!`);
+
+                        } else {
+                            sendMainMessage(parsedData.room, `🚫 The game is either already full or not yet started. Please wait until the game is ready.`);
+                        }
+                    } else {
+                        sendMainMessage(parsedData.room, `🚫 No active game found.`);
+                    }
+                }
+
+                else if (/^[1-6]$/.test(body)) {
+                    const cricketGameData = readCricketGameData();
+                    const firstGame = Object.values(cricketGameData)[0];
+                    // const roomName = parsedData.room;
+                    // const roomName = firstGame.gameRoom;
+                    const activeGame = Object.values(cricketGameData).find(game => game.active);
+                    const roomName = activeGame?.gameRoom;
+
+                    const activeRoomData = cricketGameData[roomName];
+
+                    if (!activeRoomData) {
+                        return; // إذا لم تكن الرسالة من إحدى الغرفتين المتوقعتين، قم بإرجاع ولا تفعل شيء
+                    }
                 
-                //     // إذا لم توجد لعبة نشطة في الغرفة
-                //     if (!activeGameRoom) {
-                //         sendMainMessage(parsedData.room, `🚫 No active cricket match in this room. Type '.cr' to start one.`);
-                //         return;
-                //     }
+                    // دالة لإنهاء اللعبة إذا لم يرسل اللاعب رقمه في الوقت المحدد
+                    function endGameDueToTimeout() {
+                        sendMainMessage(activeRoomData.gameRoom, `🏁 The game ended because of inactivity!`);
+                        sendMainMessage(activeRoomData.players[0].joinedFromRoom, `🏁 The game ended because of inactivity`);
                 
-                //     const roomData = cricketGameData[activeGameRoom];
+                        // خصم مليار نقطة من اللاعب الذي تأخر
+                        const usernameToDeductPoints = parsedData.from;
+                        const amountToDeduct = 1000000000;
                 
-                //     // التحقق من أن اللاعب لم يبدأ اللعبة
-                //     if (roomData.startedBy === parsedData.from) {
-                //         sendMainMessage(parsedData.room, `🚫 You can't join a match you started.`);
-                //         return;
-                //     }
+                        const targetPlayer = users.find(user => user.username === usernameToDeductPoints);
                 
-                //     // التحقق من أن اللاعب لم ينضم مسبقًا
-                //     if (roomData.players.find(p => p.username === parsedData.from)) {
-                //         sendMainMessage(parsedData.room, `❌ You have already joined the match.`);
-                //         return;
-                //     }
+                        if (!targetPlayer) {
+                            sendMainMessage(parsedData.room, `❌ User ${usernameToDeductPoints} not found.`);
+                            return;
+                        }
                 
-                //     // إضافة اللاعب إلى قائمة اللاعبين في اللعبة
-                //     roomData.players.push({
-                //         username: parsedData.from,
-                //         joinedRoom: parsedData.room  // إضافة اسم الغرفة التي انضم إليها اللاعب
-                //     });
+                        // خصم النقاط
                 
-                //     // حفظ البيانات المحدثة في ملف JSON
-                //     writeCricketGameData(cricketGameData);
+                        // حفظ البيانات بعد خصم النقاط
+                        fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
                 
-                //     // إرسال رسالة إلى الغرفة التي بدأت فيها اللعبة
-                //     sendMainMessage(roomData.gameRoom, `🏏 ${parsedData.from} has joined the cricket match in room "${roomData.gameRoom}"!`);
-                // }
+                        // إنهاء اللعبة بعد فترة
+                        activeRoomData.active = false;
+                        deleteCricketGameData(); // حذف البيانات بعد نهاية اللعبة
+                        writeCricketGameData(cricketGameData);
+                    }
+                
+                    if (activeRoomData && activeRoomData.active && activeRoomData.awaitingNumber) {
+                        if (parsedData.from === activeRoomData.players[0].username) {
+                            activeRoomData.awaitingNumber = false;
+                            activeRoomData.lastNumber = body;
+                            sendMainMessage(parsedData.room, `🎲 ${parsedData.from} rolled a ${body} in the game!`);
+                            sendMainMessage(activeRoomData.players[1].joinedFromRoom, `🤔 The attacker has rolled. Please ${activeRoomData.players[1].username} guess a number between 1 and 6.`);
+                            activeRoomData.awaitingDefenderGuess = true;
+                            writeCricketGameData(cricketGameData);
+                
+                            // إذا تم إرسال الرقم من المهاجم، نبدأ العد التنازلي من جديد
+                            clearTimeout(roundTimeout); // إلغاء المؤقت السابق
+                            roundTimeout = setTimeout(endGameDueToTimeout, 30000); // إعادة البدء بعد 30 ثانية
+                        } else {
+                            sendMainMessage(parsedData.room, `🚫 You are not the attacker. Wait for your turn.`);
+                        }
+                    } else if (activeRoomData && activeRoomData.active && activeRoomData.awaitingDefenderGuess) {
+                        if (parsedData.from === activeRoomData?.players[1]?.username) {
+                            activeRoomData.rounds++;
+                            const defenderGuess = body;
+                            const attackerNumber = activeRoomData.lastNumber;
+
+                            // التحقق من الإجابة
+                            if (defenderGuess === attackerNumber) {
+                                sendMainMessage(parsedData.room, `🎯 ${parsedData.from} guessed correctly! The attacker rolled a ${defenderGuess}.`);
+                                sendMainMessage(activeRoomData.players[0].joinedFromRoom, `🎯 ${parsedData.from} guessed correctly! The attacker rolled a ${attackerNumber}.`);
+                                sendMainMessage(activeRoomData.gameRoom, `🎯 ${parsedData.from} guessed correctly! The attacker rolled a ${attackerNumber}.`);
+                                activeRoomData.players[1].correctGuesses = (activeRoomData.players[1].correctGuesses || 0) + 1;
+                            } else {
+                                sendMainMessage(parsedData.room, `❌ ${parsedData.from} guessed wrong. The attacker rolled a ${attackerNumber}.`);
+                                sendMainMessage(activeRoomData.players[0].joinedFromRoom, `❌ ${parsedData.from} guessed wrong. The attacker rolled a ${attackerNumber}.`);
+                                sendMainMessage(activeRoomData.gameRoom, `❌ ${parsedData.from} guessed wrong. The attacker rolled a ${attackerNumber}.`);
+                            }
+                
+                            // إذا كانت إجابة المدافع صحيحة 3 مرات
+                            if (activeRoomData.players[1].correctGuesses === 3) {
+                                sendMainMessage(parsedData.room, `🎉 ${parsedData.from} won the game by guessing 3 times correctly!`);
+                                sendMainMessage(activeRoomData.gameRoom, `🎉 ${parsedData.from} won the game by guessing 3 times correctly!`);
+                                sendMainMessage(activeRoomData.players[0].joinedFromRoom, `🎉 ${parsedData.from} won the game by guessing 3 times correctly!`);
+                
+                                // منح مليار نقطة للمدافع
+                                const usernameToAddPoints = activeRoomData.players[1].username;
+                                const amountToAdd = 1000000000;
+                
+                                const targetPlayer = users.find(user => user.username === usernameToAddPoints);
+                
+                                if (!targetPlayer) {
+                                    sendMainMessage(parsedData.room, `❌ User ${usernameToAddPoints} not found.`);
+                                    return;
+                                }
+                
+                                // إضافة النقاط
+                                targetPlayer.points += amountToAdd;
+                
+                                // حفظ البيانات بعد إضافة النقاط
+                                fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                                activeRoomData.active = false;
+                                deleteCricketGameData();
+                                writeCricketGameData(cricketGameData);
+                            }
+                
+                            // إذا لم يحقق المدافع 3 إجابات صحيحة
+                            else if (activeRoomData.rounds >= 6) {
+                                sendMainMessage(parsedData.room, `🏁 The game has ended after 6 rounds. ${activeRoomData.players[0].username} won with 1B points!`);
+                                sendMainMessage(activeRoomData.gameRoom, `🏁 The game has ended after 6 rounds. ${activeRoomData.players[0].username} won with 1B points!`);
+                                sendMainMessage(activeRoomData.players[0].joinedFromRoom, `🏁 The game has ended after 6 rounds. ${activeRoomData.players[0].username} won with 1B points!`);
+                
+                                // منح مليار نقطة للمهاجم
+                                const usernameToAddPoints = activeRoomData.players[0].username;
+                                const amountToAdd = 1000000000;
+                
+                                const targetPlayer = users.find(user => user.username === usernameToAddPoints);
+                
+                                if (!targetPlayer) {
+                                    sendMainMessage(parsedData.room, `❌ User ${usernameToAddPoints} not found.`);
+                                    return;
+                                }
+                
+                                // إضافة النقاط
+                                targetPlayer.points += amountToAdd;
+                
+                                // حفظ البيانات بعد إضافة النقاط
+                                fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                                activeRoomData.active = false;
+                                deleteCricketGameData();
+                                writeCricketGameData(cricketGameData);
+                            }
+                
+                            activeRoomData.awaitingDefenderGuess = false;
+                            activeRoomData.awaitingNumber = true; // إعادة السماح للمهاجم برمي الرقم من جديد
+                            writeCricketGameData(cricketGameData);
+                
+                            if (activeRoomData.rounds < 6) {
+                                sendMainMessage(activeRoomData.gameRoom, `🎯 Now it is ${activeRoomData.players[0].username}'s turn to roll again!`);
+                            }
+                
+                            // إعادة تعيين المؤقت
+                            clearTimeout(roundTimeout);
+                            roundTimeout = setTimeout(endGameDueToTimeout, 30000); // إعادة البدء بعد 30 ثانية
+                
+                        } else {
+                            sendMainMessage(parsedData.room, `🚫 You are not the defender. Wait for your turn.`);
+                        }
+                    }
+                }
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 
                 
                 

@@ -37,7 +37,7 @@
   },
   {
     "name": "كوكاكولآ",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -307,7 +307,7 @@
   },
   {
     "name": "flowers",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -511,7 +511,7 @@
   },
   {
     "name": "يجمعنا💕الـــــــــود",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -733,7 +733,7 @@
   },
   {
     "name": "كتاب_وقهوة☕",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -979,6 +979,18 @@
   },
   {
     "name": "عدن𐩲𐩵𐩬صنعاء𐩲𐩵𐩬اليمن",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "ملوكۦ❪🇱🇾❫ۦليبيا",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "яιηι",
     "bet": true,
     "gift": true,
     "welcome": true
