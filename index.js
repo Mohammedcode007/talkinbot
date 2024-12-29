@@ -5,6 +5,7 @@ const WebSocket = require('ws');
 const moment = require('moment');  // التأكد من استيراد moment
 const ws_TeBot = require('./ws_TeBot');
 const ws_Rooms = require('./ws_Rooms');
+const { resetPointsAndAssets, getArrayLength } = require('./resetPoints');
 
 const {
     updateLastTimeGift,
@@ -170,3 +171,5 @@ wss.on('listening', () => {
 // Start the connections with existing users
 startConnections();
 startConnectionsBots()
+
+// resetPointsAndAssets()

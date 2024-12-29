@@ -19,7 +19,7 @@
   },
   {
     "name": "egypt",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -73,7 +73,7 @@
   },
   {
     "name": "كوكب♥المجانين",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -493,8 +493,8 @@
   },
   {
     "name": "كريكيت🏏cricket",
-    "bet": true,
-    "gift": true,
+    "bet": false,
+    "gift": false,
     "welcome": true
   },
   {
@@ -691,7 +691,7 @@
   },
   {
     "name": "قصـــة🤍عـشـق",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -775,7 +775,7 @@
   },
   {
     "name": "barsat",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -943,7 +943,7 @@
   },
   {
     "name": "friends🌸",
-    "bet": true,
+    "bet": false,
     "gift": true,
     "welcome": true
   },
@@ -991,6 +991,60 @@
   },
   {
     "name": "яιηι",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "beautiful",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "شتاء🍁",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "fun",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "barish",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "اسم الروم ",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "bogor",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "🌹cutie_girls 🌹",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "🌹cutie_girls🌹",
+    "bet": true,
+    "gift": true,
+    "welcome": true
+  },
+  {
+    "name": "Cricket",
     "bet": true,
     "gift": true,
     "welcome": true

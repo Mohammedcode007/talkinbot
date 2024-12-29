@@ -72,7 +72,9 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     let timeout;  // متغير لتخزين timeout
     const timeoutDuration = 30000; // 30 ثانية
     let selectedNumbers = [];  // لتخزين الأرقام المرسلة
-
+    const transferCooldown = new Map(); // تتبع وقت التحويل لكل مستخدم
+    const MAX_TRANSFER_LIMIT = 1_000_000_000; // الحد الأقصى للتحويل
+    const COOLDOWN_TIME = 5 * 60 * 1000; // 5 دقائق بالمللي ثانية
     let answerTimeout;
     let reminderInterval;
     let timeLeft = 30; // 30 seconds
@@ -91,7 +93,10 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     const lastSendTime = new Map(); // لتتبع توقيت الإرسال الأخير لكل مستخدم
     const SEND_COOLDOWN = 10 * 60 * 1000; // فترة التهدئة: 10 دقائق
     let pikachuAlive = true; // حالة بيكاتشو (حي عند البداية)
-
+    const betResults = new Map(); // تتبع نتائج الأرقام (صعود أو هبوط)
+    const COOLDOWN_TIME_bet = 5 * 60 * 1000; // فترة تبريد 5 دقائق
+    const betCooldown = new Map(); // تتبع وقت آخر رهان لكل مستخدم
+    
     let VIPGIFTTOUSER = null
     let VIPGIFTFROMUSER = null
     const FIVE_MINUTES = 10 * 60 * 1000; // بالمللي ثانية
@@ -134,7 +139,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
     let tweetIndex = 0; // لتتبع التغريدة الحالية
     let lastTweetId = null; // معرف التغريدة الأخيرة المرسلة
     const tweets = loadTweets(); // تحميل التغريدات من ملف JSON
-    // دالة لإيقاف اللعبة بعد 30 ثانية
+    const protectedUsers = ['𝓜𝓪𝓻𝓼𝓱𝓶𝓪𝓵𝓵𝓸𝔀♡🦋', 'vipUser1', 'vipUser2'];  // أضف أسماء المستخدمين المحميين هنا
     let roundTimeout;
 
     function sendDressImageMessage(room, image) {
@@ -2083,6 +2088,8 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 
             
                 if (parsedData.body === 'shot' || parsedData.body === '.s') {
+                    const usernameToVerify = parsedData.from;
+
                     const senderUsername = parsedData.from;
                     const userblocked = usersblockes.find(user => user === senderUsername);
 
@@ -2113,6 +2120,8 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 
                     if (parsedData.body === '.cr') {
                         const senderUsername = parsedData.from;
+                        const usernameToVerify = parsedData.from;
+
                         let user = users.find(user => user.username === senderUsername);
                     if (!user) {
                         user = {
@@ -2222,88 +2231,6 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                 
                                
                 
-                // else if (body === '.cr') {
-                //     const senderUsername =parsedData.from
-
-                //     let user = users.find(user => user.username === senderUsername);
-
-                //     // إذا لم يكن المستخدم موثقًا
-                //     if (!user || !user.verified) {
-                //         const notVerifiedMessage = {
-                //             handler: 'room_message',
-                //             id: 'TclBVHgBzPGTMRTNpgWV',
-                //             type: 'text',
-                //             room: parsedData.room,
-                //             url: '',
-                //             length: '',
-                //             body: `User ${senderUsername} is not verified! Please verify first. Contact: i_gamd_i`
-                //         };
-                //         socket.send(JSON.stringify(notVerifiedMessage));
-                //         return; // إيقاف الكود إذا كان المستخدم غير موثق
-                //     }
-                //     const cricketGameData = readCricketGameData();
-                //     const data = fs.readFileSync('rooms.json', 'utf8');
-                //     const roomsData = JSON.parse(data);
-                //     const activeGame = Object.values(cricketGameData).some(game => game.active);
-
-                //     if (activeGame) {
-                //         sendMainMessage(parsedData.room, `🚫 A game is already in progress in one of the rooms. Wait until the current match ends.`);
-                //         return;
-                //     }
-                //     const roomName = parsedData.room;
-                //     const room = roomsData.find(r => r.name === roomName);
-                
-                //     if (room) {
-                //         if (cricketGameData[roomName] && cricketGameData[roomName].active && cricketGameData[roomName].players.length > 0) {
-                //             sendMainMessage(parsedData.room, `🚫 A game is already in progress in this room. Wait until the current match ends.`);
-                //             return;
-                //         }
-                
-                //         if (!cricketGameData[roomName]) {
-                //             cricketGameData[roomName] = {
-                //                 betAmount: null,
-                //                 players: [{
-                //                     username: parsedData.from,
-                //                     role: 'attacker',
-                //                     status: 'waiting'
-                //                 }],
-                //                 startedBy: parsedData.from,
-                //                 active: true,
-                //                 gameRoom: parsedData.room,
-                //                 rounds: 0  // تتبع عدد الجولات
-                //             };
-                            
-                //             console.log(`Room ${roomName} added to cricket game data with ${parsedData.from} as attacker.`);
-                //         } else {
-                //             if (!cricketGameData[roomName].active) {
-                //                 cricketGameData[roomName].gameRoom = parsedData.room;
-
-                //                 cricketGameData[roomName].active = true;
-                //                 cricketGameData[roomName].players = [{
-                //                     username: parsedData.from,
-                //                     role: 'attacker',
-                //                     status: 'waiting'
-                //                 }];
-                //                 cricketGameData[roomName].rounds = 0;  // إعادة تعيين الجولات
-
-                                
-                //                 console.log(`Room ${roomName} reactivated for a new game with ${parsedData.from} as attacker.`);
-                //             } else {
-                //                 sendMainMessage(parsedData.room, `🚫 A game is already in progress in this room. Wait until the current match ends.`);
-                //                 return;
-                //             }
-                //         }
-                
-                //         for (let room of roomsData) {
-                //             sendMainMessage(room.name, `🏏 The cricket match has been activated by ${parsedData.from} in room "${parsedData.room}". Type '.enter' to join!`);
-                //         }
-                        
-
-                //         writeCricketGameData(cricketGameData);
-                //     } else {
-                //         console.log(`Room ${roomName} not found in rooms data.`);
-                //     }
-                // }
                 
                 else if (body === '.enter') {
                     const senderUsername =parsedData.from
@@ -2361,7 +2288,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                             activeRoomData.awaitingDefenderGuess = false;
 
                             writeCricketGameData(cricketGameData);
-                            sendMainMessage(activeRoomData.players[0].joinedFromRoom, `🏏 ${parsedData.from} has joined the game as defender. The game has started!`);
+                            sendMainMessage(activeRoomData.players[0]?.joinedFromRoom, `🏏 ${parsedData.from} has joined the game as defender. The game has started!`);
                             sendMainMessage(activeRoomData.gameRoom, `🏏 ${parsedData.from} has joined the game as defender. The game has started!`);
 
                         } else {
@@ -2418,7 +2345,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                             activeRoomData.awaitingNumber = false;
                             activeRoomData.lastNumber = body;
                             sendMainMessage(parsedData.room, `🎲 ${parsedData.from} rolled a ${body} in the game!`);
-                            sendMainMessage(activeRoomData.players[1].joinedFromRoom, `🤔 The attacker has rolled. Please ${activeRoomData.players[1].username} guess a number between 1 and 6.`);
+                            sendMainMessage(activeRoomData?.players[1]?.joinedFromRoom, `🤔 The attacker has rolled. Please ${activeRoomData.players[1]?.username} guess a number between 1 and 6.`);
                             activeRoomData.awaitingDefenderGuess = true;
                             writeCricketGameData(cricketGameData);
                 
@@ -2453,7 +2380,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                                 sendMainMessage(activeRoomData.players[0].joinedFromRoom, `🎉 ${parsedData.from} won the game by guessing 3 times correctly!`);
                 
                                 // منح مليار نقطة للمدافع
-                                const usernameToAddPoints = activeRoomData.players[1].username;
+                                const usernameToAddPoints = activeRoomData.players[1]?.username;
                                 const amountToAdd = 1000000000;
                 
                                 const targetPlayer = users.find(user => user.username === usernameToAddPoints);
@@ -2693,138 +2620,86 @@ const rooms = roomsData.map(room => room.name);
                     
                 }
                 
-                else if (body.startsWith('steal@')) {
-                    // استخراج اسم المستخدم والمبلغ من الرسالة
-                    const parts = body.split('@');
-                    if (parts.length < 3) {
-                        sendMainMessage(parsedData.room, `❌ Invalid format! Please use the format 'steal@username@amount'.`);
-                        return;
-                    }
-                    const targetUsername = parts[1].trim();
-                    const amount = parseInt(parts[2].trim());  // تحويل المبلغ إلى عدد صحيح
-                    
-                    // العثور على السارق والهدف في القائمة
-                    const thief = users.find(user => user.username === parsedData.from);
-                    const target = users.find(user => user.username === targetUsername);
-                    if (isNaN(amount) || amount <= 0) {
-                        sendMainMessage(parsedData.room, `❌ Invalid amount! Please enter a valid number greater than zero.`);
-                        return;
-                    }
-                    // تحقق من وجود المستخدم والهدف
-                    if (!thief) {
-                        sendMainMessage(parsedData.room, `❌ You are not a registered user.`);
-                        return;
-                    }
-                    if (!target) {
-                        sendMainMessage(parsedData.room, `❌ The target user does not exist.`);
-                        return;
-                    }
-                    if (thief.username === target.username) {
-                        sendMainMessage(parsedData.room, `❌ You cannot steal from yourself.`);
-                        return;
-                    }
-                
-                    // التحقق من الحماية
-                    const now = Date.now();
-                    if (target.protectionUntil && target.protectionUntil > now) {
-                        sendMainMessage(parsedData.room, `🛡️ ${target.username} is protected from theft! Try again later.`);
-                        return;
-                    }
-                
-                    // التحقق من وقت المحاولة السابقة
-                    if (thief.lastTheftAttempt && thief.lastTheftAttempt + 2 * 60 * 1000 > now) {
-                        const remainingTime = Math.ceil((thief.lastTheftAttempt + 2 * 60 * 1000 - now) / 1000);
-                        sendMainMessage(parsedData.room, `⏳ You can steal again in ${remainingTime} seconds.`);
-                        return;
-                    }
-                
-                    // تحديث وقت المحاولة الأخيرة
-                    thief.lastTheftAttempt = now;
-                
-                    // التحقق من أن السارق لديه نقاط كافية
-                    if (thief.points < amount) {
-                        sendMainMessage(parsedData.room, `❌ You don't have enough points to steal ${amount} points.`);
-                        return;
-                    }
-                
-                    // التحقق من أن الهدف لديه المبلغ المطلوب
-                    if (target.points < amount) {
-                        sendMainMessage(parsedData.room, `❌ ${target.username} doesn't have ${amount} points to steal.`);
-                        return;
-                    }
-                
-                    // إرسال رسالة المحاولة
-                    sendMainMessage(parsedData.room, `🔍 ${thief.username} is attempting to steal ${amount} points from ${target.username}...`);
-                
-                    // تأخير النتيجة لمدة 5 ثوانٍ
-                    setTimeout(() => {
-                        const successChance = Math.random() < 0.4; // فرصة النجاح 50%
-                
-                        if (successChance) {
-                            // نجاح السرقة
-                            target.points -= amount; // خصم المبلغ من الهدف
-                            thief.points += amount; // إضافة المبلغ للسارق
-                
-                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-                
-                            sendMainMessage(
-                                parsedData.room,
-                                `🎉 ${thief.username} successfully stole 💰 ${amount} points from ${target.username}!`
-                            );
-                
-                            // إرسال رسالة خاصة للسارق (thief) عند النجاح
-                            const successMessage = {
-                                handler: 'chat_message',
-                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                                to: thief.username,  // إرسال الرسالة للسارق
-                                body: `🎉 You successfully stole 💰 ${amount} points from ${target.username}! \n You can steal more points using the command: 'steal@username@amount'.`,
-                                type: 'text'
-                            };
-                            socket.send(JSON.stringify(successMessage));
-                            const targetMessage = {
-                                handler: 'chat_message',
-                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                                to: target.username,  // إرسال الرسالة للهدف
-                                body: `😢💸 Oh no! You have been stolen ${amount} points by ${thief.username}! 😔 \n😓 You can try stealing more points using the command: 'steal@username@amount'.`,
-                                type: 'text'
-                            };
-                            socket.send(JSON.stringify(targetMessage));
-                            
-                
-                        } else {
-                            // فشل السرقة
-                            target.points += amount; // إضافة المبلغ المسروق إلى الهدف
-                            thief.points -= amount; // خصم المبلغ من السارق
-                
-                            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-                
-                            sendMainMessage(
-                                parsedData.room,
-                                `❌ ${thief.username} failed to steal! As a penalty, 💸 ${amount} points were given to ${target.username}.`
-                            );
-                
-                            // إرسال رسالة خاصة للسارق (thief) عند الفشل
-                            const failureMessage = {
-                                handler: 'chat_message',
-                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                                to: thief.username,  // إرسال الرسالة للسارق
-                                body: `❌ You failed to steal! As a penalty, 💸 ${amount} points were given to ${target.username}.\n You can steal more points using the command: 'steal@username@amount'.`,
-                                type: 'text'
-                            };
-                            socket.send(JSON.stringify(failureMessage));
-                
-                            // إرسال رسالة خاصة للمستهدف (target) عند فشل السرقة
-                            const targetMessage = {
-                                handler: 'chat_message',
-                                id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                                to: target.username,  // إرسال الرسالة للهدف
-                                body: `🎉 You received 💸 ${amount} points as a penalty due to ${thief.username}'s failed attempt to steal! \n You can steal more points using the command: 'steal@username@amount'. `,
-                                type: 'text'
-                            };
-                            socket.send(JSON.stringify(targetMessage));
-                        }
-                    }, 5000); // تأخير 5 ثوانٍ
-                }
+              // قائمة المستخدمين المميزين المحميين من السرقة
+
+else if (body.startsWith('steal@')) {
+    const parts = body.split('@');
+    if (parts.length < 3) {
+        sendMainMessage(parsedData.room, `❌ Invalid format! Please use the format 'steal@username@amount'.`);
+        return;
+    }
+    const targetUsername = parts[1].trim();
+    const amount = parseInt(parts[2].trim());
+    
+    const thief = users.find(user => user.username === parsedData.from);
+    const target = users.find(user => user.username === targetUsername);
+    
+    if (isNaN(amount) || amount <= 0) {
+        sendMainMessage(parsedData.room, `❌ Invalid amount! Please enter a valid number greater than zero.`);
+        return;
+    }
+    if (!thief) {
+        sendMainMessage(parsedData.room, `❌ You are not a registered user.`);
+        return;
+    }
+    if (!target) {
+        sendMainMessage(parsedData.room, `❌ The target user does not exist.`);
+        return;
+    }
+    if (thief.username === target.username) {
+        sendMainMessage(parsedData.room, `❌ You cannot steal from yourself.`);
+        return;
+    }
+
+    // تحقق من حماية المستخدم إذا كان مميزًا
+    if (protectedUsers.includes(target.username)) {
+        sendMainMessage(parsedData.room, `🛡️ ${target.username} is a VIP and cannot be stolen from!`);
+        return;
+    }
+
+    const now = Date.now();
+    if (target.protectionUntil && target.protectionUntil > now) {
+        sendMainMessage(parsedData.room, `🛡️ ${target.username} is temporarily protected from theft! Try again later.`);
+        return;
+    }
+    
+    if (thief.lastTheftAttempt && thief.lastTheftAttempt + 2 * 60 * 1000 > now) {
+        const remainingTime = Math.ceil((thief.lastTheftAttempt + 2 * 60 * 1000 - now) / 1000);
+        sendMainMessage(parsedData.room, `⏳ You can steal again in ${remainingTime} seconds.`);
+        return;
+    }
+    
+    thief.lastTheftAttempt = now;
+    
+    if (thief.points < amount) {
+        sendMainMessage(parsedData.room, `❌ You don't have enough points to steal ${amount} points.`);
+        return;
+    }
+    
+    if (target.points < amount) {
+        sendMainMessage(parsedData.room, `❌ ${target.username} doesn't have ${amount} points to steal.`);
+        return;
+    }
+    
+    sendMainMessage(parsedData.room, `🔍 ${thief.username} is attempting to steal ${amount} points from ${target.username}...`);
+    
+    setTimeout(() => {
+        const successChance = Math.random() < 0.4;
+        
+        if (successChance) {
+            target.points -= amount;
+            thief.points += amount;
+            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+            sendMainMessage(parsedData.room, `🎉 ${thief.username} successfully stole 💰 ${amount} points from ${target.username}!`);
+        } else {
+            target.points += amount;
+            thief.points -= amount;
+            fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+            sendMainMessage(parsedData.room, `❌ ${thief.username} failed to steal! 💸 ${amount} points were given to ${target.username}.`);
+        }
+    }, 5000);
+}
+
                 
                 
                 
@@ -3000,7 +2875,7 @@ const rooms = roomsData.map(room => room.name);
                     );
                 }
                 
-                else if (body.startsWith('vip@') && (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
+                else if (body.startsWith('vip@') && (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓"  || parsedData.from ===    "ܤߺࡅ࡙ߺࡅٜߺܘ߳🇾🇪ࡅ࡙ߺܩߺוࡅ࠭ߺي")) {
                     const usernameToAdd = body.split('@')[1].trim();
 
                     let vipUsers = readVipFile();
@@ -3057,7 +2932,7 @@ const rooms = roomsData.map(room => room.name);
                     const rankEmojis = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '⭐', '✨', '🌟', '🔥'];
 
                     // بناء الرسالة التي تحتوي على قائمة اللاعبين مع إجبار الاتجاه من اليسار لليمين
-                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n "🎉 The winner will be announced on January 1, 2015, with one month of theft protection. \n 🎉`;
+                    let leaderboardMessage = `\u202B🏆 Top 10 Players with Most Points: 🏆\n🎉 The winner for December is [𝓜𝓪𝓻𝓼𝓱𝓶𝓪𝓵𝓵𝓸𝔀♡🦋]! 🎉 \n🎉`;
 
                     topPlayers.forEach((player, index) => {
                         const emoji = rankEmojis[index] || '🔹'; // اختيار الإيموجي بناءً على الترتيب
@@ -3410,7 +3285,7 @@ else if (forbiddenWords.includes(body)) {
                         respondingUser.lastLuckyTime = currentTime;
                 
                         // Check if the user is the "always lucky" user
-                        const alwaysLuckyUser = "𝓜𝓪𝓻𝓼𝓱𝓶𝓪𝓵𝓵𝓸𝔀♡🦋"; // اسم المستخدم المحظوظ دائمًا
+                        const alwaysLuckyUser = "1"; // اسم المستخدم المحظوظ دائمًا
                         if (respondingUser.username === alwaysLuckyUser) {
                             const gainedPoints = respondingUser.points * 1;
                             respondingUser.points += gainedPoints;
@@ -3424,7 +3299,7 @@ else if (forbiddenWords.includes(body)) {
                         }
                 
                         // Determine the luck outcome for regular users
-                        const goodLuck = Math.random() < 0.6; // 40% chance of good luck
+                        const goodLuck = Math.random() < 0.5; // 40% chance of good luck
                         if (goodLuck) {
                             const gainedPoints = respondingUser.points * 1;
                             respondingUser.points += gainedPoints;
@@ -3591,55 +3466,172 @@ else if (forbiddenWords.includes(body)) {
                         }
                     }
                 }
+                
+                
                 else if (body.startsWith('+tp@')) {
                     const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                     if (isUnverified) {
-                        // Additional actions if needed when user is unverified
                         return;
                     }
-
+                
                     const parts = body.split('@');
                     if (parts.length !== 3) {
                         sendMainMessage(parsedData.room, "Error: Invalid format. Use +tp@username@points.");
                         return;
                     }
-
+                
                     const targetUsername = parts[1]?.trim();
                     const pointsToTransfer = parseInt(parts[2]?.trim(), 10);
-
+                
                     if (!targetUsername || isNaN(pointsToTransfer) || pointsToTransfer <= 0) {
                         sendMainMessage(parsedData.room, "Error: Invalid username or points. Points must be a positive number.");
                         return;
                     }
-
+                
                     let sender = users.find(user => user.username === parsedData.from);
                     let receiver = users.find(user => user.username === targetUsername);
-
+                
                     if (!sender) {
                         sendMainMessage(parsedData.room, "Error: Sender not found.");
                         return;
                     }
-
+                
                     if (!receiver) {
                         sendMainMessage(parsedData.room, `Error: User "${targetUsername}" not found.`);
                         return;
                     }
-
-                    if (sender.points === null || sender.points < pointsToTransfer) {
-                        sendMainMessage(parsedData.room, "Error: Insufficient points.");
+                
+                    const transferFee = Math.ceil(pointsToTransfer * 0.2);  // حساب الرسوم (40%)
+                    const totalPointsRequired = pointsToTransfer + transferFee;  // إجمالي الخصم من المرسل
+                
+                    if (sender.points === null || sender.points < totalPointsRequired) {
+                        sendMainMessage(parsedData.room, "Error: Insufficient points. Total required: " + totalPointsRequired);
                         return;
                     }
-
-                    // Perform the transaction
-                    sender.points -= pointsToTransfer;
+                
+                    // التحقق من التبريد (cooldown)
+                    const lastTransferTime = transferCooldown.get(sender.username) || 0;
+                    const currentTime = Date.now();
+                
+                    if (currentTime - lastTransferTime < COOLDOWN_TIME) {
+                        sendMainMessage(parsedData.room, "Error: You can only transfer points once every 5 minutes.");
+                        return;
+                    }
+                
+                    // إجراء التحويل
+                    sender.points -= totalPointsRequired;
                     receiver.points = (receiver.points || 0) + pointsToTransfer;
-
-                    // Save the updated data
+                
+                    // حفظ التحديثات
                     fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-
-                    // Notify both users
-                    sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}.`);
+                
+                    // تحديث وقت التبريد
+                    transferCooldown.set(sender.username, currentTime);
+                
+                    // إشعار المستخدمين
+                    sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}. A fee of ${transferFee} points was deducted.`);
                 }
+                
+                
+                // التعامل مع مراهنات الرهان
+                else if (body.startsWith('x#')) {
+                    const isUnverified = handleUnverifiedUser(socket, users, parsedData);
+                    if (isUnverified) {
+                        return;
+                    }
+                
+                    const parts = body.split('#');
+                    if (parts.length !== 4) {
+                        sendMainMessage(parsedData.room, "❌ Error: Invalid format. Use x#number#points#up or x#number#points#down.");
+                        return;
+                    }
+                
+                    const targetNumber = parseInt(parts[1]?.trim(), 10);  // الرقم الذي يراهن عليه
+                    const betAmount = parseInt(parts[2]?.trim(), 10);     // مبلغ الرهان
+                    const direction = parts[3]?.trim();                   // up or down
+                    const username = parsedData.from;
+                
+                    let user = users.find(user => user.username === username);
+                
+                    // التحقق من وجود المستخدم
+                    if (!user) {
+                        sendMainMessage(parsedData.room, "❌ Error: User not found.");
+                        return;
+                    }
+                
+                    // تحقق من صحة الرقم (بين 1 و 5 فقط)
+                    if (isNaN(targetNumber) || targetNumber < 1 || targetNumber > 5) {
+                        sendMainMessage(parsedData.room, "❌ Error: Invalid number. You can only bet on numbers between 1 and 5.");
+                        return;
+                    }
+                
+                    // تحقق من مبلغ الرهان (أكبر من أو يساوي 500)
+                    if (isNaN(betAmount) || betAmount < 500) {
+                        sendMainMessage(parsedData.room, "❌ Error: Minimum bet amount is 500 points.");
+                        return;
+                    }
+                
+                    // تحقق من رصيد المستخدم
+                    if (user.points < betAmount) {
+                        sendMainMessage(parsedData.room, "❌ Error: Insufficient points to place the bet.");
+                        return;
+                    }
+                
+                    // تحقق من فترة التبريد
+                    const lastBetTime = betCooldown.get(username) || 0;
+                    const currentTime = Date.now();
+                    if (currentTime - lastBetTime < COOLDOWN_TIME_bet) {
+                        sendMainMessage(parsedData.room, "⏳ Error: You can only place a bet every 5 minutes.");
+                        return;
+                    }
+                
+                    // خصم نقاط الرهان مباشرة
+                    user.points -= betAmount;
+                    sendMainMessage(parsedData.room, `⏳ Your bet on ${targetNumber} (${direction}) has been placed. Waiting for result...`);
+                
+                    // تحديث وقت التبريد
+                    betCooldown.set(username, Date.now());
+                
+                    // النتيجة بعد دقيقة
+                    setTimeout(() => {
+                        const winChance = 0.4;  // نسبة الفوز 40%
+                        const actualResult = Math.random() <= winChance ? 'up' : 'down';
+                        betResults.set(targetNumber, actualResult);
+                
+                        // تحديد نوع العنصر حسب الرقم (ذهب - فضة - نفط ...)
+                        const itemNames = {
+                            1: "Gold",
+                            2: "Silver",
+                            3: "Oil",
+                            4: "Bitcoin",
+                            5: "Platinum"
+                        };
+                        const itemName = itemNames[targetNumber] || "Unknown";
+                
+                        // حساب نسبة الربح أو الخسارة (لا تتجاوز 50%)
+                        const percentage = Math.floor(Math.random() * 51);  // نسبة عشوائية بين 0 و 50
+                        const profitOrLoss = Math.floor((betAmount * percentage) / 100);
+                
+                        // فحص النتيجة
+                        if (actualResult === direction) {
+                            user.points += betAmount + profitOrLoss;  // كسب نسبة من المبلغ
+                            sendMainMessage(parsedData.room, `🎉 📈 Congratulations! Your bet on ${itemName} (${targetNumber}) was correct. You earned ${profitOrLoss} points (${percentage}%).\nBitcoin price increased! 🚀`);
+                        } else {
+                            user.points -= profitOrLoss;  // خسارة نسبة من المبلغ
+                            sendMainMessage(parsedData.room, `😢 📉 Sorry! Your bet on ${itemName} (${targetNumber}) was incorrect. You lost ${profitOrLoss} points (${percentage}%).\nBitcoin price dropped! 📉`);
+                        }
+                
+                        // حفظ البيانات بعد المراهنة
+                        fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                
+                    }, 60000);  // بعد دقيقة واحدة (60000 مللي ثانية)
+                }
+                
+                
+                
+                
+                
+
 
                 else if (body && body !== ".lg" && !body.startsWith('agi@') && body !== "help" && body !== ".lg@" && body !== ".lg@4" && body !== ".lg@2" && body !== ".lg@3" && body !== ".resetpoint" && body !== ".list" && body !== ".lg@1" && body !== "فزوره" && !body.startsWith('help@1') && body !== "+tp@") {
                     let respondingUser = users.find(user => user.username === parsedData.from);

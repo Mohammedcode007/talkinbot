@@ -344,7 +344,7 @@
     ],
     "startedBy": "",
     "active": false,
-    "gameRoom": "",
+    "gameRoom": "𝕋𝕙𝕖_𝕆𝕣𝕚𝕘𝕚𝕟𝕒𝕝𝕤_✨",
     "rounds": 0
   },
   "𝑰𝑹𝑨𝐐_🇮🇶": {
@@ -819,7 +819,7 @@
     "rounds": 0,
     "awaitingNumber": true,
     "awaitingDefenderGuess": false,
-    "lastNumber": "4"
+    "lastNumber": "2"
   },
   "snack": {
     "betAmount": null,
@@ -1032,7 +1032,7 @@
     "rounds": 0,
     "awaitingNumber": true,
     "awaitingDefenderGuess": false,
-    "lastNumber": "4"
+    "lastNumber": "6"
   },
   "مؤنســـــــات👩‍🦳الغــــــاليات": {
     "betAmount": null,
@@ -1664,8 +1664,11 @@
     ],
     "startedBy": "",
     "active": false,
-    "gameRoom": "",
-    "rounds": 0
+    "gameRoom": "friends4u",
+    "rounds": 0,
+    "awaitingNumber": true,
+    "awaitingDefenderGuess": false,
+    "lastNumber": "5"
   },
   "اليمن.حضرموت": {
     "betAmount": null,
@@ -1806,9 +1809,9 @@
     "active": false,
     "gameRoom": "🌺friend🌺",
     "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "5"
+    "awaitingNumber": false,
+    "awaitingDefenderGuess": true,
+    "lastNumber": "6"
   },
   "barsat": {
     "betAmount": null,
@@ -1840,9 +1843,9 @@
     "active": false,
     "gameRoom": "♥️Iceland♥️",
     "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "4"
+    "awaitingNumber": false,
+    "awaitingDefenderGuess": true,
+    "lastNumber": "1"
   },
   "فلسطين♡احلى♡عالم": {
     "betAmount": null,
@@ -2353,11 +2356,143 @@
     "active": false,
     "gameRoom": "ضحكة_مصري",
     "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "1"
+    "awaitingNumber": false,
+    "awaitingDefenderGuess": true,
+    "lastNumber": "4"
   },
   "cinta": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "cinta",
+    "rounds": 0,
+    "awaitingNumber": true,
+    "awaitingDefenderGuess": false,
+    "lastNumber": "5"
+  },
+  "beautiful": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "شتاء🍁": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "fun": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "barish": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "اسم الروم ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "bogor": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "bogor",
+    "rounds": 0,
+    "awaitingNumber": true,
+    "awaitingDefenderGuess": false,
+    "lastNumber": "5"
+  },
+  "🌹cutie_girls 🌹": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "🌹cutie_girls🌹": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Cricket": {
     "betAmount": null,
     "players": [
       {

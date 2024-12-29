@@ -84,23 +84,10 @@
     "active": false
   },
   "chat_lovers": {
-    "betAmount": 10000000000,
-    "players": [
-      {
-        "username": "☽",
-        "betAmount": 10000000000
-      },
-      {
-        "username": "anushy",
-        "betAmount": 10000000000
-      },
-      {
-        "username": "trex",
-        "betAmount": 10000000000
-      }
-    ],
-    "startedBy": "☽",
-    "active": true
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
   },
   "funclub": {
     "betAmount": null,
@@ -812,6 +799,102 @@
       {
         "username": "✿яι∂α✿",
         "betAmount": null
+      },
+      {
+        "username": "ܤߺࡅ࡙ߺࡅٜߺܘ߳🇾🇪ࡅ࡙ߺܩߺוࡅ࠭ߺي",
+        "betAmount": null
+      },
+      {
+        "username": "cinday",
+        "betAmount": null
+      },
+      {
+        "username": "๖ۣۜul๖ۣۜ",
+        "betAmount": null
+      },
+      {
+        "username": "-samir-",
+        "betAmount": null
+      },
+      {
+        "username": "4",
+        "betAmount": null
+      },
+      {
+        "username": "pobia",
+        "betAmount": null
+      },
+      {
+        "username": "blue_leopard",
+        "betAmount": null
+      },
+      {
+        "username": "can",
+        "betAmount": null
+      },
+      {
+        "username": "𝖉𝖊_𝖒𝖔𝖔𝖓𝖑𝖎𝖌𝖍𝖙",
+        "betAmount": null
+      },
+      {
+        "username": "kayla",
+        "betAmount": null
+      },
+      {
+        "username": "𝆺𝅥𓅃ﯢٰسـ♔ـــيِـم𓅃𝆺𝅥",
+        "betAmount": null
+      },
+      {
+        "username": "✧؏ـﹻۦ۬ـقـﹻۦ۬ـيڷ✧",
+        "betAmount": null
+      },
+      {
+        "username": "❥جـٌ🍬ـﯢٰ୭̯گـِـلـّيِـتـُـآآ❥",
+        "betAmount": null
+      },
+      {
+        "username": "powerfulll",
+        "betAmount": null
+      },
+      {
+        "username": "aqi",
+        "betAmount": null
+      },
+      {
+        "username": "🧚‍♀Řιή𝕚🧚‍♀",
+        "betAmount": null
+      },
+      {
+        "username": "izna.",
+        "betAmount": null
+      },
+      {
+        "username": "natar",
+        "betAmount": null
+      },
+      {
+        "username": "لـُـــۆگهہ",
+        "betAmount": null
+      },
+      {
+        "username": "ضحي",
+        "betAmount": null
+      },
+      {
+        "username": ".miiko.",
+        "betAmount": null
+      },
+      {
+        "username": "ғʟɪʀᴛ",
+        "betAmount": null
+      },
+      {
+        "username": "korong-balado",
+        "betAmount": null
+      },
+      {
+        "username": "tarjono",
+        "betAmount": null
       }
     ],
     "startedBy": "خالدالنهدي811",
@@ -903,6 +986,24 @@
     "active": false
   },
   "كوكب♥المجانين": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "palestine": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "barish": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "fun": {
     "betAmount": null,
     "players": [],
     "startedBy": null,
