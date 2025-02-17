@@ -15,7 +15,6 @@ function readCricketGameData() {
         if (err.code === 'ENOENT') {
             // إنشاء ملف فارغ إذا لم يكن موجودًا
             fs.writeFileSync(filePath, '{}', 'utf8');
-            console.log('Created new cricket_game.json file.');
             return {};  // إرجاع هيكل بيانات فارغ في حال كان الملف غير موجود
         } else if (err.name === 'SyntaxError') {
             console.error('Error parsing cricket game data. Invalid JSON format.');

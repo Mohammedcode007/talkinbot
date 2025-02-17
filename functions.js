@@ -7,6 +7,8 @@ const moment = require('moment');  // التأكد من استيراد moment
 
 // Define the file path for storing login data
 const loginDataFilePath = path.join(__dirname, 'users.json');
+const filePathSearch = 'vipSerachProfile.json'; // تأكد من أن اسم الملف صحيح وموجود
+
 const tebot = path.join(__dirname, 'loginData.json');
 const rooms = path.join(__dirname, 'rooms.json');
 const USERS_FILE_PATH = path.join(__dirname, 'verifyusers.json');
@@ -61,6 +63,14 @@ function startSendingSpecMessage(socket, users, parsedData) {
 function readVipFile() {
     try {
         const data = fs.readFileSync('vip.json', 'utf-8');
+        return JSON.parse(data);
+    } catch (error) {
+        return [];
+    }
+}
+function readVipSearchFile() {
+    try {
+        const data = fs.readFileSync('vipSerachProfile.json', 'utf-8');
         return JSON.parse(data);
     } catch (error) {
         console.log('Error reading vip.json, initializing as empty:', error);
@@ -279,7 +289,6 @@ function updateLastTimeGift(username, currentTime) {
             if (!user.lasttimegift || moment().diff(moment(user.lasttimegift), 'seconds') >= 30) {
                 user.lasttimegift = currentTime;  // حفظ الوقت في `lasttimegift`
                 fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-                console.log(`Successfully updated lasttimegift for ${username}`);
                 
                 // حذف `lasttimegift` بعد 30 ثانية
                 setTimeout(() => {
@@ -458,9 +467,7 @@ const addUserToMasterBot = (username) => {
         if (!usersInMasterBot.includes(username)) {
             usersInMasterBot.push(username);
             fs.writeFileSync('masterbot.json', JSON.stringify(usersInMasterBot, null, 2));
-            console.log(`User ${username} added to masterbot.`);
         } else {
-            console.log(`User ${username} is already in masterbot.`);
         }
     } catch (error) {
         console.error('Error adding user to masterbot:', error);
@@ -519,7 +526,7 @@ const getPuzzles = () => {
     });
 };
 
-function readLoginDataTeBot() {
+function readLoginDatatebot() {
     try {
         if (fs.existsSync(tebot)) {
             const rawData = fs.readFileSync(tebot, 'utf8');
@@ -562,9 +569,7 @@ function saveRoom(room) {
         if (!roomExists) {
             existingRooms.push(room); // Add new room object
             fs.writeFileSync(rooms, JSON.stringify(existingRooms, null, 2));
-            console.log('Room saved successfully to loginData.json');
         } else {
-            console.log('Duplicate room found. Skipping save.');
         }
     } catch (error) {
         console.error('Error writing room to file:', error);
@@ -590,9 +595,7 @@ function deleteRoomName(roomName) {
             existingRooms.splice(roomIndex, 1);
             // Save the updated rooms array back to the file
             fs.writeFileSync(rooms, JSON.stringify(existingRooms, null, 2));
-            console.log(`Room with name "${roomName}" deleted from loginData.json`);
         } else {
-            console.log(`Room with name "${roomName}" not found. No deletion performed.`);
         }
     } catch (error) {
         console.error('Error deleting room name from file:', error);
@@ -643,6 +646,36 @@ function saveLoginData(loginData) {
     }
 }
 
+function addUser(newUser) {
+    // قراءة الملف الحالي
+    fs.readFile(filePathSearch, 'utf8', (err, data) => {
+        if (err) {
+            console.error('خطأ في قراءة الملف:', err);
+            return;
+        }
+        
+        let users = [];
+        try {
+            users = JSON.parse(data); // تحويل النص إلى JSON
+        } catch (parseError) {
+            console.error('خطأ في تحليل JSON:', parseError);
+            return;
+        }
+        
+        users.push(newUser); // إضافة المستخدم الجديد
+        
+        // كتابة التحديثات إلى الملف
+        fs.writeFile(filePathSearch, JSON.stringify(users, null, 2), 'utf8', (writeErr) => {
+            if (writeErr) {
+                console.error('خطأ في كتابة الملف:', writeErr);
+            } else {
+                console.log('تمت إضافة المستخدم بنجاح!');
+            }
+        });
+    });
+}
+
+
 
 
 function getRandomEmoji() {
@@ -663,9 +696,10 @@ module.exports = {
     deleteUserFromFile,
     deleteRoomName,
     readVipFile,
+    readVipSearchFile,
     writeVipFile,
     saveRoom,
-    readLoginDataTeBot,
+    readLoginDatatebot,
     isUserInMasterBot,
     readLoginDataRooms,
     removeUserFromMasterBot,
@@ -678,6 +712,7 @@ module.exports = {
     writeBlockedUsers,
     readGameData,
     canSendGift,
+    addUser,
     addUserToMasterBot,
     writeUsersToFile,
     removeLastTimeGift,

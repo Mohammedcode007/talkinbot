@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const WebSocket = require('ws');
 const moment = require('moment');  // التأكد من استيراد moment
-const ws_TeBot = require('./ws_TeBot');
+const ws_tebot = require('./ws_tebot');
 const ws_Rooms = require('./ws_Rooms');
 const { resetPointsAndAssets, getArrayLength } = require('./resetPoints');
 
@@ -14,7 +14,7 @@ const {
     deleteUserFromFile,
     deleteRoomName,
     saveRoomName,
-    readLoginDataTeBot,
+    readLoginDatatebot,
     isUserInMasterBot,
     readLoginDataRooms,
     removeUserFromMasterBot,
@@ -53,20 +53,18 @@ const {
 
 // Start WebSocket connection for users in the JSON file
 async function startConnections() {
-    const users = await readLoginDataTeBot();
+    const users = await readLoginDatatebot();
 
     if (users.length === 0) {
-        console.log('No users found in the JSON file.');
         return;
     }
-    ws_TeBot({ username: 'tebot', password: '12345678', roomName: 'shot' });
+    ws_tebot({ username: 'tebot', password: 'mohammed--5612a', roomName: 'shot' });
 
 
     users.forEach(user => {
         if (user.username && user.password && user.roomName) {
-            // ws_TeBot({ username: user.username, password: user.password, roomName: user.roomName });
+            // ws_tebot({ username: user.username, password: user.password, roomName: user.roomName });
         } else {
-            console.log('User data is missing username, password, or roomName');
         }
     });
 }
@@ -80,16 +78,14 @@ async function startConnectionsBots() {
         console.log('No rooms found in the JSON file.');
         return;
     }
-    ws_Rooms({ username: 'tebot', password: '12345678', roomName: '' });
+    ws_Rooms({ username: 'tebot', password: 'mohammed--5612a', roomName: '' });
 
     // التحقق من الغرف التي لم ينضم إليها البوت بعد
     rooms.forEach(room => {
         if (room && !joinedRooms.includes(room)) {
-            console.log(`Joining room: ${room}`);
-            // ws_Rooms({ username: 'tebot', password: '12345678', roomName: room });
+            // ws_Rooms({ username: 'tebot', password: 'mohammed--5612a', roomName: room });
             joinedRooms.push(room); // إضافة الغرفة إلى قائمة الغرف المنضمة
         } else if (joinedRooms.includes(room)) {
-            console.log(`Bot already joined room: ${room}`);
         } else {
             console.log('User data is missing username, password, or roomName');
         }

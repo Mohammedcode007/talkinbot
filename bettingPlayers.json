@@ -24,10 +24,15 @@
     "active": false
   },
   "كوكاكولآ": {
-    "betAmount": null,
-    "players": [],
-    "startedBy": null,
-    "active": false
+    "betAmount": 666666666,
+    "players": [
+      {
+        "username": "ℎǎʑҽϻ♣ḱǎj",
+        "betAmount": 666666666
+      }
+    ],
+    "startedBy": "ℎǎʑҽϻ♣ḱǎj",
+    "active": true
   },
   "كـافيـه♨️رآقـي": {
     "betAmount": null,
@@ -91,9 +96,158 @@
   },
   "funclub": {
     "betAmount": null,
-    "players": [],
-    "startedBy": null,
-    "active": false
+    "players": [
+      {
+        "username": "moisturizer",
+        "betAmount": null
+      },
+      {
+        "username": "яιηι",
+        "betAmount": null
+      },
+      {
+        "username": "om",
+        "betAmount": null
+      },
+      {
+        "username": "bintang",
+        "betAmount": null
+      },
+      {
+        "username": "latte",
+        "betAmount": null
+      },
+      {
+        "username": "dying_fetus",
+        "betAmount": null
+      },
+      {
+        "username": "areesha.",
+        "betAmount": null
+      },
+      {
+        "username": "ᗫ",
+        "betAmount": null
+      },
+      {
+        "username": "ℎǎʑҽϻ♣ḱǎj",
+        "betAmount": null
+      },
+      {
+        "username": "التيفاحه",
+        "betAmount": null
+      },
+      {
+        "username": "𝗌𝗁𝗂𝗇𝖾",
+        "betAmount": null
+      },
+      {
+        "username": "مـ❣ـہولَآنـ❣ـہآ",
+        "betAmount": null
+      },
+      {
+        "username": "kavísh",
+        "betAmount": null
+      },
+      {
+        "username": "saprimen",
+        "betAmount": null
+      },
+      {
+        "username": "✨ᴊαყɳꫀ✨𝆺𝅥⃝🤍🪽",
+        "betAmount": null
+      },
+      {
+        "username": "نٱ؏ـمۂ.ٱݪـ؏ـو⃔د𝆕يٰۧاسـيٰۧډهٰ̐ہ𝆕ٱݪمـ⃪ـݪٱمحᩚ.",
+        "betAmount": null
+      },
+      {
+        "username": "ـ•♪•ـزهـۦــايــــمرـ•♪•ـ",
+        "betAmount": null
+      },
+      {
+        "username": "hell",
+        "betAmount": null
+      },
+      {
+        "username": "d¹",
+        "betAmount": null
+      },
+      {
+        "username": "🪷ᵛ͢ᵎᵖ",
+        "betAmount": null
+      },
+      {
+        "username": "🅰🇳឵🅰",
+        "betAmount": null
+      },
+      {
+        "username": "flower24",
+        "betAmount": null
+      },
+      {
+        "username": "mubinkhan",
+        "betAmount": null
+      },
+      {
+        "username": "اا▒▓█جـنـگيـ°♠°ـزخآن█▓▒اا",
+        "betAmount": null
+      },
+      {
+        "username": "daisy.",
+        "betAmount": null
+      },
+      {
+        "username": "hamii",
+        "betAmount": null
+      },
+      {
+        "username": "غرو♡انثي♡ور",
+        "betAmount": null
+      },
+      {
+        "username": "卂ْْْْْ",
+        "betAmount": null
+      },
+      {
+        "username": "__________nickname__________",
+        "betAmount": null
+      },
+      {
+        "username": "kamli-kuri",
+        "betAmount": null
+      },
+      {
+        "username": "saly_noor",
+        "betAmount": null
+      },
+      {
+        "username": ".twist.",
+        "betAmount": null
+      },
+      {
+        "username": "ᵗʰᵉ𝖑𝖆𝖘𝖙𝔼𝕄ℙℝ𝔼𝕊𝕊♟︎",
+        "betAmount": null
+      },
+      {
+        "username": "forbid",
+        "betAmount": null
+      },
+      {
+        "username": "unsign",
+        "betAmount": null
+      },
+      {
+        "username": "❌͏",
+        "betAmount": null
+      },
+      {
+        "username": "jαnαn",
+        "betAmount": null
+      }
+    ],
+    "startedBy": "moisturizer",
+    "active": true
   },
   "🏰♥️🇮🇩": {
     "betAmount": null,
@@ -247,9 +401,14 @@
   },
   "تفَآصيَلُッ": {
     "betAmount": null,
-    "players": [],
-    "startedBy": null,
-    "active": false
+    "players": [
+      {
+        "username": "឵🤗឵",
+        "betAmount": null
+      }
+    ],
+    "startedBy": "឵🤗឵",
+    "active": true
   },
   "➹روقــــآن➛♬☕": {
     "betAmount": null,
@@ -895,10 +1054,22 @@
       {
         "username": "tarjono",
         "betAmount": null
+      },
+      {
+        "username": "pertalite",
+        "betAmount": null
+      },
+      {
+        "username": "вяσкєи",
+        "betAmount": null
+      },
+      {
+        "username": "غرو♡انثي♡ور",
+        "betAmount": null
       }
     ],
     "startedBy": "خالدالنهدي811",
-    "active": true
+    "active": false
   },
   "ليبيا": {
     "betAmount": null,
@@ -907,15 +1078,10 @@
     "active": false
   },
   "game🥇": {
-    "betAmount": 1000000,
-    "players": [
-      {
-        "username": "natar",
-        "betAmount": 1000000
-      }
-    ],
-    "startedBy": "natar",
-    "active": true
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
   },
   "cinta": {
     "betAmount": 0,
@@ -926,7 +1092,7 @@
       }
     ],
     "startedBy": "kenjiro",
-    "active": true
+    "active": false
   },
   "friends🌸": {
     "betAmount": null,
@@ -934,10 +1100,54 @@
       {
         "username": "natar",
         "betAmount": null
+      },
+      {
+        "username": "castol",
+        "betAmount": null
+      },
+      {
+        "username": "✨ᴊαყɳꫀ✨𝆺𝅥⃝🤍🪽",
+        "betAmount": null
+      },
+      {
+        "username": "filosofi",
+        "betAmount": null
+      },
+      {
+        "username": "kenjiro",
+        "betAmount": null
+      },
+      {
+        "username": "غرو♡انثي♡ور",
+        "betAmount": null
+      },
+      {
+        "username": "卂ْْْْْ",
+        "betAmount": null
+      },
+      {
+        "username": "om",
+        "betAmount": null
+      },
+      {
+        "username": "ᗫ",
+        "betAmount": null
+      },
+      {
+        "username": "ɖαʀƙ",
+        "betAmount": null
+      },
+      {
+        "username": "♥♪",
+        "betAmount": null
+      },
+      {
+        "username": "darknot",
+        "betAmount": null
       }
     ],
     "startedBy": "natar",
-    "active": true
+    "active": false
   },
   "tanhai": {
     "betAmount": null,
@@ -959,31 +1169,26 @@
   },
   "pathaan": {
     "betAmount": null,
-    "players": [
-      {
-        "username": "day",
-        "betAmount": null
-      }
-    ],
-    "startedBy": "day",
-    "active": true
+    "players": [],
+    "startedBy": null,
+    "active": false
   },
   "stars": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "arryan",
-        "betAmount": null
-      }
-    ],
-    "startedBy": "arryan",
-    "active": true
-  },
-  "яιηι": {
     "betAmount": null,
     "players": [],
     "startedBy": null,
     "active": false
+  },
+  "яιηι": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "яιηι",
+        "betAmount": null
+      }
+    ],
+    "startedBy": "яιηι",
+    "active": true
   },
   "كوكب♥المجانين": {
     "betAmount": null,
@@ -1008,5 +1213,117 @@
     "players": [],
     "startedBy": null,
     "active": false
+  },
+  "🌹cutie_girls🌹": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "بَنڪ🥇الُِحٍظ": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "bogor": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "bintang": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "jawa-cilacap": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "latte": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "❦gαℓαχу❦": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "jannat": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "قهوة☕العرب": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "code": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "Diamond": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "honey": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "bintаng": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "𝑰𝑹𝑨𝐐_🇮🇶": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "indo_heaven": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "دردشة🤍العرب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "⊱فࢪآشــۿ𓆪𝂅ݪـٰم𔘓᮫𝄒تَجـد𝂅𓆩مّۅطنـﮫـٰاެ⊰",
+        "betAmount": null
+      }
+    ],
+    "startedBy": "⊱فࢪآشــۿ𓆪𝂅ݪـٰم𔘓᮫𝄒تَجـد𝂅𓆩مّۅطنـﮫـٰاެ⊰",
+    "active": true
+  },
+  "اليمن.حضرموت": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "اا▒▓█جـنـگيـ°♠°ـزخآن█▓▒اا",
+        "betAmount": null
+      }
+    ],
+    "startedBy": "اا▒▓█جـنـگيـ°♠°ـزخآن█▓▒اا",
+    "active": true
   }
 }

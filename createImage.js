@@ -36,7 +36,6 @@ async function createCanvasWithBackground(backgroundImagePath, overlayImageUrl, 
         // حفظ الصورة الناتجة
         const buffer = canvas.toBuffer('image/png');
         await fs.writeFile(outputImagePath, buffer);
-        console.log('تم إنشاء الصورة بنجاح!');
     } catch (err) {
         console.error('حدث خطأ أثناء إنشاء الصورة:', err);
     }
