@@ -24,15 +24,10 @@
     "active": false
   },
   "كوكاكولآ": {
-    "betAmount": 666666666,
-    "players": [
-      {
-        "username": "ℎǎʑҽϻ♣ḱǎj",
-        "betAmount": 666666666
-      }
-    ],
-    "startedBy": "ℎǎʑҽϻ♣ḱǎj",
-    "active": true
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
   },
   "كـافيـه♨️رآقـي": {
     "betAmount": null,
@@ -243,6 +238,34 @@
       },
       {
         "username": "jαnαn",
+        "betAmount": null
+      },
+      {
+        "username": "𝐇𝐚𝐧𝐢",
+        "betAmount": null
+      },
+      {
+        "username": "sa7er.",
+        "betAmount": null
+      },
+      {
+        "username": "𓇡ۦَٰ๛ۦَٰۦَٰڝــٱآدقۦَٰ•‣'ﹺٲڵٳحسۜٱﺈسۦَٰ⸙",
+        "betAmount": null
+      },
+      {
+        "username": "꙳̥͜͡Ᏸ͟𝒂͟r͟ɓ͟𝒊͟𝒆͟🌸🍃",
+        "betAmount": null
+      },
+      {
+        "username": "𝕯",
+        "betAmount": null
+      },
+      {
+        "username": "𝐤𝐢𝐧𝐠",
+        "betAmount": null
+      },
+      {
+        "username": "ڵيَۦاެٓلُُهالُہ↠୭لـٖڪُمۦلُـﭚ𐎓اެٓلإندِهّـآشُ",
         "betAmount": null
       }
     ],

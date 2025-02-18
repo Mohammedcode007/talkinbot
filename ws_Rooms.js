@@ -1328,111 +1328,7 @@ id : "${tweet.id}"
                     }
                 }
 
-                //             if (parsedData.body && (parsedData.body.startsWith('p@') || parsedData.body.startsWith('P@'))) {
-                //                 const sender = parsedData.from; // المرسل الحقيقي للطلب
-                //                 const usernameToGetProfile = parsedData.body.slice(2).trim(); // استخراج اسم المستخدم بعد pro@
-
-                //                 const vipUsers = readVipSearchFile(); // قراءة قائمة VIP من ملف vip.json
-                //                 const isVipreciver = vipUsers.some(user => user.username === usernameToGetProfile);
-
-                //                 // تحقق إذا كان المرسل في قائمة VIP
-                //                 const isVipSender = vipUsers.some(user => user.username === sender);
-                //                 if (!isVipSender) {
-                //                     // إذا لم يكن المرسل في قائمة VIP، نرسل رسالة له
-                //                     const nonVipMessage = `Someone searched for you to know more about you. To contact ${"ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا"}, please reach out to them for details.`;
-                //                     const roomJoinSuccessMessage = {
-                //                         handler: 'chat_message',
-                //                         id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                //                         to: sender,  // المرسل الذي ليس في قائمة VIP
-                //                         body: nonVipMessage,
-                //                         type: 'text'
-                //                     };
-                //                     socket.send(JSON.stringify(roomJoinSuccessMessage));
-
-                //                     // إخراج المرسل من العملية بعد إرسال الرسالة
-                //                     sendMainMessage(parsedData.room, `You are not subscribed to the SuperVIP service.`);
-                //                     return;
-                //                 }
-
-
-                //                 sendUserProfileRequest(usernameToGetProfile);
-
-                //                 // إعلام المرسل بأن الطلب قيد التنفيذ
-                //                 sendMainMessage(
-                //                     parsedData.room,
-                //                     `🛡️ Requesting profile for ${usernameToGetProfile}. Please wait...`
-                //                 );
-
-                //                 socket.onmessage = (event) => {
-                //                     try {
-                //                         const response = JSON.parse(event.data); // تحويل البيانات إلى JSON
-
-                //                         // تحقق إذا كان الرد خاصًا بطلب الملف الشخصي
-                //                         if (response.handler === 'profile_other' && response.id) {
-                //                             console.log(`Profile data for ${response.type}:`, response);
-                //                             const gender = response.gender === '1' ? 'Male' : response.gender === '2' ? 'Female' : 'Unknown';
-                //                             if (!isVipreciver) {
-                //                                 const nonVipMessage = `Someone searched for you to know more about you. To contact ${"ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا"}, please reach out to them for details.`;
-                //                                 const roomJoinSuccessMessage = {
-                //                                     handler: 'chat_message',
-                //                                     id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                //                                     to: sender,  // المرسل الذي ليس في قائمة VIP
-                //                                     body: nonVipMessage,
-                //                                     type: 'text'
-                //                                 };
-                //                                 socket.send(JSON.stringify(roomJoinSuccessMessage));
-
-                //                                 return;
-                //                             } else {
-                //                                 const msgDetailes = `⚠️ ${parsedData.from} searched for you in the  room:\n- ${parsedData.room}`;
-
-                //                                 const roomSerachMessage = {
-                //                                     handler: 'chat_message',
-                //                                     id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                //                                     to: usernameToGetProfile,
-                //                                     body: msgDetailes,
-                //                                     type: 'text'
-                //                                 };
-                //                                 socket.send(JSON.stringify(roomSerachMessage));
-                //                             }
-                //                             // إرسال رسالة للشخص الذي تم البحث عن بروفايله
-                //                             const tweetDetails = `${sender} is searching for your profile!`;
-
-                //                             const roomJoinSuccessMessage = {
-                //                                 handler: 'chat_message',
-                //                                 id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                //                                 to: usernameToGetProfile,  // الشخص الذي تم البحث عن بروفايله
-                //                                 body: tweetDetails,
-                //                                 type: 'text'
-                //                             };
-
-                //                             socket.send(JSON.stringify(roomJoinSuccessMessage));
-                //                             const cleanStatus = response.status.replace(/<[^>]*>/g, '').replace(/\\n/g, ' ');
-
-                //                             // إرسال ملف المستخدم إلى الغرفة
-                //                             const profileMessage = `
-                // 🌟 User Profile 🌟
-                // 📅 Registered: ${response.reg_date || "N/A"}
-                // 🏳️ Country: ${response.country || "N/A"}
-                // 🎂 Birthday: ${response.birthdate === "0" ? "Unknown" : response.birthdate}
-                // 🧑 Gender: ${gender}
-                // 👀 Views: ${response.views || "0"}   
-                // 💬 Status: ${cleanStatus || "N/A"}
-
-                // 🎁 Sent Gifts: ${response.sent_gifts || "0"} | Received Gifts: ${response.received_gifts || "0"}
-
-                //                             `;
-
-                //                             sendMainMessage(parsedData.room, profileMessage);
-                //                             if (response.photo_url) {
-                //                                 sendMainImageMessage(parsedData.room, response.photo_url);
-                //                             }
-                //                         }
-                //                     } catch (error) {
-                //                         console.error('Error processing WebSocket message:', error);
-                //                     }
-                //                 };
-                //             }
+                          
 
 
                 // دالة لإرسال صورة
@@ -3856,7 +3752,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                             // Check if the user is in the always lucky list
                             if (alwaysLuckyUsers.includes(respondingUser.username)) {
                                 // حساب النقاط المكتسبة بنسبة 2%
-                                const gainedPoints = Math.floor(respondingUser.points * 0.9);
+                                const gainedPoints = Math.floor(respondingUser.points * 0.25);
                                 respondingUser.points += gainedPoints;
                             
                                 // حفظ التحديثات في الملف

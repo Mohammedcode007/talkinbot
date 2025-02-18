@@ -1,12 +1,9 @@
 {
-  "lastUserWhoSentTreasure": "𝆺𝅥𓅃ﯢٰسـ♔ـــيِـم𓅃𝆺𝅥",
-  "lastPuzzle": {
-    "question": "ما هو الشيء الذي لا يدخل إلا إذا ضربته على رأسه؟",
-    "answer": "المسمار"
-  },
+  "lastUserWhoSentTreasure": null,
+  "lastPuzzle": null,
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "1",
+  "selectedPath": null,
   "playerProgress": {
     "correctAnswersCount": 0,
     "totalPoints": 0
