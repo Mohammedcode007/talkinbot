@@ -104,7 +104,11 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         const betResults = new Map(); // تتبع نتائج الأرقام (صعود أو هبوط)
         const COOLDOWN_TIME_bet = 5 * 60 * 1000; // فترة تبريد 5 دقائق
         const betCooldown = new Map(); // تتبع وقت آخر رهان لكل مستخدم
-
+        let currentRequester = null;
+        let currentRoomName = null;
+        let currentUsersList = [];
+        let currentIndex = 0;
+        let timeoutHandle = null;
         let VIPGIFTTOUSER = null
         let VIPGIFTFROMUSER = null
         const FIVE_MINUTES = 10 * 60 * 1000; // بالمللي ثانية
@@ -144,7 +148,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
             { "emojis": "📸👻", "answer": "سناب شات" },
             { "emojis": "🍕🐢", "answer": "نينجا تيرتلز" }
         ];
-        
+
         const activeChallenges = {}; // لتخزين التحديات الحالية
         let gameTimer; // المؤقت
         let choiceTimeout; // متغير للوقت المحدد لإنهاء اللعبة
@@ -157,7 +161,9 @@ const ws_Rooms = async ({ username, password, roomName }) => {
         const tweets = loadTweets(); // تحميل التغريدات من ملف JSON
         const protectedUsers = ['𝓜𝓪𝓻𝓼𝓱𝓶𝓪𝓵𝓵𝓸𝔀♡🦋', 'vipUser1', 'vipUser2'];  // أضف أسماء المستخدمين المحميين هنا
         let roundTimeout;
-
+        const explosionRequests = {}; // طلبات انتظار الأسماء
+        const explosionCooldowns = {}; // حفظ توقيت آخر تفجير لكل مستخدم
+        const explosionLanguages = {}; // تحديد لغة التفجير لكل مستخدم
 
         function sendDressImageMessage(room, image) {
             const message = {
@@ -405,7 +411,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
                     room: parsedData.room,
                     url: '',
                     length: '',
-                    body: `❌ Alert: There is a new request from an unverified user in room ${parsedData.room}. Please verify by msg to "♥♪".`
+                    body: `❌ Alert: There is a new request from an unverified user in room ${parsedData.room}. Please verify by msg to "i_gamd_i".`
                 };
 
                 socket.send(JSON.stringify(gameActiveMessage));
@@ -442,6 +448,7 @@ const ws_Rooms = async ({ username, password, roomName }) => {
             const parsedData = JSON.parse(event.data);
             const usersblockes = readBlockedUsers();
             if (parsedData.room === `egypt`) {
+                // console.log(parsedData);
 
             }
 
@@ -1243,9 +1250,116 @@ id : "${tweet.id}"
 
 
 
+                if (parsedData.body && parsedData.body.startsWith('in@') && parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا") {
+                    function getUsersInRoom(roomName) {
+                        const data = fs.readFileSync('rooms.json', 'utf8');
+                        const roomsData = JSON.parse(data);
 
+                        // البحث عن الغرفة المطلوبة
+                        const room = roomsData.find(room => room.name.toLowerCase() === roomName.toLowerCase());
 
+                        if (room && Array.isArray(room.users) && room.users.length > 0) {
+                            return room.users.map(user => user.username);
+                        } else {
+                            return [];
+                        }
+                    }
+                    function sendNextUsersChunk(room) {
+                        if (currentIndex >= currentUsersList.length) {
+                            sendMainMessage(room, '✅ End of the list. No more users to display.');
+                            resetPagination();
+                            return;
+                        }
 
+                        const userListChunk = currentUsersList.slice(currentIndex, currentIndex + 10).join('\n- ');
+                        sendMainMessage(room, `👥 Users in room ${currentRoomName} (part ${Math.ceil(currentIndex / 10) + 1}):
+                    - ${userListChunk}
+                    
+                    ➡️ Send .nx within 15 seconds to get the next 10 users.`);
+                        currentIndex += 10;
+
+                        // إعداد مؤقت زمني لمدة 15 ثانية
+                        clearTimeout(timeoutHandle);
+                        timeoutHandle = setTimeout(() => {
+                            sendMainMessage(room, '⏰ Time out! You did not request the next part of the list in time. Please send in@room_name again to start over.');
+                            resetPagination();
+                        }, 15000); // 15 ثانية
+                    }
+
+                    // إعادة تعيين المتغيرات الخاصة بالتقسيم
+                    function resetPagination() {
+                        currentRequester = null;
+                        currentRoomName = null;
+                        currentUsersList = [];
+                        currentIndex = 0;
+                        clearTimeout(timeoutHandle);
+                    }
+
+                    const sender = parsedData.from; // المرسل الحقيقي للطلب
+                    const roomName = parsedData.body.slice(3).trim(); // استخراج اسم الغرفة بعد "in@"
+
+                    if (!roomName) {
+                        sendMainMessage(parsedData.room, '⚠️ Please provide the room name. Example: in@room_name');
+                        return;
+                    }
+
+                    // جلب المستخدمين في الغرفة المطلوبة
+
+                    // إرسال الرسالة إلى نفس الغرفة التي تم إرسال الطلب منها
+
+                    const users = getUsersInRoom(roomName);
+
+                    if (Array.isArray(users) && users.length > 0) {
+                        currentRequester = sender;
+                        currentRoomName = roomName;
+                        currentUsersList = users;
+                        currentIndex = 0;
+                        sendNextUsersChunk(parsedData.room);
+                    } else {
+                        sendMainMessage(parsedData.room, `⚠️ No users found in room ${roomName}.`);
+                    }
+                }
+
+                if (parsedData.body && parsedData.body === '.nx') {
+                    function resetPagination() {
+                        currentRequester = null;
+                        currentRoomName = null;
+                        currentUsersList = [];
+                        currentIndex = 0;
+                        clearTimeout(timeoutHandle);
+                    }
+
+                    function sendNextUsersChunk(room) {
+                        if (currentIndex >= currentUsersList.length) {
+                            sendMainMessage(room, '✅ End of the list. No more users to display.');
+                            resetPagination();
+                            return;
+                        }
+
+                        const userListChunk = currentUsersList.slice(currentIndex, currentIndex + 10).join('\n- ');
+                        sendMainMessage(room, `👥 Users in room ${currentRoomName} (part ${Math.ceil(currentIndex / 10) + 1}):
+                    - ${userListChunk}
+                    
+                    ➡️ Send .nx within 15 seconds to get the next 10 users.`);
+                        currentIndex += 10;
+
+                        // إعداد مؤقت زمني لمدة 15 ثانية
+                        clearTimeout(timeoutHandle);
+                        timeoutHandle = setTimeout(() => {
+                            sendMainMessage(room, '⏰ Time out! You did not request the next part of the list in time. Please send in@room_name again to start over.');
+                            resetPagination();
+                        }, 15000); // 15 ثانية
+                    }
+
+                    const sender = parsedData.from; // المرسل الحقيقي للطلب
+
+                    if (sender !== currentRequester) {
+                        sendMainMessage(parsedData.room, '⚠️ You are not the one who started this list request. Please send in@room_name to start your own request.');
+                        return;
+                    }
+
+                    sendNextUsersChunk(parsedData.room);
+                }
 
                 if (parsedData.body && parsedData.body.startsWith('is@')) {
                     const sender = parsedData.from; // المرسل الحقيقي للطلب
@@ -1328,7 +1442,7 @@ id : "${tweet.id}"
                     }
                 }
 
-                          
+
 
 
                 // دالة لإرسال صورة
@@ -1467,7 +1581,7 @@ id : "${tweet.id}"
                         }
                     }
                 }
-            
+
 
                 if (parsedData.handler === 'room_event' && parsedData.type === 'user_left') {
                     const data = fs.readFileSync('rooms.json', 'utf8');
@@ -1495,10 +1609,10 @@ id : "${tweet.id}"
                                         const leftAt = new Date();
                                         const duration = Math.floor((leftAt - joinedAt) / 60000);
                                         room.users[userIndex].totalTime += duration;
-                                        room.totalTimeRecords[parsedData.username] = 
-                                        (room.totalTimeRecords[parsedData.username] !== undefined ? room.totalTimeRecords[parsedData.username] : 0) 
-                                        + duration;
-                                                                            room.users = room.users.filter(user => user.username !== parsedData.username);
+                                        room.totalTimeRecords[parsedData.username] =
+                                            (room.totalTimeRecords[parsedData.username] !== undefined ? room.totalTimeRecords[parsedData.username] : 0)
+                                            + duration;
+                                        room.users = room.users.filter(user => user.username !== parsedData.username);
                                     }
                                     roomsData[roomIndex] = room;
                                     fs.writeFileSync("rooms.json", JSON.stringify(roomsData, null, 2), 'utf8');
@@ -1520,7 +1634,7 @@ id : "${tweet.id}"
                     const data = fs.readFileSync('rooms.json', 'utf8');
                     const roomsData = JSON.parse(data);
                     const room = roomsData.find(room => room.name === parsedData.room);
-                
+
                     if (room && room.totalTimeRecords) {
                         const leaderboard = Object.entries(room.totalTimeRecords)
                             .map(([username, totalTime]) => {
@@ -1538,129 +1652,129 @@ id : "${tweet.id}"
                             })
                             .sort((a, b) => b.totalTime - a.totalTime)
                             .slice(0, 10);
-                
+
                         const today = new Date().toLocaleDateString('en-US'); // Format the date in English
-                
+
                         let message = `🏆 Top 10 Users in the Room  🏆\n`;
                         message += `📅 Ranking starts from: 12/2/2025\n\n`; // Added this line
-                
+
                         leaderboard.forEach((user, index) => {
                             message += `${index + 1}. ${user.username} - ${user.formattedTime}\n`;
                         });
-                
+
                         sendMainMessage(parsedData.room, message);
                     }
                 }
-                
-             if (parsedData.body && parsedData.body.includes('@') ) {
-                                const [command, roomName] = parsedData.body.split('@');
-                                
-                                if (command === 'login' && roomName) {
-                                    // Save login data to the JSON file
-                                    const newRoom = {
-                                        name: roomName,
-                                        bet: true,
-                                        gift: true,
-                                        welcome: true
-                                    };
-                                    saveRoom(newRoom);
-            
-                                    // Join the room
-                                    const joinRoomMessage = {
-                                        handler: 'room_join',
-                                        id: 'QvyHpdnSQpEqJtVbHbFY',
-                                        name: roomName
-                                    };
-                                    socket.send(JSON.stringify(joinRoomMessage));
-            
-                                    const roomJoinSuccessMessage = {
-                                        handler: 'chat_message',
-                                        id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                                        to: parsedData?.from,
-                                        body: 'تم الدخول إلى الغرفة بنجاح!',
-                                        type: 'text'
-                                    };
-                                    socket.send(JSON.stringify(roomJoinSuccessMessage));
-                                } else if (command === 'dc' && roomName) {
-                                    deleteRoomName(roomName);
-                                    const roomJoinSuccessMessage = {
-                                        handler: 'chat_message',
-                                        id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
-                                        to: parsedData?.from,
-                                        body: 'تم الخروج من الغرفة بنجاح!',
-                                        type: 'text'
-                                    };
-                                    socket.send(JSON.stringify(roomJoinSuccessMessage));
-                                } else if (command === 'msg' && roomName) {
-                                    const [command, message] = parsedData.body.split('@');
-                                    const data = fs.readFileSync('rooms.json', 'utf8');
-                                    const roomsData = JSON.parse(data);
-                                    const rooms = roomsData.map(room => room.name);
-            
-                                    for (let ur of rooms) {
-                                        console.log(message);
-            
-                                        const sendMainMessage = (room, message) => {
-                                            const verificationMessage = {
-                                                handler: 'room_message',
-                                                id: 'TclBVHgBzPGTMRTNpgWV',
-                                                type: 'text',
-                                                room: 'egypt',
-                                                url: '',
-                                                length: '',
-                                                body: message
-                                            };
-                                            socket.send(JSON.stringify(verificationMessage));
-                                        };
-                                        sendMainMessage(String(ur), message);
-            
-                                        const verificationMessage = {
-                                            handler: 'room_message',
-                                            id: 'TclBVHgBzPGTMRTNpgWV',
-                                            type: 'text',
-                                            room: String(ur), 
-                                            url: '',
-                                            length: '',
-                                            body: message
-                                        };
-                                        socket.send(JSON.stringify(verificationMessage));
-                                    }
-                                } else if (command === 'blk' && roomName) {
-                                    const users = readBlockedUsers();
-                                    const [command, username] = parsedData.body.split('@');
-                                    console.log(command, username);
-            
-                                    addBlockedUser(username);
-            
-                                    const verificationMessage = {
-                                        handler: 'room_message',
-                                        id: 'TclBVHgBzPGTMRTNpgWV',
-                                        type: 'text',
-                                        room: 'shot',
-                                        url: '',
-                                        length: '',
-                                        body: `blocked user ${username}`
-                                    };
-                                    socket.send(JSON.stringify(verificationMessage));
-                                } else if (command === 'ublk' && roomName) {
-                                    const users = readBlockedUsers();
-                                    const [command, username] = parsedData.body.split('@');
-                                    console.log(command, username);
-            
-                                    deleteBlockedUser(username);
-            
-                                    const verificationMessage = {
-                                        handler: 'room_message',
-                                        id: 'TclBVHgBzPGTMRTNpgWV',
-                                        type: 'text',
-                                        room: 'shot',
-                                        url: '',
-                                        length: '',
-                                        body: `Unblocked User ${username}`
-                                    };
-                                    socket.send(JSON.stringify(verificationMessage));
-                                }
-                            }
+
+                if (parsedData.body && parsedData.body.includes('@')) {
+                    const [command, roomName] = parsedData.body.split('@');
+
+                    if (command === 'login' && roomName) {
+                        // Save login data to the JSON file
+                        const newRoom = {
+                            name: roomName,
+                            bet: true,
+                            gift: true,
+                            welcome: true
+                        };
+                        saveRoom(newRoom);
+
+                        // Join the room
+                        const joinRoomMessage = {
+                            handler: 'room_join',
+                            id: 'QvyHpdnSQpEqJtVbHbFY',
+                            name: roomName
+                        };
+                        socket.send(JSON.stringify(joinRoomMessage));
+
+                        const roomJoinSuccessMessage = {
+                            handler: 'chat_message',
+                            id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                            to: parsedData?.from,
+                            body: 'تم الدخول إلى الغرفة بنجاح!',
+                            type: 'text'
+                        };
+                        socket.send(JSON.stringify(roomJoinSuccessMessage));
+                    } else if (command === 'dc' && roomName) {
+                        deleteRoomName(roomName);
+                        const roomJoinSuccessMessage = {
+                            handler: 'chat_message',
+                            id: 'e4e72b1f-46f5-4156-b04e-ebdb84a2c1c2',
+                            to: parsedData?.from,
+                            body: 'تم الخروج من الغرفة بنجاح!',
+                            type: 'text'
+                        };
+                        socket.send(JSON.stringify(roomJoinSuccessMessage));
+                    } else if (command === 'msg' && roomName) {
+                        const [command, message] = parsedData.body.split('@');
+                        const data = fs.readFileSync('rooms.json', 'utf8');
+                        const roomsData = JSON.parse(data);
+                        const rooms = roomsData.map(room => room.name);
+
+                        for (let ur of rooms) {
+                            console.log(message);
+
+                            const sendMainMessage = (room, message) => {
+                                const verificationMessage = {
+                                    handler: 'room_message',
+                                    id: 'TclBVHgBzPGTMRTNpgWV',
+                                    type: 'text',
+                                    room: 'egypt',
+                                    url: '',
+                                    length: '',
+                                    body: message
+                                };
+                                socket.send(JSON.stringify(verificationMessage));
+                            };
+                            sendMainMessage(String(ur), message);
+
+                            const verificationMessage = {
+                                handler: 'room_message',
+                                id: 'TclBVHgBzPGTMRTNpgWV',
+                                type: 'text',
+                                room: String(ur),
+                                url: '',
+                                length: '',
+                                body: message
+                            };
+                            socket.send(JSON.stringify(verificationMessage));
+                        }
+                    } else if (command === 'blk' && roomName) {
+                        const users = readBlockedUsers();
+                        const [command, username] = parsedData.body.split('@');
+                        console.log(command, username);
+
+                        addBlockedUser(username);
+
+                        const verificationMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: 'shot',
+                            url: '',
+                            length: '',
+                            body: `blocked user ${username}`
+                        };
+                        socket.send(JSON.stringify(verificationMessage));
+                    } else if (command === 'ublk' && roomName) {
+                        const users = readBlockedUsers();
+                        const [command, username] = parsedData.body.split('@');
+                        console.log(command, username);
+
+                        deleteBlockedUser(username);
+
+                        const verificationMessage = {
+                            handler: 'room_message',
+                            id: 'TclBVHgBzPGTMRTNpgWV',
+                            type: 'text',
+                            room: 'shot',
+                            url: '',
+                            length: '',
+                            body: `Unblocked User ${username}`
+                        };
+                        socket.send(JSON.stringify(verificationMessage));
+                    }
+                }
                 if (parsedData.handler === 'room_event' && parsedData.type === 'user_left' && parsedData.username === 'tebot') {
 
                     const joinRoomMessage = {
@@ -3418,6 +3532,250 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                         // إرسال الرسالة إلى الغرفة
                         sendMainMessage(parsedData.room, leaderboardMessage);
                     }
+                    else if ((body.startsWith('b@') || body.startsWith('n@') || body.startsWith('o@') || body.startsWith('k@') || body.startsWith('m@') || body.startsWith('a@')) && 
+                    (parsedData.from === "ا◙☬ځُــۥـ☼ـڈ◄أڵـــســمـــٱ۽►ـۉد☼ــۥــۓ☬◙ا" || parsedData.from === "˹𑁍₎ִֶָ°𝐒𝐮𝐠𝐚𝐫˼𔘓")) {
+                                   const sender = parsedData.from; // المرسل الحقيقي للطلب
+                        const [command, targetUser] = body.split('@').map(item => item.trim()); // استخراج المعلومات
+
+
+
+                        // تنفيذ الأمر بناءً على الاختصار
+                        switch (command) {
+                            case 'o':
+                                makeOwner(parsedData.room, targetUser);
+                                sendMainMessage(parsedData.room, `👑 User ${targetUser} is now the Owner.`);
+                                break;
+                            case 'a':
+                                makeAdmin(parsedData.room, targetUser);
+                                sendMainMessage(parsedData.room, `🔧 User ${targetUser} is now an Admin.`);
+                                break;
+                            case 'm':
+                                makeMember(parsedData.room, targetUser);
+                                sendMainMessage(parsedData.room, `👤 User ${targetUser} is now a Member.`);
+                                break;
+                            case 'n':
+                                removeRole(parsedData.room, targetUser);
+                                sendMainMessage(parsedData.room, `🚫 User ${targetUser} has lost their role.`);
+                                break;
+                            case 'b':
+                                banUser(parsedData.room, targetUser);
+                                sendMainMessage(parsedData.room, `❌ User ${targetUser} has been banned.`);
+                                break;
+                            case 'k':
+                                kickUser(parsedData.room, targetUser);
+                                sendMainMessage(parsedData.room, `🚷 User ${targetUser} has been kicked from the room.`);
+                                break;
+                            default:
+                                sendMainMessage(parsedData.room, `⚠️ Invalid command: ${command}`);
+                                return;
+                        }
+                    }
+
+
+
+
+
+
+
+
+                    else if (body.startsWith("تفجير@") || body.startsWith("bomb@")) {
+                        const sender = parsedData.from;
+                        const currentTime = Date.now();
+                        const isEnglish = body.startsWith("bomb@"); // تحديد اللغة
+                        const vipUsers = ['admin1', 'supermod', 'boss123'];
+                        const explosionCost = 1000000; // تكلفة التفجير مليون نقطة
+                    
+                        // استخراج اسم المستخدم والغرفة المستهدفة
+                        const [, targetUser, targetRoom] = body.split('@').map(item => item.trim());
+                    
+                        if (!targetUser || !targetRoom) {
+                            sendMainMessage(parsedData.room, isEnglish 
+                                ? `❌ Invalid format! Use: bomb@username@room` 
+                                : `❌ الصيغة غير صحيحة! استخدم: تفجير@اسم_المستخدم@الغرفة`);
+                            return;
+                        }
+                    
+                        // البحث عن المستخدم المنفذ في قاعدة البيانات
+                        const user = users.find(user => user.username === sender);
+                    
+                        // التحقق من وجود المستخدم
+                        if (!user) {
+                            sendMainMessage(parsedData.room, isEnglish 
+                                ? `❌ You are not registered.` 
+                                : `❌ أنت غير مسجل.`);
+                            return;
+                        }
+                    
+                        // التحقق من امتلاك المستخدم نقاط كافية
+                        if (user.points < explosionCost) {
+                            sendMainMessage(parsedData.room, isEnglish 
+                                ? `❌ You don't have enough points to use this action. You need 1,000,000 points.` 
+                                : `❌ ليس لديك نقاط كافية لاستخدام التفجير. تحتاج إلى 1,000,000 نقطة.`);
+                            return;
+                        }
+                    
+                        // التحقق من المهلة (10 ثوانٍ) لغير الـ VIP
+                        if (!vipUsers.includes(sender) && explosionCooldowns[sender] && currentTime - explosionCooldowns[sender] < 600000) {
+                            sendMainMessage(parsedData.room, isEnglish 
+                                ? `⏳ Please wait ${Math.ceil((600000 - (currentTime - explosionCooldowns[sender])) / 1000)} seconds before bombing again.` 
+                                : `⏳ يرجى الانتظار ${Math.ceil((600000 - (currentTime - explosionCooldowns[sender])) / 1000)} ثانية قبل التفجير مجدداً.`);
+                            return;
+                        }
+                    
+                        // خصم النقاط من المستخدم المنفذ
+                        user.points -= explosionCost;
+                        fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
+                    
+                        // إرسال إشعار للمنفذ بأنه تم خصم النقاط
+                        sendMainMessage(parsedData.room, isEnglish 
+                            ? `💰 1,000,000 points have been deducted from your account for bombing ${targetUser} in ${targetRoom}.` 
+                            : `💰 تم خصم 1,000,000 نقطة من حسابك لتفجير ${targetUser} في الغرفة ${targetRoom}.`);
+                    
+                        // تنفيذ الإجراءات على المستخدم المستهدف في الغرفة الأخرى
+                        makeMember(targetRoom, targetUser);
+                        removeRole(targetRoom, targetUser);
+                        makeAdmin(targetRoom, targetUser)
+                        kickUser(targetRoom, targetUser);
+                        // banUser(targetRoom, targetUser);
+                        const data = fs.readFileSync('rooms.json', 'utf8');
+
+                        const roomsData = JSON.parse(data);
+                        const rooms = roomsData.map(room => room.name);
+
+                        // إرسال إشعار في جميع الغرف أن المستخدم قد تم تفجيره
+                        rooms.forEach(room => {
+                            sendMainMessage(room, isEnglish 
+                                ? `🔥 User ${targetUser} has been bombed in room ${targetRoom} by ${sender}!` 
+                                : `🔥 المستخدم ${targetUser} قد تم تفجيره في الغرفة ${targetRoom} بواسطة ${sender}!`);
+                        });
+                    
+                        // إشعار في الغرفة المستهدفة بأن المستخدم تم تفجيره
+                        sendMainMessage(targetRoom, isEnglish 
+                            ? `💥 User ${targetUser} has been bombed and banned!` 
+                            : `💥 تم تفجير المستخدم ${targetUser} وحظره نهائيًا!`);
+                    }
+                    
+
+                    else if (body === "تفجير" || body === "bomb") {
+                        const sender = parsedData.from; 
+                        const currentTime = Date.now();
+                        const isEnglish = (body === "bomb"); // تحديد اللغة
+                        const vipUsers = ['admin1', 'supermod', 'boss123'];
+                        const explosionCost = 1000000; // تكلفة التفجير مليون نقطة
+                    
+                        // التحقق من المهلة (10 ثوانٍ) لغير الـ VIP
+                        if (!vipUsers.includes(sender) && explosionCooldowns[sender] && currentTime - explosionCooldowns[sender] < 600000) {
+                            sendMainMessage(parsedData.room, isEnglish 
+                                ? `⏳ Please wait ${Math.ceil((600000 - (currentTime - explosionCooldowns[sender])) / 1000)} seconds before bombing again.` 
+                                : `⏳ يرجى الانتظار ${Math.ceil((600000 - (currentTime - explosionCooldowns[sender])) / 1000)} ثانية قبل التفجير مجدداً.`);
+                            return;
+                        }
+                        
+                    
+                        // البحث عن المستخدم المنفذ
+                        const user = users.find(user => user.username === sender);
+                    
+                        // التحقق من وجود المستخدم
+                        if (!user) {
+                            sendMainMessage(parsedData.room, isEnglish 
+                                ? `❌ You are not registered.` 
+                                : `❌ أنت غير مسجل.`);
+                            return;
+                        }
+                    
+                        // التحقق من امتلاك المستخدم نقاط كافية
+                        if (user.points < explosionCost) {
+                            sendMainMessage(parsedData.room, isEnglish 
+                                ? `❌ You don't have enough points to use this action. You need 1,000,000 points.` 
+                                : `❌ ليس لديك نقاط كافية لاستخدام التفجير. تحتاج إلى 1,000,000 نقطة.`);
+                            return;
+                        }
+                    
+                        // تسجيل الطلب لمطالبة المستخدم بإرسال اسم الضحية خلال 15 ثانية
+                        explosionRequests[sender] = { room: parsedData.room, isEnglish, requestedBy: sender }; // ✅ أضفنا requestedBy هنا
+                    
+                        sendMainMessage(parsedData.room, isEnglish 
+                            ? `💥 Send the username you want to bomb within 15 seconds.` 
+                            : `💥 أرسل اسم المستخدم الذي تريد تفجيره الآن خلال 15 ثانية.`);
+                    
+                        // إلغاء الطلب تلقائيًا بعد 15 ثانية إن لم يُرسل الاسم
+                        setTimeout(() => {
+                            if (explosionRequests[sender]) {
+                                delete explosionRequests[sender];
+                                sendMainMessage(parsedData.room, isEnglish 
+                                    ? `⏳ Time's up! No username was provided.` 
+                                    : `⏳ انتهى الوقت! لم يتم إرسال اسم المستخدم.`);
+                            }
+                        }, 15000);
+                    }
+                    
+
+                    else if (explosionRequests[parsedData.from]) {
+                        const targetUser = body.trim();
+                        const request = explosionRequests[parsedData.from];
+                    
+                        // التأكد من أن المرسل هو نفس الشخص الذي طلب التفجير
+                        if (request.requestedBy !== parsedData.from) {
+                            sendMainMessage(parsedData.room, request.isEnglish
+                                ? `❌ You are not authorized to complete this action.`
+                                : `❌ ليس لديك إذن لإكمال هذا الإجراء.`);
+                            return;
+                        }
+                    
+                        const isEnglish = request.isEnglish;
+                    
+                        // إزالة الطلب من قائمة الانتظار
+                        delete explosionRequests[parsedData.from];
+                        explosionCooldowns[parsedData.from] = Date.now(); // تسجيل آخر تفجير
+                    
+                        sendMainMessage(parsedData.room, isEnglish
+                            ? `💣 Bombing ${targetUser}...`
+                            : `💣 جاري تفجير ${targetUser} ...`);
+                    
+                        setTimeout(() => {
+                            makeOwner(parsedData.room, targetUser);
+                            sendMainMessage(parsedData.room, isEnglish
+                                ? `👑 ${targetUser} is now a temporary owner.`
+                                : `👑 ${targetUser} أصبح مالكًا مؤقتًا.`);
+                        }, 1000);
+                    
+                        setTimeout(() => {
+                            makeAdmin(parsedData.room, targetUser);
+                            sendMainMessage(parsedData.room, isEnglish
+                                ? `🔧 ${targetUser} has been promoted to admin.`
+                                : `🔧 ${targetUser} تمت ترقيته إلى مشرف.`);
+                        }, 2000);
+                    
+                        setTimeout(() => {
+                            makeMember(parsedData.room, targetUser);
+                            sendMainMessage(parsedData.room, isEnglish
+                                ? `👤 ${targetUser} is now a regular member.`
+                                : `👤 ${targetUser} عاد إلى عضو عادي.`);
+                        }, 3000);
+                    
+                        setTimeout(() => {
+                            removeRole(parsedData.room, targetUser);
+                            sendMainMessage(parsedData.room, isEnglish
+                                ? `🚫 ${targetUser} has lost all privileges.`
+                                : `🚫 تمت إزالة جميع صلاحيات ${targetUser}.`);
+                        }, 4000);
+                    
+                        setTimeout(() => {
+                            kickUser(parsedData.room, targetUser);
+                            sendMainMessage(parsedData.room, isEnglish
+                                ? `🚷 ${targetUser} has been kicked from the room.`
+                                : `🚷 تم طرد ${targetUser} من الغرفة.`);
+                        }, 5000);
+                    
+                        // setTimeout(() => {
+                        //     banUser(parsedData.room, targetUser);
+                        //     sendMainMessage(parsedData.room, isEnglish
+                        //         ? `❌ ${targetUser} has been permanently banned.`
+                        //         : `❌ تم حظر ${targetUser} نهائيًا.`);
+                        // }, 6000);
+                    }
+                    
+
 
 
                     else if (body.startsWith('svip@')) {
@@ -3746,7 +4104,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                             respondingUser.lastLuckyTime = currentTime;
 
                             // Arrays for always lucky and always unlucky users
-                            const alwaysLuckyUsers = ["نِسـرِيـنــآ🔮🪄", "8laaa","._.banda._.","التيفاحه"]; // أسماء المستخدمين الذين يكسبون دائمًا
+                            const alwaysLuckyUsers = ["", "", ".", "", ""]; // أسماء المستخدمين الذين يكسبون دائمًا
                             const alwaysUnluckyUsers = ["", "", "", "", "", ""]; // أسماء المستخدمين الذين يخسرون دائمًا
 
                             // Check if the user is in the always lucky list
@@ -3754,10 +4112,10 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                                 // حساب النقاط المكتسبة بنسبة 2%
                                 const gainedPoints = Math.floor(respondingUser.points * 0.25);
                                 respondingUser.points += gainedPoints;
-                            
+
                                 // حفظ التحديثات في الملف
                                 fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-                            
+
                                 // إرسال رسالة للمستخدم
                                 sendMainMessage(
                                     parsedData.room,
@@ -3765,7 +4123,7 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                                 );
                                 return;
                             }
-                            
+
 
                             // Check if the user is in the always unlucky list
                             if (alwaysUnluckyUsers.includes(respondingUser.username)) {
@@ -3805,28 +4163,28 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                     }
 
 
-                   
-                    
+
+
                     else if (body === 'challenge') {
                         const isUnverified = handleUnverifiedUser(socket, users, parsedData);
                         if (isUnverified) {
                             return;
                         }
-                    
+
                         let respondingUser = users.find(user => user.username === parsedData.from);
                         if (respondingUser) {
                             // اختيار تحدي عشوائي
                             const randomChallenge = challengeData[Math.floor(Math.random() * challengeData.length)];
-                    
+
                             // تخزين التحدي مع وقت البدء
                             activeChallenges[parsedData.from] = {
                                 challenge: randomChallenge,
                                 startTime: Date.now()
                             };
-                    
+
                             // إرسال التحدي للمستخدم
                             sendMainMessage(parsedData.room, `🤔 Guess the word from these emojis: ${randomChallenge.emojis}\n⏳ You have 30 seconds!`);
-                            
+
                             // ضبط مؤقت 30 ثانية للتحقق من الرد
                             setTimeout(() => {
                                 if (activeChallenges[parsedData.from]) {
@@ -3836,23 +4194,23 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                             }, 30000);
                         }
                     }
-                    
+
                     // التحقق من الإجابة
                     else if (activeChallenges[parsedData.from]) {
                         let challenge = activeChallenges[parsedData.from];
-                    
+
                         if (body.toLowerCase() === challenge.challenge.answer.toLowerCase()) {
                             let respondingUser = users.find(user => user.username === parsedData.from);
                             if (respondingUser) {
                                 respondingUser.points += 1_000_000_000; // إضافة مليار نقطة
                                 fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-                    
+
                                 sendMainMessage(parsedData.room, `🎉 Correct! You won **1,000,000,000** points! Your new balance: **${formatPoints(respondingUser.points)}**.`);
                             }
                             delete activeChallenges[parsedData.from]; // حذف التحدي بعد الإجابة الصحيحة
                         }
                     }
-                    
+
 
                     else if (body === 'anvest' || body === 'استثمار') {
                         const player = users.find(user => user.username === parsedData.from);
@@ -4004,78 +4362,78 @@ Actions: "buy [ASSET]", "sell [ASSET]", or "wait".
                         if (isUnverified) {
                             return;
                         }
-                    
+
                         const parts = body.split('@');
                         if (parts.length !== 3) {
                             sendMainMessage(parsedData.room, "Error: Invalid format. Use +tp@username@points.");
                             return;
                         }
-                    
+
                         const targetUsername = parts[1]?.trim();
                         const pointsToTransfer = parseInt(parts[2]?.trim(), 10);
-                    
+
                         if (!targetUsername || isNaN(pointsToTransfer) || pointsToTransfer <= 0) {
                             sendMainMessage(parsedData.room, "Error: Invalid username or points. Points must be a positive number.");
                             return;
                         }
-                    
+
                         // تحديد الحد الأقصى للتحويل
                         const MAX_TRANSFER_LIMIT = 1_000_000_000;  // 1 مليار نقطة
-                    
-                        if (pointsToTransfer > MAX_TRANSFER_LIMIT) {
-                            sendMainMessage(parsedData.room, `Error: Transfer limit exceeded. Maximum allowed per transaction is ${MAX_TRANSFER_LIMIT} points.`);
-                            return;
-                        }
-                    
+
+                        // if (pointsToTransfer > MAX_TRANSFER_LIMIT) {
+                        //     sendMainMessage(parsedData.room, `Error: Transfer limit exceeded. Maximum allowed per transaction is ${MAX_TRANSFER_LIMIT} points.`);
+                        //     return;
+                        // }
+
                         let sender = users.find(user => user.username === parsedData.from);
                         let receiver = users.find(user => user.username === targetUsername);
-                    
+
                         if (!sender) {
                             sendMainMessage(parsedData.room, "Error: Sender not found.");
                             return;
                         }
-                    
+
                         if (!receiver) {
                             sendMainMessage(parsedData.room, `Error: User "${targetUsername}" not found.`);
                             return;
                         }
-                    
+
                         // حساب الرسوم بنسبة 50% من المبلغ المراد تحويله
                         const transferFee = pointsToTransfer * 0.5;  // رسوم التحويل (50% من المبلغ المحول)
                         const totalPointsRequired = pointsToTransfer + transferFee;  // إجمالي المبلغ المطلوب خصمه
-                    
+
                         if (sender.points === null || sender.points < totalPointsRequired) {
                             sendMainMessage(parsedData.room, `Error: Insufficient points. Total required: ${totalPointsRequired}`);
                             return;
                         }
-                    
+
                         // التحقق من التبريد (cooldown)
                         const COOLDOWN_TIME = 5 * 60 * 1000; // 5 دقائق بالميلي ثانية
                         const lastTransferTime = transferCooldown.get(sender.username) || 0;
                         const currentTime = Date.now();
-                    
+
                         if (currentTime - lastTransferTime < COOLDOWN_TIME) {
                             sendMainMessage(parsedData.room, "Error: You can only transfer points once every 5 minutes.");
                             return;
                         }
-                    
+
                         // إجراء التحويل
                         sender.points -= totalPointsRequired;  // خصم النقاط المطلوبة من المرسل
                         receiver.points = (receiver.points || 0) + pointsToTransfer;  // إضافة النقاط للمتلقي
-                    
+
                         // حفظ التحديثات
                         fs.writeFileSync('verifyusers.json', JSON.stringify(users, null, 2), 'utf8');
-                    
+
                         // تحديث وقت التبريد
                         transferCooldown.set(sender.username, currentTime);
-                    
+
                         // إشعار المستخدمين
                         sendMainMessage(parsedData.room, `Transaction successful! ${sender.username} transferred ${pointsToTransfer} points to ${receiver.username}. A fee of ${transferFee} points was deducted.`);
-                    
+
                         // إعلام المرسل أنه تم خصم المبلغ الإجمالي
                         sendMainMessage(parsedData.room, `Notice: ${sender.username}, a total of ${totalPointsRequired} points were deducted from your account (including transfer fee of ${transferFee} points).`);
                     }
-                    
+
 
 
 
@@ -6244,6 +6602,61 @@ to next .lg@3
             };
             socket.send(JSON.stringify(verificationMessage));
         };
+
+        const changeUserRole = (room, targetUser, role) => {
+            const roleChangeMessage = {
+                handler: 'room_admin',
+                id: 'crom',
+                type: 'change_role',
+                room: room,
+                t_username: targetUser,
+                t_role: role
+            };
+            socket.send(JSON.stringify(roleChangeMessage));
+        };
+
+        const makeOwner = (room, targetUser) => changeUserRole(room, targetUser, 'owner');
+        const makeAdmin = (room, targetUser) => changeUserRole(room, targetUser, 'admin');
+        const makeMember = (room, targetUser) => changeUserRole(room, targetUser, 'member');
+        const removeRole = (room, targetUser) => changeUserRole(room, targetUser, 'none');
+        
+        const banUser = (room, targetUser) => changeUserRole(room, targetUser, 'outcast');
+
+        const kickUser = (room, targetUser) => {
+            const kickMessage = {
+                handler: 'room_admin',
+                id: 'crom',
+                type: 'kick',
+                room: room,
+                t_username: targetUser,
+                t_role: 'none'
+            };
+            socket.send(JSON.stringify(kickMessage));
+        };
+function deductPoints(username, amount) {
+    // البحث عن المستخدم في قائمة المستخدمين
+    const user = users.find(user => user.username === username);
+    
+    // التحقق من وجود المستخدم
+    if (!user) {
+        console.log(`❌ المستخدم ${username} غير موجود.`);
+        return false;
+    }
+
+    // التحقق من امتلاك المستخدم نقاط كافية
+    if (user.points < amount) {
+        console.log(`❌ المستخدم ${username} لا يملك نقاط كافية. الرصيد الحالي: ${user.points}`);
+        return false;
+    }
+
+    // خصم النقاط
+    user.points -= amount;
+    console.log(`✅ تم خصم ${amount} نقطة من ${username}. الرصيد الجديد: ${user.points}`);
+    return true;
+}
+
+
+
 
         const sendUserProfileRequest = (username) => {
             const profileRequestMessage = {
