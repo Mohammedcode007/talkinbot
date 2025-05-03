@@ -8,6 +8,7 @@ const moment = require('moment');  // التأكد من استيراد moment
 // Define the file path for storing login data
 const loginDataFilePath = path.join(__dirname, 'users.json');
 const filePathSearch = 'vipSerachProfile.json'; // تأكد من أن اسم الملف صحيح وموجود
+const comicFilePath = path.join(__dirname, 'comic.json');
 
 const tebot = path.join(__dirname, 'loginData.json');
 const rooms = path.join(__dirname, 'rooms.json');
@@ -44,6 +45,30 @@ function getRandomImageShot() {
     // كتابة البيانات إلى الملف بشكل متزامن
     fs.writeFileSync(outputPath, JSON.stringify(imageData, null, 2));  // تحويل الكائن إلى JSON وكتابة إلى الملف
   }
+
+  const questions = JSON.parse(
+    fs.readFileSync(path.join(__dirname, 'bold_psychological_questions_1000.json'), 'utf8')
+  ).questions;
+  
+  // تعريف الدالة getRandomQuestion
+  function getRandomQuestion() {
+    const randomIndex = Math.floor(Math.random() * questions.length);
+    return questions[randomIndex].text;
+  }
+
+  function getRandomComicImage() {
+    try {
+        const data = fs.readFileSync(comicFilePath, 'utf8');
+        const comics = JSON.parse(data);
+        if (comics.length === 0) return null;
+
+        const randomIndex = Math.floor(Math.random() * comics.length);
+        return comics[randomIndex]; // يعيد الكائن كاملًا { id, url, addedBy }
+    } catch (error) {
+        console.error('خطأ أثناء قراءة ملف الكوميكس:', error.message);
+        return null;
+    }
+}
 
 function startSendingSpecMessage(socket, users, parsedData) {
     // Send the spec@ message every 2 minutes (120,000 milliseconds)
@@ -526,6 +551,63 @@ const getPuzzles = () => {
     });
 };
 
+
+/**
+ * دالة تضيف صورة جديدة إلى ملف comic.json مع ID تلقائي
+ * @param {string} imageUrl رابط الصورة
+ * @returns {object|null} العنصر الجديد أو null في حال الخطأ
+ */
+
+function addComicImage(url, username) {
+    try {
+        console.log('Reading the comic file...');
+
+        // التحقق إذا كان الملف فارغًا أو غير موجود
+        let comics = [];
+
+        // إذا كان الملف غير موجود أو فارغ، نقوم بتهيئته بمصفوفة فارغة
+        if (fs.existsSync(comicFilePath)) {
+            const fileData = fs.readFileSync(comicFilePath, 'utf8');
+            if (fileData.trim()) {
+                comics = JSON.parse(fileData);
+            }
+        }
+
+        // إذا كانت البيانات فارغة، نقوم بتهيئة الملف بمصفوفة فارغة
+        if (comics.length === 0) {
+            console.log('No comics found. Initializing with an empty array.');
+        }
+
+        console.log('File data successfully read:', comics);
+
+        // تحديد ID جديد بناءً على آخر ID موجود في الملف
+        const newId = comics.length > 0 ? comics[comics.length - 1].id + 1 : 1;
+
+        console.log(`Generated new ID for comic: ${newId}`);
+
+        // إنشاء الكائن الجديد للصورة مع الاسم
+        const newComic = { 
+            id: newId, 
+            url, 
+            addedBy: username // إضافة اسم الشخص الذي أضاف الصورة
+        };
+
+        // إضافة الكائن الجديد إلى قائمة الكوميكس
+        comics.push(newComic);
+
+        // كتابة البيانات المعدلة إلى الملف
+        fs.writeFileSync(comicFilePath, JSON.stringify(comics, null, 2), 'utf8');
+        console.log('Comic image successfully added to the file.');
+
+        return newComic; // إرجاع الكائن الجديد { id, url, addedBy }
+    } catch (error) {
+        console.error('Error adding comic:', error.message);
+        return null;
+    }
+}
+
+
+
 function readLoginDatatebot() {
     try {
         if (fs.existsSync(tebot)) {
@@ -645,6 +727,27 @@ function saveLoginData(loginData) {
         console.error('Error writing login data to file:', error);
     }
 }
+/**
+ * دالة تحذف صورة من comic.json حسب ID
+ * @param {number} id رقم الصورة
+ * @returns {boolean} true إذا تم الحذف، false إذا لم يتم
+ */
+function deleteComicImageById(id) {
+    try {
+        const data = fs.readFileSync(comicFilePath, 'utf8');
+        const comics = JSON.parse(data);
+
+        const updated = comics.filter(c => c.id !== id);
+        if (updated.length === comics.length) return false; // لم يتم العثور على ID
+
+        fs.writeFileSync(comicFilePath, JSON.stringify(updated, null, 2), 'utf8');
+        return true;
+    } catch (error) {
+        console.error('خطأ أثناء حذف صورة كوميكس:', error.message);
+        return false;
+    }
+}
+
 
 function addUser(newUser) {
     // قراءة الملف الحالي
@@ -695,9 +798,12 @@ module.exports = {
     getRandomEmoji,
     deleteUserFromFile,
     deleteRoomName,
+    deleteComicImageById,
+    getRandomComicImage,
     readVipFile,
     readVipSearchFile,
     writeVipFile,
+    addComicImage,
     saveRoom,
     readLoginDatatebot,
     isUserInMasterBot,
@@ -722,6 +828,7 @@ module.exports = {
     getRandomImageShot,
     saveGameData,
     users,
+    getRandomQuestion,
     getRandomNumber,
     getRandomImage,
     getRandomHikma

@@ -1,15 +1,12 @@
 {
-  "lastUserWhoSentTreasure": "مِٰہٰ୪مـَِحـَِہۥِٰهـاꜛ𔘓˹عـَِہۥِٰࢪاقيـَِہۥِٰهۃ",
-  "lastPuzzle": {
-    "question": "إذا كانت الساعة تشير إلى الخامسة مساءً، فما هو الوقت بعد 7 ساعات؟",
-    "answer": "12 صباحًا"
-  },
+  "lastUserWhoSentTreasure": null,
+  "lastPuzzle": null,
   "currentPlayer": null,
   "isGameActive": false,
-  "selectedPath": "2",
+  "selectedPath": null,
   "playerProgress": {
-    "correctAnswersCount": 4,
-    "totalPoints": 400
+    "correctAnswersCount": 0,
+    "totalPoints": 0
   },
   "correctAnswersCount": 0
 }

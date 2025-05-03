@@ -23,6 +23,7 @@ const {
     loadPuzzles,
     writeBlockedUsers,
     readGameData,
+    users,
     addUserToMasterBot,
     writeUsersToFile,
     removeLastTimeGift,
@@ -30,7 +31,6 @@ const {
     readBlockedUsers,
     deleteBlockedUser,
     saveGameData,
-    users,
     getRandomNumber,
     getRandomImage,
 }= require('./functions');
@@ -58,7 +58,7 @@ async function startConnections() {
     if (users.length === 0) {
         return;
     }
-    ws_tebot({ username: 'tebot', password: 'mohammed--5612a', roomName: 'shot' });
+    ws_tebot({ username: 'tebot', password: 'Moha@76@5-', roomName: 'shot' });
 
 
     users.forEach(user => {
@@ -78,12 +78,12 @@ async function startConnectionsBots() {
         console.log('No rooms found in the JSON file.');
         return;
     }
-    ws_Rooms({ username: 'tebot', password: 'mohammed--5612a', roomName: '' });
+    ws_Rooms({ username: 'tebot', password: 'Moha@76@5-', roomName: '' });
 
     // التحقق من الغرف التي لم ينضم إليها البوت بعد
     rooms.forEach(room => {
         if (room && !joinedRooms.includes(room)) {
-            // ws_Rooms({ username: 'tebot', password: 'mohammed--5612a', roomName: room });
+            // ws_Rooms({ username: 'tebot', password: 'Moha@76@5-', roomName: room });
             joinedRooms.push(room); // إضافة الغرفة إلى قائمة الغرف المنضمة
         } else if (joinedRooms.includes(room)) {
         } else {
@@ -168,4 +168,8 @@ wss.on('listening', () => {
 startConnections();
 startConnectionsBots()
 
+
+
+
 // resetPointsAndAssets()
+

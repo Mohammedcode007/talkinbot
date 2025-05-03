@@ -1,33 +1,19 @@
 {
+  "4": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "13": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "45": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "56": {
     "betAmount": null,
     "players": [
       {
@@ -69,2398 +55,6 @@
     "gameRoom": "",
     "rounds": 0
   },
-  "2345": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "room1": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "room2": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سوريا*فلسطين": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "سوريا*فلسطين",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "1"
-  },
-  "egypt": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "egypt",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "2"
-  },
-  "انتيـــكا𓆰": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "كـافيـه♨️رآقـي": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "كوكاكولآ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "كوكاكولآ",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "4"
-  },
-  "🇸🇦المملڪه•العربيه•السعوديه🇸🇦": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سنوات🖤الضياع": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "لـِِـيبيـِِـا𝆔⇣💚⇡𝆔الـِِـعـِِـز": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "لـِِـيبيـِِـا𝆔⇣💚⇡𝆔الـِِـعـِِـز",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "2"
-  },
-  "لوك`~`لوك": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "لوك`~`لوك",
-    "rounds": 0
-  },
-  "سوريا•❥•وطننا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "كوكب♥المجانين": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "Norway": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "لْـمـتِناَ🦋أحـلَى": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "لْـمـتِناَ 🦋 أحـلَى": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "مملكة🤎الاصدقاء": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "قـــهوه_و_هــيل_🇸🇦": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ϲǔɾѵɑˢᵘ͜ᵈ⇣Ⓩ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "لليبيا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "funclub": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "funclub",
-    "rounds": 0
-  },
-  "funclup": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "𝕋𝕙𝕖_𝕆𝕣𝕚𝕘𝕚𝕟𝕒𝕝𝕤_✨": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "𝕋𝕙𝕖_𝕆𝕣𝕚𝕘𝕚𝕟𝕒𝕝𝕤_✨",
-    "rounds": 0
-  },
-  "𝑰𝑹𝑨𝐐_🇮🇶": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "chat_lovers": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عشاق❤مصر": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عشاق❤️مصر": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "عشاق❤️مصر",
-    "rounds": 0,
-    "awaitingNumber": false,
-    "awaitingDefenderGuess": true,
-    "lastNumber": "3"
-  },
-  "شام": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "احلى🔗اެُلـᩚڈڪ⃯ـࢪياެُت": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "مضيف_⇡ٰٖ̇̇̇🇮🇶₎⇡ٰٖ̇̇̇_العراق": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ذكريات🎀الماضي": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "chatfun": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "𝗖reati͢ve_𖥸": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "خواطر🌺شعر🌺مسابقات": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "➹روقــــآن➛♬☕": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "➹روقــــآن➛♬☕",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "6"
-  },
-  "✫彡خواطر彡✫": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "❤ليبيا❤": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "أوجاع💔وطن": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "مملكتي": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "هـــدوء🎼🖤🎧اللـيــل": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبيا_❤الحب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "Twilight✨": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "هواجيس🖤تجمعنا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سرت💚العز": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "zero": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "numb": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "slow": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "palestine": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "شحاتين*والحاله*مقشفره": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "شحاتين*والحاله*مقشفره",
-    "rounds": 0,
-    "awaitingNumber": false,
-    "awaitingDefenderGuess": true,
-    "lastNumber": "5"
-  },
-  "flowers": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "happy": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ســـــوا🌸بنـــــكون": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "لـيـبـيـا͢ۦ♚𓏲": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "روح💞الصداقة": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "𝕋𝕙𝕖_𝕆𝕣𝕚𝕘𝕚𝕟𝕒𝕝𝕤_": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "🏰♥️🇮🇩": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "🏰♥️🇮🇩",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "2"
-  },
-  "snack": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "England": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عراقي♥️بغدادي": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "❥مــڷــٺــڦــﮯ💜اﻻحــبــٱب❥": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "jawabarat": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "al-sfeer متعـــــــ💋ـــــــهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "السفير متعـــــــ💋ـــــــهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "asdمتعـــــــ💋ـــــــهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "asd متعـــــــ💋ـــــــهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "متعـــــــ💋ـــــــهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "2024room": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "كافية🍹الافندي": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "pearl": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "chennai": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "Malaysia": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "Malaysia",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "6"
-  },
-  "مؤنســـــــات👩‍🦳الغــــــاليات": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "المملكه♪العربيه♪السعوديه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "أصدقاء": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سوريانآ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سوريا.احلا.شله": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "𝑴#𝑴": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "Games_zone🎮": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "penthouse": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "البث.اليمني": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "كريكيت🏏cricket": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سوالف.اليمن.": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "اليمن؛": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "يجمعنا💕الـــــــــود": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "يجمعنا💕الـــــــــود",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "6"
-  },
-  "【snow-white】": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "🫐Berry🫐": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "تعاليل¤شباب¤بنات¤شمر": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "لبنان": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "gossips": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ذكريأت": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبياף឵឵឵឵឵឵឵឵឵឵឵឵឵឵": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "يچمعنـٱۦ❪♥️឵឵❫ۦٱلــوود": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "࿐🦋࿐": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ۦִֶָ𓂃ﮩ٨خـٖفـۄِٰق𓆩❥︎𓆪قـٖلـپﮩ𓄹ִֶָ𓏲ִִֶֶָָּּ۫": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "خفووق𓆩❤️𓆪قـِٖࢦـᤨب𓄹ִֶָ𓏲⋆": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "خــدلٱن‏_ے'🍁": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "𝐋𝐈𝐁𝐘𝐀🤍ليبيا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "تفَآصيَلُッ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "العاب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "love": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "love",
-    "rounds": 0
-  },
-  "ذوق": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "❦gαℓαχу❦": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "قروب☕هدرازي": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "Life": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبيا¹": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عشق♥️឵឵الروح": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عشقۦ❪♥️឵឵❫ۦليبيا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "heaven": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "hunter": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ㅤㅤㅤㅤㅤㅤㅤ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ذڪريات💌": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ضحكه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "قصـــة🤍عـشـق": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "manifest": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليـپـيا𓆩💚𓆪القذافـيُ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "friends4u": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "friends4u",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "5"
-  },
-  "اليمن.حضرموت": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "رقـــــــ🦋ــــــــهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبيا⍤": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "كتاب_وقهوة☕": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "مصر": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "stars": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "فلسطين☆حبك☆يجمعنا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "london": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "testroom": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "🌺friend🌺": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "🌺friend🌺",
-    "rounds": 0,
-    "awaitingNumber": false,
-    "awaitingDefenderGuess": true,
-    "lastNumber": "6"
-  },
-  "barsat": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "barsat",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "5"
-  },
-  "♥️Iceland♥️": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "♥️Iceland♥️",
-    "rounds": 0,
-    "awaitingNumber": false,
-    "awaitingDefenderGuess": true,
-    "lastNumber": "1"
-  },
-  "فلسطين♡احلى♡عالم": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "دلع_دلع🤍": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "حلب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "كرزات♡": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "العقول❣الراقيه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "العقول❣️الراقيه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "لـُـــۆگهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "game🥇": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "game🥇",
-    "rounds": 0
-  },
-  "tanhai": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "tanhai",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "6"
-  },
-  "جمهورية❥🇮🇶❥العـراق": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "honey": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبياآ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "pak": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سوالفنا🩷حلوة🩵ولمتنا🩷أحلى": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "FiRE": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "englishworld": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "dreamworld": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سوالف.اليمن2": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "libya": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبيا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "همس❤️القلوب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سوالف~اليمن": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "urdu": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "لـمه🫶زمـان": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "magic": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "𝐍𝐈𝐂𝐎𝐓𝐄𝐄𝐍⁸⁰": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "friends🌸": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "رحيق❥الحب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "مريم": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبيا²": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "pathaan": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "pathaan",
-    "rounds": 0,
-    "awaitingNumber": false,
-    "awaitingDefenderGuess": true,
-    "lastNumber": "6"
-  },
-  "رقـــــــ🦋ـــــــهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عدن𐩲𐩵𐩬صنعاء𐩲𐩵𐩬اليمن": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ملوكۦ❪🇱🇾❫ۦليبيا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "яιηι": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ضحكة_مصري": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "ضحكة_مصري",
-    "rounds": 0,
-    "awaitingNumber": false,
-    "awaitingDefenderGuess": true,
-    "lastNumber": "2"
-  },
-  "cinta": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "cinta",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "5"
-  },
-  "beautiful": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
   "شتاء🍁": {
     "betAmount": null,
     "players": [
@@ -2475,290 +69,7 @@
     "gameRoom": "",
     "rounds": 0
   },
-  "fun": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "barish": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "اسم الروم ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "bogor": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "bogor",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "5"
-  },
-  "🌹cutie_girls 🌹": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "🌹cutie_girls🌹": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "🌹cutie_girls🌹",
-    "rounds": 0
-  },
-  "Cricket": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ورود★ناعمه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "eagles": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "بَنڪ🥇الُِحٍظ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  " جمهورية❥🇮🇶❥العـراق": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "freedom": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "jannat": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "jannqt": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "faith": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "choco": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "Avengers⚔️": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "girls": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "housefull": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "punjab": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبيا᭄🦋": {
+  "عشق🤍الوطن": {
     "betAmount": null,
     "players": [
       {
@@ -2786,7 +97,7 @@
     "gameRoom": "",
     "rounds": 0
   },
-  "هربانين_من_العباسيه◕⁠‿⁠◕☞⁩": {
+  "هـــدوء🎼🖤🎧اللـيــل": {
     "betAmount": null,
     "players": [
       {
@@ -2800,780 +111,7 @@
     "gameRoom": "",
     "rounds": 0
   },
-  "هربانين_من_العباسيه◕⁠‿⁠◕☞⁩room": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "bintang": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "bintang",
-    "rounds": 0,
-    "awaitingNumber": true,
-    "awaitingDefenderGuess": false,
-    "lastNumber": "4"
-  },
-  "jawa-cilacap": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "Denpasar": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "lifeline": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "jawa~cilacap": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "friend": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "latte": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "روآق": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "white🌼": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "code": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "اللمه🦅الحلوه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "اللمه🦅الحلوه",
-    "rounds": 0
-  },
-  "silence": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "smile": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ليبياا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سوريانا": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "🏏𝐜𝐫𝐢𝐜𝐤𝐞𝐭.": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "صبايا♥عسل": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "army": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "squalene": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "حــرامـي❦بـنــات": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "متعه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "🔱⇞مملُگة🌓آلُشُيَآطُيَن⇞🔱": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "متعـه🔥الحب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ݪــــيــــݪ🍁ٱݪــبنفسـج": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "Diamond": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "اشُۆاگ🥀الُرٍبيَعٍ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ڞــحۡــڪــۃ🍃_ڝــحۡــٰا̍ب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "ּڞــحۡــڪــۃ🍃_ڝــحۡــٰا̍ب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "bintаng": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "شماليٰ_✮_والشماليٰ_✮_بٰٰكيٰفہٰه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "indo_heaven": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "مـ🤴ـلوك🌟مـ👸ـلكات🌟العـ👑ـرب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  " قهوة☕العرب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "رضــاكـى♥أمــــى": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "⇓هّـ𐦍𓏲ִֶָּدٍوٌء⇓": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "🐍.": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "حورات": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "🐉Europe🐍": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "𓄂ᬼالفراعنــٌـٌٌـٌٌٌـٌٌـٌـة𓂀𓆃": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "دردشة🤍العرب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "رمش♡وعين": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "هدوء": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عراق♥الحب": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "اللمه🏆الحلوهG𝑎𝑚𝑒𝑠": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "جلسات.يمانيه": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "indonesia": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "متعـــــــ💋ــــــــهہ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عـ∫❀∫ـشـاق🔥الـلـ∫❀∫ـيـــل": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "سورية": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "syria": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "paki_friends": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "⸼꯭᪳⃕أّلَنِـرجّـۦٰٰٰٰٰٰٰٰٰٰٰٰۦٰٰٰۦٰٰٰسِـيووٌنِ๛ـꗃ": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "أجـمــل♡︎الشـخـصـيات♡︎في♡︎الشات": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "holland": {
-    "betAmount": null,
-    "players": [
-      {
-        "username": "",
-        "role": "attacker",
-        "status": "waiting"
-      }
-    ],
-    "startedBy": "",
-    "active": false,
-    "gameRoom": "",
-    "rounds": 0
-  },
-  "عشق🤍الوطن": {
+  "يجمعنا💕الـــــــــود": {
     "betAmount": null,
     "players": [
       {
@@ -3615,7 +153,77 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "سنوات🖤الضياع": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "لـِِـيبيـِِـا𝆔⇣💚⇡𝆔الـِِـعـِِـز": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "ناس🤍تتعاشر": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "فلسطين♡احلى♡عالم": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "رقـــــــ🦋ـــــــهہ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "مملكة🤎الاصدقاء": {
     "betAmount": null,
     "players": [
       {
@@ -3643,7 +251,63 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "كوكاكولآ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "كوكاكولآ",
+    "rounds": 0
+  },
+  "holland": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "paki_friends": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "عشقي_❤_العراق": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "⸼꯭᪳⃕أّلَنِـرجّـۦٰٰٰٰٰٰٰٰٰٰٰٰۦٰٰٰۦٰٰٰسِـيووٌنِ๛ـꗃ": {
     "betAmount": null,
     "players": [
       {
@@ -3685,7 +349,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "كـافيـه♨️رآقـي": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "دمشق": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ملوكۦ❪🇱🇾❫ۦليبيا": {
     "betAmount": null,
     "players": [
       {
@@ -3727,6 +419,48 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "Diamond": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "𝕋𝕙𝕖_𝕆𝕣𝕚𝕘𝕚𝕟𝕒𝕝𝕤_✨": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ݪــــيــــݪ🍁ٱݪــبنفسـج": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "قهوة☕_وآغنيــهه🎵": {
     "betAmount": null,
     "players": [
@@ -3755,7 +489,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "أصدقاء": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "أيـ•♪•ـام_جميـ•♪•ـلة": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "روآق": {
     "betAmount": null,
     "players": [
       {
@@ -3797,7 +559,119 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "سوريا.احلا.شله": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "جلسات.يمانيه": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "سوالف.اليمن": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "stars": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "bintang": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "هواجيس🖤تجمعنا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "لبنان": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ليبيا᭄🦋": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "funclub": {
     "betAmount": null,
     "players": [
       {
@@ -3825,7 +699,63 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "chatfun": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "cute": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "مملكتي": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "متعـــــــ💋ــــــــهہ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "هدوء": {
     "betAmount": null,
     "players": [
       {
@@ -3853,7 +783,63 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "𝑰𝑹𝑨𝐐_🇮🇶": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "🏆🏏𝐜𝐫𝐢𝐜𝐤𝐞𝐭❄☀️": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "smile": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "chat_lovers": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "اشُۆاگ🥀الُرٍبيَعٍ": {
     "betAmount": null,
     "players": [
       {
@@ -3937,6 +923,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "اليمن.حضرموت": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "حمص": {
     "betAmount": null,
     "players": [
@@ -3979,7 +979,63 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "كوكب♥المجانين": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "لو🩶": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "كرزات♡": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "سوريا*فلسطين": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "قصـــة🤍عـشـق": {
     "betAmount": null,
     "players": [
       {
@@ -4133,6 +1189,76 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "ليبيا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "libya": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "فلسطين☆حبك☆يجمعنا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "⇓هّـ𐦍𓏲ִֶָּدٍوٌء⇓": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "flowers": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "سوريا☞بيت☜الكل": {
     "betAmount": null,
     "players": [
@@ -4161,7 +1287,91 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "✫彡خواطر彡✫": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "المتعة🔥": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "England": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "متعـه🔥الحب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "➹روقــــآن➛♬☕": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Norway": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "لوك`~`لوك": {
     "betAmount": null,
     "players": [
       {
@@ -4217,6 +1427,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "عراقي♥️بغدادي": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "هكر": {
     "betAmount": null,
     "players": [
@@ -4245,7 +1469,49 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "❤ليبيا❤": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Cricket": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "paristan": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "اليمن؛": {
     "betAmount": null,
     "players": [
       {
@@ -4273,6 +1539,62 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "ليبياף឵឵឵឵឵឵឵឵឵឵឵឵឵឵": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "هربانين_من_العباسيه◕⁠‿⁠◕☞⁩": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "سوريانآ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "قـــهوه_و_هــيل_🇸🇦": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "ليبيا❤️❤️": {
     "betAmount": null,
     "players": [
@@ -4287,7 +1609,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "🌺friend🌺": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "icecream": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ليبيا⍤": {
     "betAmount": null,
     "players": [
       {
@@ -4343,7 +1693,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "Malaysia": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "غنوة❤مصر": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ليـپـيا𓆩💚𓆪القذافـيُ": {
     "betAmount": null,
     "players": [
       {
@@ -4372,6 +1750,20 @@
     "rounds": 0
   },
   "india": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "أجـمــل♡︎الشـخـصـيات♡︎في♡︎الشات": {
     "betAmount": null,
     "players": [
       {
@@ -4441,6 +1833,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "سوريانا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "العراق🇮🇶بغداد": {
     "betAmount": null,
     "players": [
@@ -4483,7 +1889,49 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "سوريا•❥•وطننا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "كتاب_وقهوة☕": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "متعة🔥مدامات🔥هايجه🔥لبوه": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ورود★ناعمه": {
     "betAmount": null,
     "players": [
       {
@@ -4512,6 +1960,62 @@
     "rounds": 0
   },
   "الشـرقيـ͢ھہ_السـۦٰ۬ــعوديـۦٰ۬ـھَہّۦْٰ🇸🇦": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "عشقۦ❪♥️឵឵❫ۦليبيا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "❦gαℓαχу❦": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "dreamworld": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "punjab": {
     "betAmount": null,
     "players": [
       {
@@ -4581,6 +2085,34 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "تعاليل¤شباب¤بنات¤شمر": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "عشاق❤️مصر": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "عشاق🌶المتعه": {
     "betAmount": null,
     "players": [
@@ -4596,6 +2128,20 @@
     "rounds": 0
   },
   "فلسطين": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "كريكيت🏏cricket": {
     "betAmount": null,
     "players": [
       {
@@ -4637,7 +2183,105 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "🌹cutie_girls🌹": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "manifest": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "snack": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "حـِٰٰـِٰٰد✹وتــ°ـه❤️مـِٰٰ✹ـِٰ۪صــِٰٰر℘يـه❤️سـِٰٰ✹ـِٰ۪ــِٰٰور℘يـه": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "شحاتين*والحاله*مقشفره": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "صبايا♥عسل": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "لليبيا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "🔱⇞مملُگة🌓آلُشُيَآطُيَن⇞🔱": {
     "betAmount": null,
     "players": [
       {
@@ -4679,6 +2323,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "beautiful": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "betterhalf": {
     "betAmount": null,
     "players": [
@@ -4694,6 +2352,20 @@
     "rounds": 0
   },
   "dream": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "faith": {
     "betAmount": null,
     "players": [
       {
@@ -4735,7 +2407,91 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "game🥇": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "housefull": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Life": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "london": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "palestine": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "RuangCanda": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "tanhai": {
     "betAmount": null,
     "players": [
       {
@@ -4791,7 +2547,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "خــدلٱن‏_ے'🍁": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "سورياالحبيبة": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "عـ∫❀∫ـشـاق🔥الـلـ∫❀∫ـيـــل": {
     "betAmount": null,
     "players": [
       {
@@ -4820,6 +2604,62 @@
     "rounds": 0
   },
   "Dramaclub": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "egypt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "girls": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "happy": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "honey": {
     "betAmount": null,
     "players": [
       {
@@ -4917,6 +2757,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "لـمه🫶زمـان": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "لقاء❤️الاحبة": {
     "betAmount": null,
     "players": [
@@ -4945,7 +2799,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "♥️Iceland♥️": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "1✈️بصره": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "friend": {
     "betAmount": null,
     "players": [
       {
@@ -5029,7 +2911,63 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "العقول❣️الراقيه": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "جمهورية❥🇮🇶❥العـراق": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "دجله🤍وفرات": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "دردشة🤍العرب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ذكريات🎀الماضي": {
     "betAmount": null,
     "players": [
       {
@@ -5071,6 +3009,48 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "ضحكة_مصري": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ليبيا²": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "latte": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "legends": {
     "betAmount": null,
     "players": [
@@ -5085,7 +3065,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "pathaan": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "أهل🤍الوفاء": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "المملكه♪العربيه♪السعوديه": {
     "betAmount": null,
     "players": [
       {
@@ -5127,6 +3135,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "روح💞الصداقة": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "زحمه--شعور": {
     "betAmount": null,
     "players": [
@@ -5142,6 +3164,20 @@
     "rounds": 0
   },
   "سوريا❤️للكل": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ּڞــحۡــڪــۃ🍃_ڝــحۡــٰا̍ب": {
     "betAmount": null,
     "players": [
       {
@@ -5295,7 +3331,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "سورية": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "صفـــاء✿القلـــوب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "عشق♥️឵឵الروح": {
     "betAmount": null,
     "players": [
       {
@@ -5365,6 +3429,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "jawa-cilacap": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "mumbai": {
     "betAmount": null,
     "players": [
@@ -5380,6 +3458,20 @@
     "rounds": 0
   },
   "oyo": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "penthouse": {
     "betAmount": null,
     "players": [
       {
@@ -5421,6 +3513,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "white🌼": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "امي°•°اليمن": {
     "betAmount": null,
     "players": [
@@ -5449,7 +3555,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "مـ🤴ـلوك🌟مـ👸ـلكات🌟العـ👑ـرب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "ياسمين_الشام": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "🫐Berry🫐": {
     "betAmount": null,
     "players": [
       {
@@ -5478,6 +3612,62 @@
     "rounds": 0
   },
   "bogor💙": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "code": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "freedom": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "friends4u": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "friends🌸": {
     "betAmount": null,
     "players": [
       {
@@ -5561,6 +3751,48 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "خواطر🌺شعر🌺مسابقات": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "رحيق❥الحب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "شماليٰ_✮_والشماليٰ_✮_بٰٰكيٰفہٰه": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "مصر✭في✭عز✭شبابها": {
     "betAmount": null,
     "players": [
@@ -5589,6 +3821,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "🏰♥️🇮🇩": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "🍬💢_😊_احلام_💖السنين_😊💢": {
     "betAmount": null,
     "players": [
@@ -5603,7 +3849,63 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "army": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Avengers⚔️": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "bogor": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "Chatz": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "cinta": {
     "betAmount": null,
     "players": [
       {
@@ -5659,7 +3961,49 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "indo_heaven": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "indonesia": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "markas": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "pak": {
     "betAmount": null,
     "players": [
       {
@@ -5688,6 +4032,34 @@
     "rounds": 0
   },
   "sweety": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "zero": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ϲǔɾѵɑˢᵘ͜ᵈ⇣Ⓩ": {
     "betAmount": null,
     "players": [
       {
@@ -5730,6 +4102,20 @@
     "rounds": 0
   },
   "اميرات": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "دلع_دلع🤍": {
     "betAmount": null,
     "players": [
       {
@@ -5855,7 +4241,91 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "ㅤㅤㅤㅤㅤㅤㅤ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "🐉Europe🐍": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "𝗖reati͢ve_𖥸": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "𝐌𝐮𝐬𝐢𝐜♪𝐋𝐨𝐯𝐞𝐫𝐬": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "𝐍𝐈𝐂𝐎𝐓𝐄𝐄𝐍⁸⁰": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "【snow-white】": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "❥مــڷــٺــڦــﮯ💜اﻻحــبــٱب❥": {
     "betAmount": null,
     "players": [
       {
@@ -5897,7 +4367,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "barsat": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "cewek_cowok_sangge": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "choco": {
     "betAmount": null,
     "players": [
       {
@@ -5953,6 +4451,62 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "love": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "silence": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "slow": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Twilight✨": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "universe": {
     "betAmount": null,
     "players": [
@@ -5967,7 +4521,105 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "яιηι": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "أوجاع💔وطن": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "ادم": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "اللمه🦅الحلوه": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "اللمه🏆الحلوهG𝑎𝑚𝑒𝑠": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "تفَآصيَلُッ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "حــرامـي❦بـنــات": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "رمش♡وعين": {
     "betAmount": null,
     "players": [
       {
@@ -6038,6 +4690,34 @@
     "rounds": 0
   },
   "شمس": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ضحكه": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "يچمعنـٱۦ❪♥️឵឵❫ۦٱلــوود": {
     "betAmount": null,
     "players": [
       {
@@ -6163,6 +4843,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "chennai": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "chitchat": {
     "betAmount": null,
     "players": [
@@ -6205,7 +4899,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "eagles": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "english": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "englishworld": {
     "betAmount": null,
     "players": [
       {
@@ -6289,7 +5011,49 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "jawabarat": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "Mugiwara": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "numb": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "pearl": {
     "betAmount": null,
     "players": [
       {
@@ -6387,6 +5151,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "squalene": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "stranger": {
     "betAmount": null,
     "players": [
@@ -6416,6 +5194,20 @@
     "rounds": 0
   },
   "الاسلام★دين★الحق": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "البث.اليمني": {
     "betAmount": null,
     "players": [
       {
@@ -6485,6 +5277,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "انتيـــكا𓆰": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "ببسي": {
     "betAmount": null,
     "players": [
@@ -6527,6 +5333,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "بَنڪ🥇الُِحٍظ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "تعارف✵ليبيا": {
     "betAmount": null,
     "players": [
@@ -6542,6 +5362,48 @@
     "rounds": 0
   },
   "زيــــن♥️دولـــــهہ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "سرت💚العز": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "سوالف.اليمن2": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "سوالف~اليمن": {
     "betAmount": null,
     "players": [
       {
@@ -6625,6 +5487,23 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "مصر": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "مصر",
+    "rounds": 0,
+    "awaitingNumber": false,
+    "awaitingDefenderGuess": true,
+    "lastNumber": "3"
+  },
   "مصر💖دلع💖شقاوه": {
     "betAmount": null,
     "players": [
@@ -6639,7 +5518,49 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "مضيف_⇡ٰٖ̇̇̇🇮🇶₎⇡ٰٖ̇̇̇_العراق": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "مملكة_الحب❤️": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "همس❤️القلوب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "𓄂ᬼالفراعنــٌـٌٌـٌٌٌـٌٌـٌـة𓂀𓆃": {
     "betAmount": null,
     "players": [
       {
@@ -6668,6 +5589,20 @@
     "rounds": 0
   },
   "🫖🍛WARTEG🍛🫖": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "🇸🇦المملڪه•العربيه•السعوديه🇸🇦": {
     "betAmount": null,
     "players": [
       {
@@ -6849,7 +5784,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "Denpasar": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "dragon": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "FiRE": {
     "betAmount": null,
     "players": [
       {
@@ -6891,7 +5854,49 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "fun": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Games_zone🎮": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "Heaven": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "jannat": {
     "betAmount": null,
     "players": [
       {
@@ -7032,6 +6037,20 @@
     "rounds": 0
   },
   "surabaya": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "syria": {
     "betAmount": null,
     "players": [
       {
@@ -7199,6 +6218,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "حورات": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "حياتي🌸": {
     "betAmount": null,
     "players": [
@@ -7241,6 +6274,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "ذوق": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "روح🩷الحياة": {
     "betAmount": null,
     "players": [
@@ -7256,6 +6303,20 @@
     "rounds": 0
   },
   "ســ͡ــٍُِِــ͡ــُراب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ســـــوا🌸بنـــــكون": {
     "betAmount": null,
     "players": [
       {
@@ -7297,6 +6358,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "سوالفنا🩷حلوة🩵ولمتنا🩷أحلى": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "سورياا": {
     "betAmount": null,
     "players": [
@@ -7311,7 +6386,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "شام": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "شتاء": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "عراق♥الحب": {
     "betAmount": null,
     "players": [
       {
@@ -7381,6 +6484,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "كافية🍹الافندي": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "لقانا": {
     "betAmount": null,
     "players": [
@@ -7395,7 +6512,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "ليبيا¹": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "ليبيين*ليبيات": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "مؤنســـــــات👩‍🦳الغــــــاليات": {
     "betAmount": null,
     "players": [
       {
@@ -7479,6 +6624,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "🐍.": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "..💚..": {
     "betAmount": null,
     "players": [
@@ -7536,6 +6695,20 @@
     "rounds": 0
   },
   "aria": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "barish": {
     "betAmount": null,
     "players": [
       {
@@ -7703,6 +6876,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "gossips": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "Happy_Birthday_Nilus🎂♥️": {
     "betAmount": null,
     "players": [
@@ -7830,6 +7017,20 @@
     "rounds": 0
   },
   "la.hasil": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "lifeline": {
     "betAmount": null,
     "players": [
       {
@@ -8473,6 +7674,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "حلب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "حلم♡يمنيه": {
     "betAmount": null,
     "players": [
@@ -8543,7 +7758,35 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "ذڪريات💌": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "ذهب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "رضــاكـى♥أمــــى": {
     "betAmount": null,
     "players": [
       {
@@ -8865,6 +8108,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "لـيـبـيـا͢ۦ♚𓏲": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "لمتنا🌸حلوة": {
     "betAmount": null,
     "players": [
@@ -8894,6 +8151,20 @@
     "rounds": 0
   },
   "ليبيا#": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ليبياا": {
     "betAmount": null,
     "players": [
       {
@@ -8950,6 +8221,20 @@
     "rounds": 0
   },
   "مبارك_للشعب_السوري_سقوط_الطاغيه✌🏽": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "متعه": {
     "betAmount": null,
     "players": [
       {
@@ -9453,6 +8738,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "𝐋𝐈𝐁𝐘𝐀🤍ليبيا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "𝗴𝗼𝗱𝗳𝗼𝘁𝗵𝗲𝗿": {
     "betAmount": null,
     "players": [
@@ -9915,6 +9214,20 @@
     "gameRoom": "",
     "rounds": 0
   },
+  "قروب☕هدرازي": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
   "لحن": {
     "betAmount": null,
     "players": [
@@ -10182,6 +9495,835 @@
     "rounds": 0
   },
   "chatzone": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "كـافيـه♨️رآقـيpvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "كـافيـه♨️رآقـي-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "اللمه🦅الحلوه-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "المجد🍒-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "gαℓαχу-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "مقر_حمو_الخاص🔥": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "كوكب♥المجانين-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "متعـــــــ💋ـــــــهہ-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "بحبك_انت_وبس-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "⎳๏𝒗፝֯֟͟𝒆ִִֶֶָָ_🩷-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Diamond-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "➹روقــــآن➛♬☕-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "الشـرقيـ͢ھہ_السـۦٰ۬ــعوديـۦٰ۬ـھَہّۦْٰ🇸🇦-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "bintаng": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Egypt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "💘iceland💘": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "💘iceland💘-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "🏰💖☮️-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "manifest-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "moneyheist-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Moneyheist-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "اَلَسَهَرَهَ💗تَحَلَيَ": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "chatlovers-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Friends-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "حلم♡يمنيه-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "سنووايت-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "سنووايت-pvt",
+    "rounds": 0,
+    "awaitingNumber": true,
+    "awaitingDefenderGuess": false,
+    "lastNumber": "2"
+  },
+  "coffee-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "بــنـغــ♥️ــازيۦ♚𓏲-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ليبيين**ليبيات-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "latte-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "tanhai-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "أدم": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "roomأدم": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "choco-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "قهوهـ_🇸🇦_السعـوديـه": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "سوريا.احلي.شله": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "سوالف.اليمن.": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "بومـ🦉ـهہ-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "العاب-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "м๏кล-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "م": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "vip-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ادلب": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ادلب-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "⍸ⁱᴮỿạ💚-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "tt-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "harpy-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "🌹cutie_girls🌹-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "Ghost-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "όήέ𑰔ίş𑰔Ļίķέ𑰔ţħέ𑰔şùή𔘓̸-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "احلى_ليبيا": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ليبيا_احلى": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "bintang-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "احلى_ليبيا-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "🚬اسبرٍيَسۆ☕️": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ٵ̍نۨــټ_ּڶــې💜-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "مـٰ͒ـِْ✮ـٰ͒ـارشُيَملـٰ͒ـِْ✮ـٰ͒ـو-pvt": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "ليبيين**ليبيات": {
+    "betAmount": null,
+    "players": [
+      {
+        "username": "",
+        "role": "attacker",
+        "status": "waiting"
+      }
+    ],
+    "startedBy": "",
+    "active": false,
+    "gameRoom": "",
+    "rounds": 0
+  },
+  "مملكتي-pvt": {
     "betAmount": null,
     "players": [
       {

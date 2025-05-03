@@ -35,12 +35,18 @@ const reconnectInterval = 5000; // 5 seconds
 const maxReconnectAttempts = 5; // Maximum attempts to reconnect
 
 let reconnectAttempts = 0;
+const reconnectDelayShort = 5000; // 5 seconds between retries
+const reconnectDelayLong = 15 * 60 * 1000; // 15 minutes
+const maxAttemptsPerCycle = 5;
 
+let attemptsInCurrentCycle = 0;
 const ws_tebot = async ({ username, password, roomName }) => {
     const createSocketConnection = () => {
         const socket = new WebSocket('wss://chatp.net:5333/server');
 
         socket.onopen = () => {
+            attemptsInCurrentCycle = 0; // Reset attempts when connected
+
             console.log(`Connected to WebSocket server for username: ${username}`);
             const loginMessage = {
                 handler: 'login',
@@ -192,13 +198,23 @@ const ws_tebot = async ({ username, password, roomName }) => {
         };
 
         socket.onclose = () => {
+            attemptsInCurrentCycle++;
+
             console.log(`Socket closed for username: ${username}`);
-            if (reconnectAttempts < maxReconnectAttempts) {
-                reconnectAttempts++;
-                console.log(`Attempting to reconnect... (${reconnectAttempts}/${maxReconnectAttempts})`);
-                setTimeout(createSocketConnection, reconnectInterval); // Try reconnecting after a delay
+            // if (reconnectAttempts < maxReconnectAttempts) {
+            //     reconnectAttempts++;
+            //     console.log(`Attempting to reconnect... (${reconnectAttempts}/${maxReconnectAttempts})`);
+            //     setTimeout(createSocketConnection, reconnectInterval); // Try reconnecting after a delay
+            // } else {
+            //     console.log("Max reconnect attempts reached. Not reconnecting.");
+            // }
+            if (attemptsInCurrentCycle < maxAttemptsPerCycle) {
+                console.log(`Attempting to reconnect... (${attemptsInCurrentCycle}/${maxAttemptsPerCycle})`);
+                setTimeout(createSocketConnection, reconnectDelayShort);
             } else {
-                console.log("Max reconnect attempts reached. Not reconnecting.");
+                console.log(`Max attempts in this cycle reached. Waiting 15 minutes before retrying...`);
+                attemptsInCurrentCycle = 0; // Reset for next cycle
+                setTimeout(createSocketConnection, reconnectDelayLong);
             }
         };
 
