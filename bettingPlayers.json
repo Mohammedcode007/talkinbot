@@ -648,10 +648,135 @@
     "active": false
   },
   "💘iceland💘-pvt": {
-    "betAmount": null,
-    "players": [],
-    "startedBy": null,
-    "active": false
+    "betAmount": 4000000,
+    "players": [
+      {
+        "username": "kad",
+        "betAmount": 4000000
+      },
+      {
+        "username": "яιηι",
+        "betAmount": 4000000
+      },
+      {
+        "username": "𝐇𝐚𝐧𝐢",
+        "betAmount": 4000000
+      },
+      {
+        "username": "°`°`°",
+        "betAmount": 4000000
+      },
+      {
+        "username": "𝐑𝐢𝐳𝐚𝐥",
+        "betAmount": 4000000
+      },
+      {
+        "username": "latte",
+        "betAmount": 4000000
+      },
+      {
+        "username": "bintang",
+        "betAmount": 4000000
+      },
+      {
+        "username": "التيفاحه",
+        "betAmount": 4000000
+      },
+      {
+        "username": "i_gamd_i",
+        "betAmount": 4000000
+      },
+      {
+        "username": "𝒩𝑒𝓈𝓇𝑒𝓃𝒶🍓",
+        "betAmount": 4000000
+      },
+      {
+        "username": "𝗌𝗁𝗂𝗇𝖾",
+        "betAmount": 4000000
+      },
+      {
+        "username": "ℎǎʑҽϻ♣ḱǎj",
+        "betAmount": 4000000
+      },
+      {
+        "username": "alasmr.ab",
+        "betAmount": 4000000
+      },
+      {
+        "username": "❌͏",
+        "betAmount": 4000000
+      },
+      {
+        "username": "dark_prince",
+        "betAmount": 4000000
+      },
+      {
+        "username": "卂ْْْْْ",
+        "betAmount": 4000000
+      },
+      {
+        "username": "٩٩٩",
+        "betAmount": 4000000
+      },
+      {
+        "username": "ipehh",
+        "betAmount": 4000000
+      },
+      {
+        "username": "selfish.fari",
+        "betAmount": 4000000
+      },
+      {
+        "username": "↲رآقُـ✵ۣۘ͡ـيَ˚⸙͎۪۫⋆بًآخِـۦٰـلَآقُـ✵ۣۘ͡ـيَ↳",
+        "betAmount": 4000000
+      },
+      {
+        "username": "غرو♡انثي♡ور",
+        "betAmount": 4000000
+      },
+      {
+        "username": "filosofi",
+        "betAmount": 4000000
+      },
+      {
+        "username": "🅰🇳឵🅰",
+        "betAmount": 4000000
+      },
+      {
+        "username": "🍃឵🍓",
+        "betAmount": 4000000
+      },
+      {
+        "username": "ڵيَۦاެٓلُُهالُہ↠୭لـٖڪُمۦلُـﭚ𐎓اެٓلإندِهّـآشُ",
+        "betAmount": 4000000
+      },
+      {
+        "username": "anwar344",
+        "betAmount": 4000000
+      },
+      {
+        "username": "⊰•͢♡͢ℳ͢༉•͢⊱",
+        "betAmount": 4000000
+      },
+      {
+        "username": "cia",
+        "betAmount": 4000000
+      },
+      {
+        "username": "أمـ♂ــير♥ألحــ♂ـب",
+        "betAmount": 4000000
+      },
+      {
+        "username": "آآلَت̷ـم̷ـــ🐊ٍـ͢͡س̷سـۙــٵ̷حۣۗᴠͥɪͣᴘͫ•𝆺𝅥",
+        "betAmount": 4000000
+      },
+      {
+        "username": "༒★αɳα★༒",
+        "betAmount": 4000000
+      }
+    ],
+    "startedBy": "kad",
+    "active": true
   },
   "Moneyheist-pvt": {
     "betAmount": null,
@@ -726,6 +851,48 @@
     "active": false
   },
   "bintang-pvt": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "عراقي♥️بغدادي": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "όήέ𑰔ίş𑰔Ļίķέ𑰔ţħέ𑰔şùή𔘓̸-pvt": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "ملوكۦ❪🇱🇾❫ۦليبيا": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "paris💜-pvt": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "صبايا♥عسل": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "games-pvt": {
+    "betAmount": null,
+    "players": [],
+    "startedBy": null,
+    "active": false
+  },
+  "الـمـلـ✹ـِــكــہ♛انـــ✹ِـــجـي-pvt": {
     "betAmount": null,
     "players": [],
     "startedBy": null,
